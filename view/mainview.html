@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #body{
+            padding-top: 10px;
+            display: flex;
+            flex-direction: row;
+            justify-content:space-around;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            height: 700px;
+            width: 100%;
+            background-color: white;
+        }
+        #body>div{
+            
+            width: 300px;
+            height: 250px;
+            border: 1px solid black;
+           
+            display: flex;
+            flex-direction: column;
+            justify-content:center;
+            align-items: center;
+            
+            
+            background-color: white;
+        }
+        #head{
+            display: flex;
+            flex-direction: row;
+            justify-content:space-around;
+            align-items: flex-start;
+            width: inherit;
+            height: 50px;
+            width: 100%;
+            background-color: white;
+        }
+        #header_img{
+            
+            width: 100px;
+            height: 100%;
+        }
+        #search{
+            
+            height: 97%;
+            
+            border: 1px solid black;
+            flex-grow: 1;
+        }
+        #searchbox{
+            display: flex;
+            flex-direction: row;
+            
+            align-items: flex-start;
+            
+            height: 100%;
+            flex-grow: 1.2;
+            
+        }
+        #search_button{
+            height: 100%;
+            flex-grow: 0.01;
+        }
+        #headersh{
+            flex-grow: 0.5;
+        }
+        #header_icon{
+            flex-grow: 1;
+            
+            height: 100%;
+        }
+        
+    </style>
+</head>
+<body>
+    
+    <div id="main">
+        <div id="head">
+            <div id="headersh"><a href=""><img src="https://upload.wikimedia.org/wikipedia/commons/3/3c/IMG_logo_%282017%29.svg" id="header_img"></a></div>
+            <div id="space"></div>
+            <div id="searchbox"><input id="search"><button id="search_button">search</button>
+            </div>
+            <div id="header_icon"></div>
+        </div>
+        <div id="body">
+            <template><div><img src style="border: black 1px solid;" width="270" height="152" class="sumb">
+                <div><img src="" width="50" height="50" class="usumb"></div>
+                <div id="설명"></div></div></template>
+                <div><img src style="border: black 1px solid;" width="270" height="152" class="sumb">
+                    <div><img src="" width="50" height="50" class="usumb"></div>
+                    <div id="설명"></div></div>
+        </div>
+    
+    </div>
+</body>
+<script>
+    
+    async function start_p(){
+        const filelist = await(await fetch("/main/filelist")).json()
+        console.log(filelist)
+        filelist.forEach(v=>{
+            const a = document.createElement("a");
+            a.href=`/watch?view=${v}`
+            a.innerText=v;
+            document.body.appendChild(a)
+        })
+    }
+    start_p()
+</script>
+</html>

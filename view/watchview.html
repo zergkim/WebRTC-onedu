@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <input type="file" id="getFile">
+    <video width="500" controls></video>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <script>
+        const video =document.querySelector("video")
+        var urlpra = new URLSearchParams(location.search)
+        urlpra=urlpra.get("view")
+        const videoSrc=`/videos/${urlpra}.m3u8`;
+        if(Hls.isSupported()){
+            const hls = new Hls();
+            hls.loadSource(videoSrc);
+            hls.attachMedia(video)
+            hls.on(Hls.Events.MANIFEST_PARSED,()=>{
+                video.play();
+            })
+        }else if(video.canPlayType('application/vnd.apple.mpegurl')){
+            video.src=videoSrc;
+            video.addEventListener('loadedmetadata',()=>{
+                video.play()
+            })
+        }
+        const getFileinput = document.querySelector("#getFile")
+        getFileinput.addEventListener("change",async e=>{
+            
+            const file = e.target.files[0]
+            console.log(file)
+            
+            if(file.type.split("/")[0]!=='video'){
+                return;
+            }
+                
+            fetch("/test?name="+file.name,{
+                method:'POST',
+                headers:{
+                    'Content-Type':'application/octet-stream'
+                },
+                body:document.querySelector("input").files[0]
+            })
+                
+            
+        })
+    </script>
+</body>
+</html>
