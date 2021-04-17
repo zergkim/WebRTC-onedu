@@ -28,26 +28,7 @@
                 video.play()
             })
         }
-        const getFileinput = document.querySelector("#getFile")
-        getFileinput.addEventListener("change",async e=>{
-            
-            const file = e.target.files[0]
-            console.log(file)
-            
-            if(file.type.split("/")[0]!=='video'){
-                return;
-            }
-                
-            fetch("/test?name="+file.name,{
-                method:'POST',
-                headers:{
-                    'Content-Type':'application/octet-stream'
-                },
-                body:document.querySelector("input").files[0]
-            })
-                
-            
-        })
+        
     </script>
 </body>
 </html>

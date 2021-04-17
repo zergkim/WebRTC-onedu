@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        video{
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <button>녹화하기</button>
+    <button id="capture">캡쳐?</button>
+    <video src=""></video>
+    <canvas width="800" height="600"></canvas>
+    <script>
+        let stream = null;
+        const button = document.querySelector('button');
+        const capture = document.querySelector('#capture');
+        const video = document.querySelector('video');
+        const canvas = document.querySelector('canvas');
+        const ctx = canvas.getContext('2d');
+        let mediaRecord = null;
+        const all = [];
+        const down = record => {
+            const blob = new Blob(record, {
+                type: "video/webm"
+            });
+            all.push(URL.createObjectURL(blob));
+        };
+        button.addEventListener('click', async e => {
+            if(button.innerHTML === '녹화하기'){
+                stream = await navigator.mediaDevices.getUserMedia({audio:true, video:true});
+                mediaRecord = new MediaRecorder(stream, {mimeType:'video/webm;codecs=vp9'});
+                let record = [];
+                mediaRecord.addEventListener('dataavailable', e => {
+                    record.push(e.data);
+                });
+                mediaRecord.addEventListener('stop', () => {
+                    down(record);
+                    record = [];
+                });
+                mediaRecord.start();
+                button.innerHTML = '멈추기';
+            } else {
+                stream.getTracks().forEach(v => v.stop());
+                stream = null;
+                mediaRecord.stop();
+                let i = 0;
+                video.src = all[i];
+                video.play();
+                video.addEventListener('canplay', e => {
+                    video.play();
+                });
+                video.addEventListener('ended', e => {
+                    video.src = all[++i];
+                })
+                button.innerHTML = '녹화하기';
+            }
+            
+        });
+
+        capture.addEventListener('click', e => {
+            mediaRecord.stop();
+            mediaRecord.start();
+        });
+
+        const draw = () => {
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            // const frame = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            // ctx.putImageData(frame, 0, 0);
+            requestAnimationFrame(draw);
+        };
+        draw();
+        // const main = async () => {
+            
+        //     // const context = new AudioContext();
+
+        //     // const source = context.createMediaStreamSource(stream);
+        //     // const processor = context.createScriptProcessor(1024, 1, 1);
+
+        //     // source.connect(processor);
+        //     // processor.connect(context.destination);
+
+        //     // processor.onaudioprocess = e => {
+        //     // // Do something with the data, e.g. convert it to WAV
+        //     //     console.log(e.inputBuffer);
+        //     // };
+        // };
+
+        // main();
+    </script>
+</body>
+</html>

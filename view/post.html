@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="/node_modules/socket.io/client-dist/socket.io.js"></script>
+</head>
+<body>
+    <div><input type="file" id="video"><input type="file" id="img"><button id="button">
+        포스트
+    </button></div><video width="320" height="240" controls></video>
+    <div>
+        <span id="start"></span><input type="number" id="end">
+    </div>
+</body>
+<script>
+    
+    const sstart = document.querySelector("#start")
+    const send = document.querySelector("#end")
+    
+    const button = document.querySelector("#button")
+    const videoinp = document.querySelector("#video")
+    const imginp = document.querySelector("#img")
+    const video = document.querySelector("video");
+    const socket = io(location.origin);
+    const getid = async()=>{
+        let d = await(await fetch("/postid")).text()
+        console.log()
+        return d
+        
+    };
+    
+    videoinp.addEventListener('change',async e => {
+        const file1 = videoinp.files[0]
+        const flink = URL.createObjectURL(file1);
+        video.src=flink
+        video.type=file1.type
+        video.load();
+        await video.play();
+        setTimeout(() => {
+            
+        }, 380);
+    })
+    button.addEventListener("click",async e=>{
+        if(!confirm("진짜 올리시겠습니까?")){
+            return
+        }
+        
+        
+        const file1 = videoinp.files[0]
+        
+        
+        const file2 = imginp.files[0]
+        if(file1.type.split("/")[0]!=="video"){
+            alert("비디오 또는 사진이 아닙니다")
+            return;
+        }
+        if(file2.type.split("/")[0]!=="image"){
+            alert("사진이 아닙니다")
+            return;
+        }
+        const infobj={}
+        const user_ip = await(await fetch("/userip")).text()
+        const typeofv = file1.type.split("/")[1]
+        const typeofi = file2.type.split("/")[1]
+        const name = await getid()
+        
+        let obje = {
+            "user":user_ip,
+            'typeofv':typeofv,
+            'typeofi':typeofi
+        }
+        '/videopost/imgpost'
+        await fetch(`/videopost?name=${name}`,{
+            method:"POST",
+            headers:{
+                "Content-Type":"application/octet-stream"
+            },
+            body:file1
+        })
+        await fetch(`/imgpost?name=${name}`,{
+            method:"POST",
+            headers:{
+                'Content-Type':"application/octet-stream"
+            },
+            body:file2
+        })
+        await fetch(`/objpost?name=${name}`,{
+            method:"POST",
+            headers:{
+                'Content-Type':"application/json"
+            },
+            body:JSON.stringify(obje)
+        })
+        /*socket.emit("postimg",file2)
+        socket.emit("postobj",obj)*/
+    })
+</script>
+</html>

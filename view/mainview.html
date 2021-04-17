@@ -6,6 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
+        body{
+            margin: 0px;
+            background-color: linen;
+        }
         #body{
             padding-top: 10px;
             display: flex;
@@ -13,9 +17,9 @@
             justify-content:space-around;
             align-items: flex-start;
             flex-wrap: wrap;
-            height: 700px;
+            
             width: 100%;
-            background-color: white;
+            
         }
         #body>div{
             
@@ -27,7 +31,7 @@
             flex-direction: column;
             justify-content:center;
             align-items: center;
-            
+            border-radius: 5px;
             
             background-color: white;
         }
@@ -79,7 +83,7 @@
     </style>
 </head>
 <body>
-    
+
     <div id="main">
         <div id="head">
             <div id="headersh"><a href=""><img src="https://upload.wikimedia.org/wikipedia/commons/3/3c/IMG_logo_%282017%29.svg" id="header_img"></a></div>
@@ -90,14 +94,19 @@
         </div>
         <div id="body">
             <template><div><img src style="border: black 1px solid;" width="270" height="152" class="sumb">
-                <div><img src="" width="50" height="50" class="usumb"></div>
-                <div id="설명"></div></div></template>
-                <div><img src style="border: black 1px solid;" width="270" height="152" class="sumb">
-                    <div><img src="" width="50" height="50" class="usumb"></div>
-                    <div id="설명"></div></div>
+                <div class="sumbtitle">
+                    <img src="" width="50" height="50" class="usumb">
+                    <div>
+                        <div id="expl">qwfeqwfqwfqwfwqfwqfwqfwqfwqfewqfqwfwqfwqfeqwfeqwfwqef</div></div><div>sdfqwfqewfqewsf</div>
+                    </div>
+                </div>
+                </template>
+                
         </div>
     
     </div>
+    
+    
 </body>
 <script>
     
@@ -111,6 +120,14 @@
             document.body.appendChild(a)
         })
     }
-    start_p()
+    //start_p()
+    for(let i=0;i<50;i++){
+        const temp = document.querySelector("template")
+        const tt = temp.content.cloneNode(true)
+        console.log(tt)
+        tt.querySelector("#expl").innerText="dfsfsd"
+        document.querySelector("#body").appendChild(tt)
+    }
+    
 </script>
 </html>
