@@ -6,32 +6,117 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <script src="/node_modules/socket.io/client-dist/socket.io.js"></script>
+    <style>
+        
+        #timestampdiv{
+            display: none;
+        }
+        #timestampdiv>div{
+            display: block;
+            width: 800px;
+            height: 25px;
+            background-color: green;
+        }
+        #viewdiv{
+            display: flex;
+            flex-direction: row;
+            
+            align-items: flex-start;
+            
+           
+        }
+        table{
+            border-collapse: collapse;
+        }
+        td{
+            border: black 1px solid;
+            
+        }
+        #viewdiv{
+            display: none;
+        }
+        #tvple{
+            position: absolute;
+            top: 50%;
+            left: 80%;
+        }
+    </style>
+    
 </head>
+
 <body>
+
+        
+    </script>    
     <div><input type="file" id="video"><input type="file" id="img"><button id="button">
         포스트
-    </button></div><video width="320" height="240" controls></video>
-    <div>
-        <span id="start"></span><input type="number" id="end">
+    </button></div>
+    <video id="player"controls width="320"></video>
+    <div></div>
+    <div id="timestampdiv">
+        <span>0</span><input type="number" id="numb_t"><input type="text" id="timetext"><button>만들기</button>
     </div>
+    <div id="viewdiv"><table id="timestampview"><tr><td>시작</td><td>끝</td><td>텍스트</td></tr></table><span>dfdf</span></div>
+    
+    <div id="tvple"><button>go</button></div>
+    
 </body>
 <script>
-    
+    const timpar = document.querySelector('#timestampdiv>div')
     const sstart = document.querySelector("#start")
     const send = document.querySelector("#end")
-    
+    const timestd = document.querySelector("#timestampdiv")
     const button = document.querySelector("#button")
     const videoinp = document.querySelector("#video")
     const imginp = document.querySelector("#img")
     const video = document.querySelector("video");
     const socket = io(location.origin);
+    const timestparr = [];
     const getid = async()=>{
         let d = await(await fetch("/postid")).text()
         console.log()
-        return d
+        return d;
         
     };
-    
+    const timestamp_func=(n)=>{
+        
+        n=Math.floor(n)
+        timestd.style.display="inherit"
+        const input_Tag = timestd.querySelector("#numb_t")
+        const bttof_t = timestd.querySelector("button")
+        const text_t = timestd.querySelector("#timetext")
+        const span_t = timestd.querySelector("span")
+        const t_Table = document.querySelector("#timestampview")
+        document.querySelector("#viewdiv").style.display='inherit'
+        input_Tag.max=n
+        input_Tag.min=0
+        bttof_t.addEventListener("click",e=>{
+            if(Number(input_Tag.value)>Number(input_Tag.max)){
+                console.log(input_Tag.value,input_Tag.max)
+                timestd.style.display="none"
+                return;
+            }
+            if(input_Tag.value==span_t.innerText){
+                return;
+            }
+            console.log("d")
+            let tr = document.createElement("tr")
+            let t_ar = [span_t.innerText,input_Tag.value,text_t.value]
+            t_ar.forEach(v=>{
+                tr.innerHTML+=`<td>${v}</td>`
+            })
+            t_Table.appendChild(tr)
+            timestparr.push(t_ar)
+            span_t.innerText = input_Tag.value
+            if(input_Tag.value==input_Tag.max){
+                timestd.style.display="none"
+                return;
+            }else{
+                input_Tag.min=Number(input_Tag.value)+1
+                input_Tag.value=Number(input_Tag.value)+1;
+            }
+        })
+    }
     videoinp.addEventListener('change',async e => {
         const file1 = videoinp.files[0]
         const flink = URL.createObjectURL(file1);
@@ -40,7 +125,7 @@
         video.load();
         await video.play();
         setTimeout(() => {
-            
+            timestamp_func(video.duration)
         }, 380);
     })
     button.addEventListener("click",async e=>{
@@ -67,35 +152,26 @@
         const typeofi = file2.type.split("/")[1]
         const name = await getid()
         
-        let obje = {
+        let objed = JSON.stringify({
             "user":user_ip,
             typeofv,
-            typeofi
-        }
-        '/videopost/imgpost'
-        await fetch(`/videopost?name=${name}`,{
-            method:"POST",
-            headers:{
-                "Content-Type":"application/octet-stream"
-            },
-            body:file1
-        })
-        await fetch(`/imgpost?name=${name}`,{
-            method:"POST",
-            headers:{
-                'Content-Type':"application/octet-stream"
-            },
-            body:file2
-        })
-        await fetch(`/objpost?name=${name}`,{
-            method:"POST",
-            headers:{
-                'Content-Type':"application/json"
-            },
-            body:JSON.stringify(obje)
-        })
-        /*socket.emit("postimg",file2)
-        socket.emit("postobj",obj)*/
+            typeofi,
+            timestparr
+        });
+        (async function(){
+            for(let v of ([[file1, "application/octet-stream","/videopost"],[file2, "application/octet-stream","/imgpost"],[objed, "application/json","/objpost"]])){
+                await fetch(`${v[2]}?name=${name}`,{
+                method:"POST",
+                headers:{
+                    "Content-Type":v[1]
+                },
+                body:v[0]
+            })
+            }
+        })();
+        
+        
     })
+    
 </script>
 </html>
