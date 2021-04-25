@@ -101,7 +101,13 @@
                     </div>
                 </div>
                 </template>
-                
+                <div><img src style="border: black 1px solid;" width="270" height="152" class="sumb">
+                    <div class="sumbtitle">
+                        <img src="" width="50" height="50" class="usumb">
+                        <div>
+                            <div id="expl">qwfeqwfqwfqwfwqfwqfwqfwqfwqfewqfqwfwqfwqfeqwfeqwfwqef</div></div><div id="explt">sdfqwfqewfqewsf</div>
+                        </div>
+                    </div>
         </div>
     
     </div>
@@ -112,21 +118,27 @@
     
     async function start_p(){
         const filelist = await(await fetch("/main/filelist")).json()
+        const temp = document.querySelector("template")
         console.log(filelist)
+        const tt = temp.content.cloneNode(true)
         filelist.forEach(v=>{
             const a = document.createElement("a");
             a.href=`/watch?view=${v}`
             a.innerText=v;
             document.body.appendChild(a)
+            console.log(tt)
+            tt.querySelector("#expl").innerText='sdf'
+            document.querySelector("#body").appendChild(tt)
+            const tt = temp.content.cloneNode(true)
+            console.log(tt)
+            tt.querySelector("#expl").innerText="dfsfsd"
+            document.querySelector("#body").appendChild(tt)
         })
     }
     //start_p()
     for(let i=0;i<50;i++){
-        const temp = document.querySelector("template")
-        const tt = temp.content.cloneNode(true)
-        console.log(tt)
-        tt.querySelector("#expl").innerText="dfsfsd"
-        document.querySelector("#body").appendChild(tt)
+        
+        
     }
     
 </script>

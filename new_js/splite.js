@@ -15,6 +15,17 @@ client.connect(async e=>{
     dbobj["df"]=dbobj["db"].collection("videodata")
     
 })
+const Get_jungbo = async(filename)=>{
+    const fobj= (await(await dbobj.df.find({})).toArray())
+    let robj = "";
+    for(let i of fobj){
+        if(i._id==filename){
+            robj=i
+            break;
+        }
+    }
+    return robj
+}
 const splite = (name,d)=>{
     return new Promise((res,rej)=>{
         ffmpeg('./savefiles/'+name+'.'+d,{timeout:432000}).addOptions([
@@ -57,4 +68,4 @@ function postthedata(vdata,idata,dobj){
         
     })
 }
-module.exports={splite, postthedata}
+module.exports={splite, postthedata,Get_jungbo}

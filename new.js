@@ -1,10 +1,10 @@
-const {MongoClient} = require("mongodb");
+const {MongoClient, ObjectID} = require("mongodb");
 const url = "mongodb+srv://zergkim:kimsh060525@cluster0.55ags.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
 const client = new MongoClient(url, { useUnifiedTopology: true });
 const crypto = require('crypto');
-const idar= []
-const {splite}=require("./new_js/splite")
 const {postthedata}=require("./new_js/splite")
+const cookieParser = require("cookie-parser")
+const {Get_jungbo} = require("./new_js/splite")
 let postobj={}
 let dbobj = {
 }
@@ -15,21 +15,24 @@ client.connect(async e=>{
     console.log('connection_complete!')
     dbobj["db"]=client.db('streamingdata')
     dbobj["df"]=dbobj["db"].collection("videodata")
-    
+    dbobj.df.updateOne({_id:ObjectID('6083b180c97a9339404da12d')},{$set:{wer:{"Werrwe":"Werr"}}}); 
 })
 const {Server} = require("socket.io")
 const express =require('express');
 const app = express();
 const filelist=[];
-const juso = "mongodb+srv://zergkim:<password>@cluster0.55ags.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
 const hls = require("hls-server")
 const fs=require('fs');
 
-
 app.use('/img',express.static('./img'))
+app.use(cookieParser())
 app.use('/node_modules',express.static('./node_modules'))
 app.use(express.raw({limit:'1gb'}))//이거 꼭설정 해야함
 app.use(express.json())
+app.use((req,res,next)=>{
+    console.log(req.cookies)
+    next()
+})
 app.get("/postid",(req,res)=>{
     const password = JSON.stringify(Math.random()).split(".")[1];
     const secret = 'kopqqqwi!!';
@@ -40,6 +43,7 @@ app.get("/postid",(req,res)=>{
 })
 app.get("/userip",(req,res)=>{
     res.send(req.socket.remoteAddress)
+    
 })
 app.get("/post",(req,res)=>{
     
@@ -52,7 +56,13 @@ app.get("/watch",(req,res)=>{
     res.sendFile("watchview.html",{root:"./view"})
 })
 app.get("/main/filelist",async(req,res)=>{
-    res.json(await dbobj.df.find({}).toArray())
+    res.json(await(await dbobj.df.find({}).toArray()))
+})
+app.use("/objget/:filename",async(req,res,next)=>{
+    const filename = req.params.filename
+    let obj =await Get_jungbo(filename)
+    res.json(obj)
+    
 })
 
 app.post("/videopost",async(req,res)=>{
@@ -134,20 +144,9 @@ new hls(server,{
 const io = new Server(server)
 let infoarr=[];
 io.on("connection",socket =>{
-    socket.on('postvideo',e=>{
-        infoarr.push(e)
+    socket.on('postchat',e=>{
+        console.log(e)
     })
-    socket.on('postimg',e=>{
-        infoarr.push(e)
-    })
-    socket.on('postobj', async e=>{
-        infoarr.push(e)
-        console.log(infoarr)
-        await postthedata(infoarr)
-        
-        infoarr=[]
-    })
-    
 })
 function post_func(obj){
     let videod = obj[0];
@@ -156,4 +155,3 @@ function post_func(obj){
     console.log(vobjd)
     postthedata(videod,imgd,vobjd)
 }
-
