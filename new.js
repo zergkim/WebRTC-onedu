@@ -64,6 +64,9 @@ app.use("/objget/:filename",async(req,res,next)=>{
     res.json(obj)
     
 })
+app.use("/objget",async(req,res)=>{
+    res.json((await(await dbobj.df.find({})).toArray()))
+})
 
 app.post("/videopost",async(req,res)=>{
     
@@ -144,9 +147,25 @@ new hls(server,{
 const io = new Server(server)
 let infoarr=[];
 io.on("connection",socket =>{
-    socket.on('postchat',e=>{
-        console.log(e)
+    
+    socket.on('postchat',async e=>{
+        let jungbo = (await Get_jungbo(e.id));
+        if(jungbo.chat){
+            jungbo.chat.push(e.obj);
+            console.log("Wer");
+        }else{
+            console.log('else');
+            jungbo.chat=[e.obj];
+        }
+        console.log(jungbo.chat)
+        dbobj.df.updateOne({_id:ObjectID('6083b180c97a9339404da12d')},{$set:{wer:{"Werrwe":"Werr"}}}); 
+        dbobj.df.updateOne({_id:ObjectID(e.id)},{$set:{chat : jungbo.chat}});
     })
+    socket.on("startvideo",async e=>{
+        let chatobj = (await Get_jungbo(e)).chat
+        socket.emit(e,chatobj)
+    })
+    
 })
 function post_func(obj){
     let videod = obj[0];

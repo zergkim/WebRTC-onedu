@@ -61,6 +61,8 @@
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <script>
         const socket = io()
+        
+        
         const video =document.querySelector("#videoplayer")
         const videodiv = document.querySelector("#videodiv")
         const input = document.querySelector('input')
@@ -70,6 +72,11 @@
         const textbutton_Div = document.querySelector("#textbutton")
         var urlpra = new URLSearchParams(location.search)
         urlpra=urlpra.get("view")
+        socket.emit("startvideo",urlpra)
+        let chatobj=[];
+        socket.on(urlpra,e=>{
+            chatobj=e
+        })
         const videoSrc=`/videos/${urlpra}.m3u8`;
         if(Hls.isSupported()){
             const hls = new Hls();
@@ -82,6 +89,7 @@
             video.src=videoSrc;
             video.addEventListener('loadedmetadata',()=>{
                 video.play()
+                chatfunc()
             })
         }
         videodiv.onclick=(e)=>{
@@ -98,12 +106,13 @@
             span.classList.add("videospan");
             const textobj = {
                 obj:{
-                    time : video.duration,
+                    time : Math.floor(video.currentTime),
                     xy : [e.offsetX,e.offsetY],
                     text : intext
                 },
                 id : urlpra
             }
+            chatobj.push(textobj.obj)
             videomuk.appendChild(span)
             postchat(textobj)
         }
@@ -120,6 +129,7 @@
         video.addEventListener("play",e=>{
             button.innerHTML="만들기"
             textbutton_Div.style.display="inline-block"
+            chatfunc()
         })
         button.addEventListener("click",e=>{
             if(video.paused){
@@ -138,6 +148,18 @@
         })
         async function postchat(obj){
             socket.emit("postchat",obj)
+        }
+        function chatfunc(){
+            const k = setInterval(() => {
+                if(video.paused){
+                    clearInterval(k)
+                }
+                else{
+                    chatobj.forEach(v=>{
+                        
+                    })
+                }
+            }, 100);
         }
     </script>
 </body>
