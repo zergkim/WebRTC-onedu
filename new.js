@@ -2,20 +2,21 @@ const {MongoClient, ObjectID} = require("mongodb");
 const url = "mongodb+srv://zergkim:kimsh060525@cluster0.55ags.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
 const client = new MongoClient(url, { useUnifiedTopology: true });
 const crypto = require('crypto');
-const {postthedata}=require("./new_js/splite")
+
 const cookieParser = require("cookie-parser")
-const {Get_jungbo} = require("./new_js/splite")
+const {Get_jungbo,FindUser,postthedata} = require("./new_js/splite")
+const viewroot = {root:"./view"}
 let postobj={}
-let dbobj = {
+let DBObj = {
 }
 client.connect(async e=>{
     if(e){
         console.error(e)
     }
     console.log('connection_complete!')
-    dbobj["db"]=client.db('streamingdata')
-    dbobj["df"]=dbobj["db"].collection("videodata")
-    dbobj.df.updateOne({_id:ObjectID('6083b180c97a9339404da12d')},{$set:{wer:{"Werrwe":"Werr"}}}); 
+    DBObj["db"]=client.db('streamingdata')
+    DBObj["Video"]=DBObj["db"].collection("videodata")
+     
 })
 const {Server} = require("socket.io")
 const express =require('express');
@@ -29,15 +30,51 @@ app.use(cookieParser())
 app.use('/node_modules',express.static('./node_modules'))
 app.use(express.raw({limit:'1gb'}))//이거 꼭설정 해야함
 app.use(express.json())
+app.use("/login",(req,res,next)=>{
+    next();
+})
+app.post("/login",async(req,res)=>{
+    console.log(req.body)
+    const userobj = await FindUser(req.body.userid)
+    console.log(userobj)
+    if(!userobj){
+        res.send("false")
+        return;
+    }
+    if(userobj.passwords==req.body.passwords){
+        res.cookie("id",req.body.userid)
+        res.cookie("passwords",req.body.passwords)
+        res.cookie("logined","true")
+        res.send("good")
+        console.log("dfdf")
+    }else{
+        res.send("false")
+    }
+})
+app.get("/logout",(req,res)=>{
+    res.clearCookie('id')
+    res.clearCookie("passwords")
+    res.clearCookie("logined")
+    res.send("Dfdf")
+})
+app.get("/signin",(req,res)=>{
+    res.sendFile("signin.html",viewroot)
+})
+app.get("/login",(req,res)=>{
+    res.sendFile("login.html",viewroot)
+})
 app.use((req,res,next)=>{
-    console.log(req.cookies)
-    next()
+    console.log("Weff",req.cookies)
+    if(req.cookies.logined){
+        next()
+    }else{
+        res.redirect("/login")
+    }
+    
 })
 app.get("/postid",(req,res)=>{
     const password = JSON.stringify(Math.random()).split(".")[1];
-    const secret = 'kopqqqwi!!';
-
-    const hashed = crypto.createHmac('sha256', secret).update(password).digest('hex');
+    const hashed = crypto.createHash("sha256").update(password).digest('base64');
     postobj[hashed]=true;
     res.send(hashed)
 })
@@ -47,16 +84,16 @@ app.get("/userip",(req,res)=>{
 })
 app.get("/post",(req,res)=>{
     
-    res.sendFile("post.html",{root:"./view"})
+    res.sendFile("post.html",viewroot)
 })
 app.get("/main",(req,res)=>{
-    res.sendFile("mainview.html",{root:"./view"})
+    res.sendFile("mainview.html",viewroot)
 })
 app.get("/watch",(req,res)=>{
-    res.sendFile("watchview.html",{root:"./view"})
+    res.sendFile("watchview.html",viewroot)
 })
 app.get("/main/filelist",async(req,res)=>{
-    res.json(await(await dbobj.df.find({}).toArray()))
+    res.json(await(await DBObj.Video.find({}).toArray()))
 })
 app.use("/objget/:filename",async(req,res,next)=>{
     const filename = req.params.filename
@@ -65,7 +102,7 @@ app.use("/objget/:filename",async(req,res,next)=>{
     
 })
 app.use("/objget",async(req,res)=>{
-    res.json((await(await dbobj.df.find({})).toArray()))
+    res.json((await(await DBObj.Video.find({})).toArray()))
 })
 
 app.post("/videopost",async(req,res)=>{
@@ -97,7 +134,7 @@ app.post("/objpost",async(req,res)=>{
     let obj = req.body
     obj.ip = req.socket.remoteAddress
     const nameqe = req.query.name
-    console.log("df:",postobj[nameqe])
+    
     if(!postobj[nameqe]){
         res.send("요청이 잘못되었습니다")
     }
@@ -158,8 +195,8 @@ io.on("connection",socket =>{
             jungbo.chat=[e.obj];
         }
         console.log(jungbo.chat)
-        dbobj.df.updateOne({_id:ObjectID('6083b180c97a9339404da12d')},{$set:{wer:{"Werrwe":"Werr"}}}); 
-        dbobj.df.updateOne({_id:ObjectID(e.id)},{$set:{chat : jungbo.chat}});
+        DBObj.Video.updateOne({_id:ObjectID('6083b180c97a9339404da12d')},{$set:{wer:{"Werrwe":"Werr"}}}); 
+        DBObj.Video.updateOne({_id:ObjectID(e.id)},{$set:{chat : jungbo.chat}});
     })
     socket.on("startvideo",async e=>{
         let chatobj = (await Get_jungbo(e)).chat

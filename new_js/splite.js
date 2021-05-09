@@ -4,7 +4,8 @@ const {MongoClient} = require("mongodb");
 const url = "mongodb+srv://zergkim:kimsh060525@cluster0.55ags.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
 const client = new MongoClient(url, { useUnifiedTopology: true });
 ffmpeg.setFfmpegPath(ffmpegInstaller.path)
-const fs = require('fs')
+const fs = require('fs');
+const { file } = require('jszip');
 let dbobj = {}
 client.connect(async e=>{
     if(e){
@@ -13,19 +14,10 @@ client.connect(async e=>{
     console.log('connection_complete!')
     dbobj["db"]=client.db('streamingdata')
     dbobj["df"]=dbobj["db"].collection("videodata")
-    
+    dbobj["users"]=dbobj.db.collection('userdata')
 })
-const Get_jungbo = async(filename)=>{
-    const fobj= (await(await dbobj.df.find({})).toArray())
-    let robj = "";
-    for(let i of fobj){
-        if(i._id==filename){
-            robj=i
-            break;
-        }
-    }
-    return robj
-}
+const Get_jungbo = async(filename)=>await dbobj.df.findOne({_id:filename});
+const FindUser = async(username) => await dbobj.users.findOne({username});
 const splite = (name,d)=>{
     return new Promise((res,rej)=>{
         ffmpeg('./savefiles/'+name+'.'+d,{timeout:432000}).addOptions([
@@ -68,4 +60,4 @@ function postthedata(vdata,idata,dobj){
         
     })
 }
-module.exports={splite, postthedata,Get_jungbo}
+module.exports={splite, postthedata,Get_jungbo,FindUser}
