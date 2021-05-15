@@ -1,6 +1,6 @@
 const ffmpeg = require('fluent-ffmpeg');
 const ffmpegInstaller=require("@ffmpeg-installer/ffmpeg");
-const {MongoClient} = require("mongodb");
+const {MongoClient,ObjectID} = require("mongodb");
 const url = "mongodb+srv://zergkim:kimsh060525@cluster0.55ags.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
 const client = new MongoClient(url, { useUnifiedTopology: true });
 ffmpeg.setFfmpegPath(ffmpegInstaller.path)
@@ -15,8 +15,9 @@ client.connect(async e=>{
     dbobj["db"]=client.db('streamingdata')
     dbobj["df"]=dbobj["db"].collection("videodata")
     dbobj["users"]=dbobj.db.collection('userdata')
+    
 })
-const Get_jungbo = async(filename)=>await dbobj.df.findOne({_id:filename});
+const Get_jungbo = async(filename)=>await dbobj.df.findOne({_id:ObjectID(filename)});
 const FindUser = async(username) => await dbobj.users.findOne({username});
 const splite = (name,d)=>{
     return new Promise((res,rej)=>{
@@ -48,6 +49,7 @@ function postthedata(vdata,idata,dobj){
             fs.promises.writeFile(`img/${file_name2}`,idata)
             await splite(videoid,typename)
             console.log("성공")
+            
             res("성공")
         }
         try{

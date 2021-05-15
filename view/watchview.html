@@ -106,7 +106,7 @@
             span.classList.add("videospan");
             const textobj = {
                 obj:{
-                    time : Math.floor(video.currentTime),
+                    time : video.currentTime,
                     xy : [e.offsetX,e.offsetY],
                     text : intext
                 },
@@ -147,6 +147,7 @@
             
         })
         async function postchat(obj){
+            console.log(obj)
             socket.emit("postchat",obj)
         }
         function chatfunc(){
