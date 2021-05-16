@@ -45,7 +45,7 @@
             animation-iteration-count: 1;
             animation-timing-function:ease;
             animation-direction:alternate;
-            
+            font-size: 50px;
         }
         video{
             width: 100%;
@@ -61,8 +61,8 @@
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <script>
         const socket = io()
-        
-        
+        let animationnumb;
+        let chatan;
         const video =document.querySelector("#videoplayer")
         const videodiv = document.querySelector("#videodiv")
         const input = document.querySelector('input')
@@ -71,12 +71,19 @@
         const button = document.querySelector("#textbutton>button")
         const textbutton_Div = document.querySelector("#textbutton")
         var urlpra = new URLSearchParams(location.search)
+        
         urlpra=urlpra.get("view")
-        socket.emit("startvideo",urlpra)
-        let chatobj=[];
+        socket.emit("startchat",urlpra)
         socket.on(urlpra,e=>{
-            chatobj=e
+            chatanimationfunc(e.text,e.xy[0],e.xy[1])
         })
+        let chatobj=[];
+        let chatdata;
+        async function getchat(){
+            chatdata =  await (await fetch("/chat/"+urlpra)).json()
+        }
+        getchat()
+        
         const videoSrc=`/videos/${urlpra}.m3u8`;
         if(Hls.isSupported()){
             const hls = new Hls();
@@ -92,28 +99,40 @@
                 chatfunc()
             })
         }
-        videodiv.onclick=(e)=>{
+        const chatanimationfunc = (text,x,y)=>{
             const span = document.createElement("span") 
+            span.innerHTML=text
+            span.style.position="absolute"
+            span.style.transform = `translate(calc(${x}px - 50%), calc(${y}px - 50%))`;
+            span.classList.add("videospan");
+            videomuk.appendChild(span)
+        }
+        videodiv.onclick=(e)=>{
+            
             const intext = input.value;
             if(!intext){
                 alert("글자를 쓰시오")
                 return;
             }
-            span.innerHTML=intext
+            chatanimationfunc(intext,e.offsetX,e.offsetY)
+            input.value=""
+            /*span.innerHTML=intext
             input.value = ""
             span.style.position="absolute"
             span.style.transform = `translate(calc(${e.offsetX}px - 50%), calc(${e.offsetY}px - 50%))`;
-            span.classList.add("videospan");
+            span.classList.add("videospan");*/
             const textobj = {
                 obj:{
-                    time : video.currentTime,
+                    
                     xy : [e.offsetX,e.offsetY],
-                    text : intext
+                    text : intext,
+                    user:"qwr"
                 },
+                time : Math.floor(video.currentTime),
                 id : urlpra
             }
             chatobj.push(textobj.obj)
-            videomuk.appendChild(span)
+            /*videomuk.appendChild(span)*/
             postchat(textobj)
         }
         videomuk.addEventListener('animationend',(e)=>{
@@ -121,15 +140,19 @@
         })
         video.addEventListener("pause",e=>{
             textbutton_Div.style.display="none"
+            console.log("wr")
+            clearInterval(animationnumb)
         })
         video.addEventListener("ended",e=>{
             videodiv.style.display = "none"
             textbutton_Div.style.display="none"
+            console.log("wr")
+            clearInterval(animationnumb)
         })
         video.addEventListener("play",e=>{
             button.innerHTML="만들기"
             textbutton_Div.style.display="inline-block"
-            chatfunc()
+            chat()
         })
         button.addEventListener("click",e=>{
             if(video.paused){
@@ -147,20 +170,27 @@
             
         })
         async function postchat(obj){
-            console.log(obj)
+            
             socket.emit("postchat",obj)
+            
         }
-        function chatfunc(){
-            const k = setInterval(() => {
-                if(video.paused){
-                    clearInterval(k)
-                }
-                else{
-                    chatobj.forEach(v=>{
+        socket.on("chatsend"+urlpra,e=>{
+            console.log(e)
+        })
+        async function chat(){
+            const array = [0]
+            let k = setInterval(() => {
+                const datac = chatdata[Math.floor(video.currentTime)]
+                //console.log(datac,Math.floor(video.currentTime))
+                if(datac){
+                    datac.forEach(v=>{
+                        chatanimationfunc(v.text,v.xy[0],v.xy[1])
                         
                     })
+                    
                 }
-            }, 100);
+            }, 999);
+            animationnumb=k;
         }
     </script>
 </body>

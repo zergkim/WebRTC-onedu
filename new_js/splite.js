@@ -25,7 +25,7 @@ const splite = (name,d)=>{
             '-profile:v baseline',
             '-level 3.0',
             '-start_number 0',
-            '-hls_time 10',//10초 단위임
+            '-hls_time 100',//10초 단위임
             '-hls_list_size 0',
             '-f hls'
         ]).output("videos/"+name+'.m3u8').on('end',()=>{

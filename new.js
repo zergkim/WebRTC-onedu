@@ -11,7 +11,7 @@ let DBObj = {
 }
 client.connect(async e=>{
     if(e){
-        console.error(e)
+        
     }
     console.log('connection_complete!')
     DBObj["db"]=client.db('streamingdata')
@@ -27,6 +27,8 @@ const app = express();
 const filelist=[];
 const hls = require("hls-server")
 const fs=require('fs');
+const { S_IFCHR } = require("constants");
+const e = require("express");
 app.use('/img',express.static('./img'))
 app.use(cookieParser())
 app.use('/node_modules',express.static('./node_modules'))
@@ -49,40 +51,40 @@ app.post("/id_unique",async(req,res)=>{
 app.post("/email_send",async(req,res)=>{
     
     const number = JSON.stringify(Math.floor(Math.random()*1000000));
-    console.log(req.body)
+    
     try{
         console.log(req.body.email)
         const info = await DBObj.Userdata.findOne({email:req.body.email})
         if(info){
-            console.log(info)
+            
             throw new Error("이미 이메일 주인이 있음")
         }
         await DBObj.email.insertOne({date:new Date(),EmailAdr:req.body.email,number})
     }catch(e){
-        console.log(e)
+        
         res.send("")
         return;
     }
     
-    console.log(req.body.email)
+    
     send_mail(req.body.email,number)
     res.send("성공")
     
 })
 app.post("/certpost",async(req,res)=>{
-    console.log(req.body)
+    
     let d = await DBObj.email.findOne(req.body)
-    console.log(d)
+    
     if(d)
     {
         res.send("성공")
-        console.log("Werr")
+        
         DBObj.email.deleteOne(req.body)
     }
     else res.send("");
 })
 app.post("/signinconfirm",async(req,res)=>{
-    console.log(req.body)
+    
     req.body.passwords=crypto.createHash("sha256").update(req.body.passwords).digest('base64');
     try{
         const upobj = await DBObj.Userdata.insertOne(req.body)
@@ -93,9 +95,9 @@ app.post("/signinconfirm",async(req,res)=>{
     res.send("성공")
 })
 app.post("/login",async(req,res)=>{
-    console.log(req.body)
+    
     const userobj = await FindUser(req.body.userid)
-    console.log(userobj)
+   
     if(!userobj){
         res.send("falseid")
         return;
@@ -106,7 +108,7 @@ app.post("/login",async(req,res)=>{
         res.cookie("logined","true")
         
         res.send("good")
-        console.log("dfdf")
+        
     }else{
         res.send("falsepassword")
     }
@@ -125,7 +127,7 @@ app.get("/login",(req,res)=>{
     res.sendFile("login.html",viewroot)
 })
 app.use((req,res,next)=>{
-    console.log("Weff",req.cookies)
+    
     if(req.cookies.logined){
         next()
     }else{
@@ -147,7 +149,7 @@ app.get("/userip",(req,res)=>{
     
 })
 app.get("/werr",async(req,res)=>{
-    console.log(await Get_jungbo('608505c3ab56100b7cf12dd7'))
+    
     res.send(await Get_jungbo('608505c3ab56100b7cf12dd7'))
 })
 app.get("/post",(req,res)=>{
@@ -163,12 +165,8 @@ app.get("/watch",(req,res)=>{
 app.get("/main/filelist",async(req,res)=>{
     res.json(await(await DBObj.Video.find({}).toArray()))
 })
-app.use("/objget/:filename",async(req,res,next)=>{
-    const filename = req.params.filename
-    let obj =await Get_jungbo(filename)
-    res.json(obj)
-    
-})
+
+
 app.use("/objget",async(req,res)=>{
     res.json((await(await DBObj.Video.find({})).toArray()))
 })
@@ -176,16 +174,15 @@ app.use("/objget",async(req,res)=>{
 app.post("/videopost",async(req,res)=>{
     
     const obj = req.query
-    console.log("erwre")
+    
     if(!postobj[obj.name]){
-        console.log("노답qffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff")
+        
         res.send("요청이 잘못되었습니다")
     }
-    console.log("hi")
+    
     postobj[obj.name]=new Array()
     postobj[obj.name].push(req.body)
     
-    console.log(req.query.name)
     res.send("ok")
 })
 app.post("/imgpost",async(req,res)=>{
@@ -194,8 +191,7 @@ app.post("/imgpost",async(req,res)=>{
         res.send("요청이 잘못되었습니다")
     }
     postobj[obj.name].push(req.body)
-    console.log(req.query.name)
-    console.log("fwef:",postobj[obj.name])
+    
     res.send("ok")
 })
 app.post("/objpost",async(req,res)=>{
@@ -207,11 +203,24 @@ app.post("/objpost",async(req,res)=>{
         res.send("요청이 잘못되었습니다")
     }
     postobj[nameqe].push(obj)
-    console.log("\n",postobj[nameqe])
+   
     
     await post_func(postobj[nameqe])
     delete postobj[nameqe];
     res.send("good")
+    
+})
+app.use("/chat/:filename",async(req,res,next)=>{
+    
+    try{
+        const filename = req.params.filename
+        let djk= (await Get_jungbo(filename)).chat
+        
+        res.json(djk)
+    }catch(e){
+        console.log("err")
+    }
+    
     
 })
 const server= app.listen(3000,async()=>{
@@ -222,7 +231,7 @@ const server= app.listen(3000,async()=>{
         e=e.join('')
         filelist.push(e)
     })
-    console.log(filelist)
+    
 })
 new hls(server,{
     provider:{
@@ -251,20 +260,31 @@ new hls(server,{
 })
 const io = new Server(server)
 let infoarr=[];
+
 io.on("connection",socket =>{
+    let socketid;
+    socket.on('startchat',e=>{
+        console.log(e)
+        socket.join(e)
+        socketid = e
+    })
+    
     
     socket.on('postchat',async e=>{
-        console.log(e.id)
+        
         let jungbo = await DBObj.Video.findOne({_id:ObjectID(e.id)});
-        console.log(jungbo)
+        
         if(jungbo.chat){
-            jungbo.chat.push(e.obj);
-            console.log("Wer");
-        }else{
-            console.log('else');
-            jungbo.chat=[e.obj];
+            if(jungbo.chat[e.time]){
+                jungbo.chat[e.time].push(e.obj)
+                console.log("이벤트 실행!!")
+                socket.to(socketid).emit(socketid,e.obj)
+            }else{
+                jungbo.chat[e.time]=[e.obj]
+            }
+            
         }
-        console.log(jungbo.chat)
+        
         DBObj.Video.updateOne({_id:ObjectID(e.id)},{$set:{chat : jungbo.chat}});
     })
     /*socket.on("startvideo",async e=>{
@@ -277,6 +297,5 @@ function post_func(obj){
     let videod = obj[0];
     let imgd = obj[1]
     let vobjd = obj[2]
-    console.log(vobjd)
     postthedata(videod,imgd,vobjd)
 }
