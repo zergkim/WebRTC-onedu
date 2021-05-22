@@ -1,6 +1,11 @@
 /* socket\namespace\app.js */
+const fs = require("fs")
+const stream = fs.ReadStream("./videos/60a090a8541277067c517c642.ts")
+stream.on("data",(data)=>{
+  console.log(data)
+})
 
-const express = require("express")
+/*const express = require("express")
 const app = require('express')();
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
@@ -22,4 +27,4 @@ const namespace2 = io.of('/namespace2');
 // connection을 받으면, news 이벤트에 hello 객체를 담아 보낸다
 namespace2.on('connection', (socket) => {
   namespace2.emit('news', { hello: 'Someone connected at Namespace2' });
-});
+});*/

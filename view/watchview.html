@@ -8,13 +8,10 @@
     <style>
         @keyframes ddr{
             from{
-               
                 opacity: 1;
             }
             to{
-                
                 opacity: 0;
-            
             }
         }
         #videodiv{
@@ -51,7 +48,6 @@
             width: 100%;
             height: 100%;
         }
-
     </style>
 </head>
 <body>
@@ -71,7 +67,6 @@
         const button = document.querySelector("#textbutton>button")
         const textbutton_Div = document.querySelector("#textbutton")
         var urlpra = new URLSearchParams(location.search)
-        
         urlpra=urlpra.get("view")
         socket.emit("startchat",urlpra)
         socket.on(urlpra,e=>{
@@ -83,20 +78,16 @@
             chatdata =  await (await fetch("/chat/"+urlpra)).json()
         }
         getchat()
-        
         const videoSrc=`/videos/${urlpra}.m3u8`;
         if(Hls.isSupported()){
             const hls = new Hls();
             hls.loadSource(videoSrc);
             hls.attachMedia(video)
-            hls.on(Hls.Events.MANIFEST_PARSED,()=>{
-                video.play();
-            })
+            hls.on(Hls.Events.MANIFEST_PARSED,video.play)
         }else if(video.canPlayType('application/vnd.apple.mpegurl')){
             video.src=videoSrc;
             video.addEventListener('loadedmetadata',()=>{
                 video.play()
-                chatfunc()
             })
         }
         const chatanimationfunc = (text,x,y)=>{
@@ -167,12 +158,9 @@
                 videodiv.style.display = "none";
                 button.innerHTML="만들기"
             }
-            
         })
         async function postchat(obj){
-            
             socket.emit("postchat",obj)
-            
         }
         socket.on("chatsend"+urlpra,e=>{
             console.log(e)
@@ -185,9 +173,7 @@
                 if(datac){
                     datac.forEach(v=>{
                         chatanimationfunc(v.text,v.xy[0],v.xy[1])
-                        
                     })
-                    
                 }
             }, 999);
             animationnumb=k;
