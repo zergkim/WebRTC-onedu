@@ -104,7 +104,7 @@ app.post("/login",async(req,res)=>{
     }
     if(userobj.passwords==crypto.createHash("sha256").update(req.body.passwords).digest('base64')){
         res.cookie("id",req.body.userid)
-        res.cookie("passwords",req.body.passwords)
+        res.cookie("passwords",crypto.createHash("sha256").update(req.body.passwords).digest('base64'))
         res.cookie("logined","true")
         
         res.send("good")
@@ -115,10 +115,16 @@ app.post("/login",async(req,res)=>{
 })
 
 app.get("/logout",(req,res)=>{
-    res.clearCookie('id')
-    res.clearCookie("passwords")
-    res.clearCookie("logined")
-    res.send("Dfdf")
+    try{
+        res.clearCookie('id')
+        res.clearCookie("passwords")
+        res.clearCookie("logined")
+        res.send("true")
+    }
+    catch(e){
+        res.send("")
+    }
+    
 })
 app.get("/signin",(req,res)=>{
     res.sendFile("signin.html",viewroot)
@@ -152,9 +158,11 @@ app.get("/werr",async(req,res)=>{
     
     res.send(await Get_jungbo('608505c3ab56100b7cf12dd7'))
 })
-app.get("/post",(req,res)=>{
-    
+app.get("/post",(req,res)=>{  
     res.sendFile("post.html",viewroot)
+})
+app.get("/takepost",(req,res)=>{
+    res.sendFile("takepost.html",viewroot)
 })
 app.get("/main",(req,res)=>{
     res.sendFile("mainview.html",viewroot)
@@ -165,8 +173,6 @@ app.get("/watch",(req,res)=>{
 app.get("/main/filelist",async(req,res)=>{
     res.json(await(await DBObj.Video.find({}).toArray()))
 })
-
-
 app.use("/objget",async(req,res)=>{
     res.json((await(await DBObj.Video.find({})).toArray()))
 })
@@ -205,9 +211,12 @@ app.post("/objpost",async(req,res)=>{
     postobj[nameqe].push(obj)
    
     
-    await post_func(postobj[nameqe])
+    
+    if(await post_func(postobj[nameqe],res.send)){
+        res.send("true")
+    }
     delete postobj[nameqe];
-    res.send("good")
+    
     
 })
 app.use("/chat/:filename",async(req,res,next)=>{
@@ -268,7 +277,17 @@ io.on("connection",socket =>{
         socket.join(e)
         socketid = e
     })
-    
+    socket.on("takepoststart",async v=>{
+        const postarr = [];
+        socket.on("takepost",async e=>{
+            postarr.push(e)
+        })
+        socket.on("takeend",e=>{
+            console.log(postarr)
+            console.log()
+            console.log(new Buffer.from(postarr))
+        })
+    })
     
     socket.on('postchat',async e=>{
         
@@ -293,9 +312,16 @@ io.on("connection",socket =>{
     })*/
     
 })
-function post_func(obj){
+async function post_func(obj){
     let videod = obj[0];
     let imgd = obj[1]
     let vobjd = obj[2]
-    postthedata(videod,imgd,vobjd)
+    try{
+        await postthedata(videod,imgd,vobjd);
+        return true;
+    }catch(e){
+        return false;
+    }
+    
+    
 }

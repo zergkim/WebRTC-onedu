@@ -14,6 +14,7 @@ client.connect(async e=>{
     console.log('connection_complete!')
     dbobj["db"]=client.db('streamingdata')
     dbobj["df"]=dbobj["db"].collection("videodata")
+    dbobj["videodataup"]=dbobj.db.collection("videodataup")
     dbobj["users"]=dbobj.db.collection('userdata')
     
 })
@@ -49,7 +50,8 @@ function postthedata(vdata,idata,dobj){
             fs.promises.writeFile(`img/${file_name2}`,idata)
             await splite(videoid,typename)
             console.log("성공")
-            
+            dbobj.videodataup.insertOne(dobj)
+            dbobj.df.removeOne(dobj)
             res("성공")
         }
         try{
