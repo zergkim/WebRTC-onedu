@@ -15,7 +15,7 @@ client.connect(async e=>{
     }
     console.log('connection_complete!')
     DBObj["db"]=client.db('streamingdata')
-    DBObj["Video"]=DBObj["db"].collection("videodata")
+    DBObj["Video"]=DBObj["db"].collection("videodataup")
     DBObj["email"]=DBObj["db"].collection("email")
     DBObj["Userdata"]=DBObj.db.collection("userdata")
     send_mail("sanhaekim06@naver.com","wrefe")
@@ -27,7 +27,6 @@ const app = express();
 const filelist=[];
 const hls = require("hls-server")
 const fs=require('fs');
-const { S_IFCHR } = require("constants");
 const e = require("express");
 app.use('/img',express.static('./img'))
 app.use(cookieParser())
@@ -279,13 +278,20 @@ io.on("connection",socket =>{
     })
     socket.on("takepoststart",async v=>{
         const postarr = [];
+        let postvid;
+        let postimg;
         socket.on("takepost",async e=>{
             postarr.push(e)
         })
         socket.on("takeend",e=>{
-            console.log(postarr)
-            console.log()
-            console.log(new Buffer.from(postarr))
+            
+            postvid = Buffer.concat(postarr)
+            postimg = e;
+            console.log(postvid,'\n',postimg) 
+        })
+        socket.on("takeobj",e=>{
+            const last_arr = [postvid,postimg,e]
+            post_func(last_arr)
         })
     })
     
@@ -313,6 +319,7 @@ io.on("connection",socket =>{
     
 })
 async function post_func(obj){
+    console.log("werer")
     let videod = obj[0];
     let imgd = obj[1]
     let vobjd = obj[2]
@@ -320,6 +327,7 @@ async function post_func(obj){
         await postthedata(videod,imgd,vobjd);
         return true;
     }catch(e){
+        console.log("dfs")
         return false;
     }
     
