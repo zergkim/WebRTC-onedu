@@ -1,5 +1,5 @@
 const {MongoClient} = require("mongodb");
-const url = "mongodb+srv://zergkim:kimsh060525@cluster0.55ags.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
+const url = "";
 const client = new MongoClient(url, { useUnifiedTopology: true });
 client.connect(async e=>{
     if(e){

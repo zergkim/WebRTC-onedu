@@ -1,5 +1,5 @@
 const {MongoClient, ObjectID} = require("mongodb");
-const url = "mongodb+srv://zergkim:kimsh060525@cluster0.55ags.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
+const url = "";
 const client = new MongoClient(url, { useUnifiedTopology: true });
 const crypto = require('crypto');
 const {send_mail} = require("./new_js/emil")

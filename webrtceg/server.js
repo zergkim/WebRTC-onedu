@@ -4,6 +4,7 @@ const {Server}= require("socket.io")
 const path = require("path");
 const app = express();
 const roomobj = {}
+const hostobj = {}
 app.use('/node_modules', express.static("./node_modules"));
 app.use('/script', express.static("./script"));
 const viewroot = {
@@ -12,21 +13,28 @@ const viewroot = {
 let one;
 app.get('/', (req, res) => {
     res.sendFile("admin.html",viewroot)
-    start_connection('erwe')
+    start_connection("room")
 });
-app
+app.get("/c",(req,res)=>{
+    res.sendFile("client.html",viewroot)
+    
+    
+})
+app.get("/wer",(req,res)=>{
+    res.sendFile("clien.html",viewroot)
+    
+})
 
 
 const server = app.listen(8080);
 
 const io = new Server(server);
 function start_connection(room){
-    console.log(roomobj)
+    console.log(room)
+    
     if(!roomobj[room]){
-        console.log("Er")
-        roomobj[room]={}
-        roomobj[room].one=false;
-        roomobj[room].other=false;
+        roomobj[room]=[]
+        roomobj[room].push({one:false,other:false});
     }
     
     let one;
@@ -36,7 +44,7 @@ function start_connection(room){
         console.log('연결');
 
         const fun = (str) => (e) => {
-            console.log(e);
+            
             if(one === socket){
                 other.emit(str, e);
             } else if(other === socket){
@@ -44,13 +52,24 @@ function start_connection(room){
             }
         };
 
-        if(!roomobj[room].one){
-            roomobj[room].one=socket
-        } else if(!roomobj[room].other){
-            roomobj[room].other=socket;
-            
-            roomobj[room].one.emit('start','start');
-            one=roomobj[room].one;
+        if(!roomobj[room][0].one){
+            console.log('a')
+            roomobj[room][0]={one:socket,other:false}
+            hostobj[room]=socket
+        } else{
+            console.log('b')
+            let length = roomobj[room].length-1
+            if(!roomobj[room][length].other){
+                roomobj[room][length].other=socket;
+                roomobj[room].push({one:hostobj[room],other:false})
+            }else{
+                console.log('err')
+                return;
+            }
+            console.log(roomobj[room][length].one)
+            roomobj[room][length].one.emit('start','start');
+
+            one=roomobj[room][length].one;
             other=socket
         }
 
@@ -63,6 +82,7 @@ function start_connection(room){
                 one = null;
                 other = null;
             }
+            
         });
     });
 }

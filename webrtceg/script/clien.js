@@ -10,17 +10,18 @@ async function getstream(){
 }
 getstream()*/
 let clientpc;
-const socket = io("/room");
+const socket = io("/wrewrewre");
+console.log(socket)
 let clientnumb;
 function main(){
     const pc = new RTCPeerConnection(configuration);
     pc.addEventListener('icecandidate', e => {
         if(e.candidate){
             const data = e.candidate.toJSON();
-            if((typeof clientnumb)=="number"){
-                console.log(clientnumb)
+            if(clientnumb){
                 data.numbe=clientnumb; 
             }
+            console.log(clientnumb)
             socket.emit('cand', data);
         }
     });
@@ -29,9 +30,6 @@ function main(){
         if (remoteView.srcObject) return;
         console.log("true")
         remoteView.srcObject = e.streams[0];
-        document.addEventListener('click', e=>{
-            remoteView.play()
-        });
     });
     console.log(pc)
     return pc;
