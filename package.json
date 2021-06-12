@@ -20,5 +20,12 @@
     "mongodb": "^3.6.6",
     "nodemailer": "^6.6.0",
     "socket.io": "^4.1.2"
+  },
+  "devDependencies": {
+    "@types/cookie-parser": "^1.4.2",
+    "@types/ffmpeg-installer__ffmpeg": "^1.0.0",
+    "@types/fluent-ffmpeg": "^2.1.17",
+    "@types/mongodb": "^3.6.17",
+    "@types/nodemailer": "^6.4.2"
   }
 }
