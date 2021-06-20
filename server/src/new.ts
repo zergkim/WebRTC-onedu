@@ -373,8 +373,7 @@ io.on("connection",socket =>{
     socket.on("takepoststart",async v=>{
         console.log("dj")
         const postarr:Array<Buffer> = [];
-        let postvid:any;
-        let postimg:File;
+        let postimg:string;
         const Nick = uuidV4();
         socket.emit("id",Nick)
         await fs.writeFile(`../buffer/${Nick}.webm`,Buffer.from(""))
@@ -383,15 +382,17 @@ io.on("connection",socket =>{
             postarr.push(e)
             await fs.appendFile(`../buffer/${Nick}.webm`,e)
         })
-        socket.on("takeend",e=>{
+        socket.on("takehw",e=>{
+            postimg=e
+        })
+        socket.on("takeend",async e=>{
             
-            postvid = Buffer.concat(postarr)
-            postimg = e;
+            
+            await fs.writeFile(`../buffer/${Nick}.${postimg}`,e)
             //console.log(postvid,'\n',postimg) 
         })
-        socket.on("takeobj",e=>{
-            /*const last_arr = [postvid,postimg,e]
-            post_func(last_arr)*/
+        socket.on("takeobj",async e=>{
+            post_func([await fs.readFile(`../buffer/${Nick}.webm`),await fs.readFile(`../buffer/${Nick}.${postimg}`),e])
             socket.disconnect()
         })
     })

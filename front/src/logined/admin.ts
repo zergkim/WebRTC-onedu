@@ -1,7 +1,9 @@
 declare const MediaRecorder:any;
 const finp:HTMLButtonElement = document.createElement("button")
 document.body.appendChild(finp)
-finp.type='file'
+const finp2:HTMLInputElement = document.createElement("input")
+document.body.appendChild(finp2)
+finp2.type='file'
 import io  from 'socket.io-client';
 import './index.css';
 const $= document.querySelector.bind(document);
@@ -28,14 +30,16 @@ async function getstream(){
         mediaRecord.stop()
     })
     mediaRecord.addEventListener('stop', (e:any) => {
-        //socket2.emit("takeend", finp.files[0])
-        /*const obj = {
+        const hwte:string=(finp2.files[0].type.split("/"))[1]
+        socket2.emit('takehw',hwte)
+        socket2.emit("takeend", finp2.files[0])
+        const obj = {
             typeofv : "webm" ,
-            typeofi : (finp.files[0].type.split("/"))[1],
+            typeofi : (finp2.files[0].type.split("/"))[1],
             user:"none",
             ip:"none"
-        }*/
-        socket2.emit('takeobj',"")
+        }
+        socket2.emit('takeobj',obj)
     });
     mediaRecord.start(3000);
 }
