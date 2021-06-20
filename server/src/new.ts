@@ -3,6 +3,7 @@ const url = "mongodb+srv://zergkim:kimsh060525@cluster0.55ags.mongodb.net/myFirs
 import { DBOBJ,POST_DATA_OBJ,POST_IV_OBJ, PPOBJ } from "./type";
 const client = new MongoClient(url, { useUnifiedTopology: true });
 import crypto from "crypto";
+const {v4:uuidV4} = require('uuid');
 import { webrtcfunc } from "./server";
 import { send_mail } from "./emil";
 import cookieParser from "cookie-parser";
@@ -370,12 +371,17 @@ io.on("connection",socket =>{
         socketid = e
     })
     socket.on("takepoststart",async v=>{
+        console.log("dj")
         const postarr:Array<Buffer> = [];
         let postvid:any;
-        let postimg:any;
+        let postimg:File;
+        const Nick = uuidV4();
+        socket.emit("id",Nick)
+        await fs.writeFile(`../buffer/${Nick}.webm`,Buffer.from(""))
         socket.on("takepost",async e=>{
-            console.log(e)
+            console.log("werr")
             postarr.push(e)
+            await fs.appendFile(`../buffer/${Nick}.webm`,e)
         })
         socket.on("takeend",e=>{
             
@@ -384,8 +390,9 @@ io.on("connection",socket =>{
             //console.log(postvid,'\n',postimg) 
         })
         socket.on("takeobj",e=>{
-            const last_arr = [postvid,postimg,e]
-            post_func(last_arr)
+            /*const last_arr = [postvid,postimg,e]
+            post_func(last_arr)*/
+            socket.disconnect()
         })
     })
     
