@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        input{
+            outline: none;
+        }
+        input:invalid{
+            border: 5px solid red;
+        }
+        #emailcer{
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div><span>이름</span><input id="realname"></div>
+    <div><span>생년월일(주민번호 앞자리+뒷자리 첫번째)</span><input id="jumindrungrok"></div>
+    <div><span>성별</span><label><input type="radio" name="sex" id="sexselector">남</label><label><input type="radio" name="sex">여</label></div>
+    <div>e-mail<input type="text" id="e-mail" required><button id="Certificationbtt">인증번호 보내기</button></div>
+    <div id="passwordaid">id:<input type="text"><button>id중복확인</button>password:<input type="password"></div>
+    <div id='emailcer'><span>이메일 인증번호(2분안에 만료)</span><input type="number"><button>확인하기</button></div>
+    <button id="allconfirm">가입하기</button>
+    
+</body>
+<script>
+    
+</script>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        @keyframes ddr{
+            from{
+                opacity: 1;
+            }
+            to{
+                opacity: 0;
+            }
+        }
+        #videodiv{
+            display: none;
+            background-color: black;
+            width: 1000px;
+            height: 1000px;
+            position: relative;
+            transform: translate(0%,-100%);
+            opacity: 0;
+        }
+        #videomuk > span{
+            opacity: 1;
+            position:absolute;
+            left:0;
+            top:0;
+
+        }
+        #videomuk{
+            width:1000px;
+            height: 1000px;
+            background-color: black;
+        }
+        .videospan{
+            color: blanchedalmond;
+            animation-name: ddr;
+            animation-duration: 2s;
+            animation-iteration-count: 1;
+            animation-timing-function:ease;
+            animation-direction:alternate;
+            font-size: 50px;
+        }
+        video{
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div id="videomuk"><video controls id="videoplayer"></video><div id="videodiv"></div></div>
+    <div id="textbutton"><button>만들기</button><input></div>
+    <script src="/node_modules/socket.io/client-dist/socket.io.min.js"></script>
+    <script>
+        
+    </script>
+</body>
+</html>

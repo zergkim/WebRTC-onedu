@@ -1,0 +1,33 @@
+{
+  "name": "ffmpegtest",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "concurrently \"tsc -w\" \"nodemon dist/new.js\""
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@ffmpeg-installer/ffmpeg": "^1.0.20",
+    "cookie-parser": "^1.4.5",
+    "express": "^4.17.1",
+    "express-fileupload": "^1.2.1",
+    "filereader": "^0.10.3",
+    "fluent-ffmpeg": "^2.1.2",
+    "hls-server": "^1.5.0",
+    "hls.js": "^1.0.7",
+    "jszip": "^3.6.0",
+    "mongodb": "^3.6.6",
+    "nodemailer": "^6.6.0",
+    "socket.io": "^4.1.2",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "@types/cookie-parser": "^1.4.2",
+    "@types/ffmpeg-installer__ffmpeg": "^1.0.0",
+    "@types/fluent-ffmpeg": "^2.1.17",
+    "@types/mongodb": "^3.6.17",
+    "@types/nodemailer": "^6.4.2"
+  }
+}

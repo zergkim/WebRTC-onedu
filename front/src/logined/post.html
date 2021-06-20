@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="/node_modules/socket.io/client-dist/socket.io.js"></script>
+    <style>
+        
+        #timestampdiv{
+            display: none;
+        }
+        #timestampdiv>div{
+            display: block;
+            width: 800px;
+            height: 25px;
+            background-color: green;
+        }
+        #viewdiv{
+            display: flex;
+            flex-direction: row;
+            
+            align-items: flex-start;
+            
+           
+        }
+        table{
+            border-collapse: collapse;
+        }
+        td{
+            border: black 1px solid;
+            
+        }
+        #viewdiv{
+            display: none;
+        }
+        #tvple{
+            position: absolute;
+            top: 50%;
+            left: 80%;
+        }
+    </style>
+    
+</head>
+
+<body>
+
+        
+    </script>    
+    <div><input type="file" id="video"><input type="file" id="img"><button id="button">
+        포스트
+    </button></div>
+    <video id="player"controls width="320"><source></video>
+    <div></div>
+    <div id="timestampdiv">
+        <span>0</span><input type="number" id="numb_t"><input type="text" id="timetext"><button>만들기</button>
+    </div>
+    <div id="viewdiv"><table id="timestampview"><tr><td>시작</td><td>끝</td><td>텍스트</td></tr></table><span>dfdf</span></div>
+    
+    <div id="tvple"><button>go</button></div>
+    
+</body>
+
+</html>

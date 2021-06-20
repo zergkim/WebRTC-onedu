@@ -1,0 +1,27 @@
+{
+  "name": "socket-test-front",
+  "version": "1.0.0",
+  "homepage": ".",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "webpack serve"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "css-loader": "^5.2.6",
+    "html-webpack-plugin": "^5.3.1",
+    "style-loader": "^2.0.0",
+    "ts-loader": "^9.2.1",
+    "webpack": "^5.37.1",
+    "webpack-cli": "^4.7.0",
+    "webpack-dev-server": "^3.11.2"
+  },
+  "dependencies": {
+    "hls.js": "^1.0.7",
+    "socket.io-client": "^4.1.2",
+    "typescript": "^4.2.4"
+  }
+}
