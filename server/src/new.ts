@@ -27,7 +27,6 @@ client.connect(async e=>{
     DBObj.Videodata=DBObj.DB.collection("videodataup")
     DBObj.Email=DBObj.DB.collection("email")
     DBObj.Users=DBObj.DB.collection("userdata")
-    send_mail("sanhaekim06@naver.com","wrefe")
     
 })
 import { Server, Socket } from "socket.io";
@@ -37,7 +36,7 @@ const filelist=[];
 const front = path.resolve(__dirname, '..', '..', 'front');
 // import hls from 'hls-server';
 import fs from 'fs/promises';
-
+app.use(express.text())
 app.use(cookieParser())
 app.use('/node_modules',express.static('../node_modules'))
 app.use(express.raw({limit:'1gb'}))//이거 꼭설정 해야함
@@ -55,7 +54,7 @@ app.use('/', async (req, res, next) => {
     let resultPath = '';
     
     if(!req.cookies.logined){
-        if(req.method=="POST"&&req.url==="/login"){
+        if(req.method=="POST"&&(req.url==="/login"||req.url=="/email_send"||req.url=="/id_unique"||req.url=="/certpost")){
             next()
             return;
         }
@@ -124,12 +123,14 @@ app.use('/view', (req, res, next) => {
 app.use("/login",loginedfunc)
 app.use("/signin",loginedfunc)
 app.post("/id_unique",async(req,res)=>{
-    if(DBObj.Users.findOne({username:req.body})){
+    console.log(await DBObj.Users.findOne({'username':req.body}),console.log(req.body))
+    if(await DBObj.Users.findOne({username:req.body})){
         res.send("")
+        console.log("weree")
     }else res.send("좋아요");
 })
 app.post("/email_send",async(req,res)=>{
-    
+    console.log("werewrer")
     const number = JSON.stringify(Math.floor(Math.random()*1000000));
     
     try{
@@ -234,32 +235,6 @@ app.get("/postid",(req,res)=>{
     postobj[hashed]=true;
     res.send(hashed)
 })
-app.get("/userip",(req,res)=>{
-    res.send(req.socket.remoteAddress)
-    
-})
-app.get("/werr",async(req,res)=>{
-    
-    res.send(await Get_jungbo('608505c3ab56100b7cf12dd7'))
-})
-app.get("/post",(req,res)=>{  
-    res.sendFile("post.html",viewroot)
-})
-app.get("/takepost",(req,res)=>{
-    res.sendFile("takepost.html",viewroot)
-})
-app.get("/main",(req,res)=>{
-    res.sendFile("mainview.html",viewroot)
-})
-app.get("/watch",(req,res)=>{
-    res.sendFile("watchview.html",viewroot)
-})
-app.get("/main/filelist",async(req,res)=>{
-    res.json(await(await DBObj.Videodata.find({}).toArray()))
-})
-app.use("/objget",async(req,res)=>{
-    res.json((await(await DBObj.Videodata.find({})).toArray()))
-})
 
 app.post("/videopost",async(req,res)=>{
     
@@ -301,29 +276,7 @@ app.post("/objpost",async(req,res)=>{
     
     
 })
-app.use("/chat/:filename",async(req,res,next)=>{
-    
-    try{
-        const filename = req.params.filename
-        let djk:any= await Get_jungbo(filename)
-        const dop:any = djk.chat
-        
-        res.json(dop)
-    }catch(e){
-        console.log("err")
-    }
-    
-    
-})
-app.get('/webrtadmin', (req:any, res:any) => {
-    res.sendFile("admin.html",viewroot)
-    //start_connection("room")
-});
-app.get("/webrtclient",(req:any,res:any)=>{
-    res.sendFile("client.html",viewroot)
-    
-    
-})
+
 const server= app.listen(3000,async()=>{
     let impsy = await fs.readdir(path.resolve(__dirname, '..', 'savefiles'))
     impsy.forEach((e:string)=>{

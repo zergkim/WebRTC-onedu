@@ -10,6 +10,7 @@ let transporter = nodemailer.createTransport({
     }
 });
 export async function send_mail(e:string,text:string){
+    console.log(e)
     let info = await transporter.sendMail({
         'from' : '인증번호자동메일러',
         'to' : e,

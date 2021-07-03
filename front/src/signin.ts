@@ -18,6 +18,7 @@ const passwordinp:HTMLInputElement = passwordaid.querySelector("input[type='pass
 const allbutton:HTMLButtonElement = document.querySelector("#allconfirm")
 idconfirm.addEventListener("click",async e=>{
     const id_Text = idinp.value
+    console.log(id_Text)
     let fetch_id = await fetch("/id_unique",{
         method:"POST",
         headers:{
@@ -25,7 +26,8 @@ idconfirm.addEventListener("click",async e=>{
         },
         body:id_Text
     })
-    if(fetch_id.text()){
+    console.log(await fetch_id.text())
+    if(await fetch_id.text()){
         flag.idbul=true;
         idinp.addEventListener("change",e=>{
             flag.idbul=false
@@ -81,14 +83,15 @@ const post_obj = function(body:any,type:string){
 }
 const checkfunc = async (e:any)=>{
     let d = await(await fetch("/certpost",post_obj({EmailAdr:emailar[0],number:cerinput.value},"json"))).text()
-    console.log(d)
-    if(d){
+    console.log(',werer',d)
+    if(d==="성공"){
         alert("성공")
         emailar
         flag.emailbul=true
     }
 }
 const cerefunc = async (e:any)=>{
+    alert("wrer")
     if(!mail.validity.valid){
         alert("이메일주소가 잘못됨!!!");
         cbtt.addEventListener("click",cerefunc,{once:true})
@@ -97,7 +100,10 @@ const cerefunc = async (e:any)=>{
     const email:string = mail.value;
     console.log(email)
     console.log(post_obj({email},"json"))
-    if(await(await fetch("/email_send",post_obj({email},"json"))).text()){
+    let feewf = await(await fetch("/email_send",post_obj({email},"json"))).text()
+    console.log(feewf)
+    if(feewf){
+        
         cerdiv.style.display="inherit"
         cerbtt.addEventListener("click",checkfunc)
         emailar.push(email)
