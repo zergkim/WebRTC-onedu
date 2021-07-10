@@ -1,9 +1,10 @@
 declare const MediaRecorder:any;
-const finp:HTMLButtonElement = document.createElement("button")
+import "./admin.css"
+const finp:HTMLButtonElement = document.querySelector("#buttonn")
 document.body.appendChild(finp)
-const finp2:HTMLInputElement = document.createElement("input")
+const finp2:HTMLInputElement = document.querySelector("#inputt")
 document.body.appendChild(finp2)
-finp2.type='file'
+
 import io  from 'socket.io-client';
 import './index.css';
 const $= document.querySelector.bind(document);
@@ -23,8 +24,11 @@ async function getstream(){
     
     socket2.emit("takepoststart","")
     mediaRecord.addEventListener('dataavailable', (e:any) => {
-        socket2.emit("takepost",e.data)
-        console.log(e.data)
+        finp2.addEventListener("change",v=>{
+            socket2.emit("takepost",e.data)
+            console.log(e.data)
+        })
+        
     });
     finp.addEventListener('click',e=>{
         mediaRecord.stop()

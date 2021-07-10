@@ -1,6 +1,6 @@
 import io  from 'socket.io-client'
 import Hls from 'hls.js'
-alert(Hls)
+
 const socket = io()
 let animationnumb:any;
 let chatan;

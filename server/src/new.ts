@@ -1,9 +1,9 @@
-import { MongoClient,ObjectID } from "mongodb";
+import { Db, MongoClient,ObjectID } from "mongodb";
 const url = "mongodb+srv://zergkim:kimsh060525@cluster0.55ags.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
 import { DBOBJ,POST_DATA_OBJ,POST_IV_OBJ, PPOBJ } from "./type";
 const client = new MongoClient(url, { useUnifiedTopology: true });
 import crypto from "crypto";
-const {v4:uuidV4} = require('uuid');
+import {v4 as uuidV4} from 'uuid';
 import { webrtcfunc } from "./server";
 import { send_mail } from "./emil";
 import cookieParser from "cookie-parser";
@@ -13,7 +13,7 @@ const viewroot = {root:'C:/Users/zergk/Desktop/git_project/dproject/front/dist'}
 let postobj:any={}
 let DBObj:DBOBJ = {
     Videodata:null,
-    Vu:null,
+    Vu: null,
     Users:null,
     DB:null,
     Email:null,
@@ -36,15 +36,13 @@ const filelist=[];
 const front = path.resolve(__dirname, '..', '..', 'front');
 // import hls from 'hls-server';
 import fs from 'fs/promises';
+import { remove } from "jszip";
 app.use(express.text())
 app.use(cookieParser())
 app.use('/node_modules',express.static('../node_modules'))
 app.use(express.raw({limit:'1gb'}))//이거 꼭설정 해야함
 app.use(express.json());
-app.use("/videos",(req,res,next)=>{
-    console.log(req.url)
-    next()
-})
+app.use('/img',express.static('../img'))
 app.use('/videos',express.static("../videos"))
 app.use('/', async (req, res, next) => {
     
@@ -75,12 +73,9 @@ app.use('/', async (req, res, next) => {
         return; 
     }
     else{
-        if(req.url=="/logout"){
+        if(req.url=="/logout"||req.url=="/viewlist"){
             try{
-                res.clearCookie("logined")
-                res.clearCookie("id")
-                res.clearCookie("passwords")
-                res.send("true")
+               next()
             }catch(e){
                 res.send("")
             }
@@ -95,13 +90,19 @@ app.use('/', async (req, res, next) => {
         } else {
             resultPath = path.resolve(front, `./dist/logined${req.url}`);
         }
-        
+        if(path.basename(req.url).split(".")[0]=="watchview"){
+            const diew = req.query.view as string
+            if(diew){
+                DBObj.Videodata.updateOne({_id: new ObjectID(diew)},{$inc:{views:+1}})
+
+            }
+        }
         try{
             await fs.access(resultPath);
             res.sendFile(resultPath)
         }catch(e){
             res.send("error")
-        }
+        } 
         return;
     }
     
@@ -116,10 +117,7 @@ const loginedfunc =(req:any,res:any,next:Function)=>{
 }
 
 
-app.use('/view', (req, res, next) => {
-    console.log(req.url);
-    next();
-});
+ 
 app.use("/login",loginedfunc)
 app.use("/signin",loginedfunc)
 app.post("/id_unique",async(req,res)=>{
@@ -207,6 +205,14 @@ app.get("/logout",(req,res)=>{
     }
     
 })
+app.get('/viewlist',async(req,res)=>{
+    let dd =  await DBObj.Videodata.find().limit(30).sort({views:-1});
+    let List_Arr:Array<object>=[]
+    for await(let i of dd){
+        List_Arr.push(i)
+    }
+    res.json(List_Arr)
+})
 app.get("/signin",(req,res)=>{
     res.sendFile("signin.html",viewroot)
 })
@@ -214,7 +220,7 @@ app.get("/login",(req,res)=>{
     res.sendFile("login.html",viewroot)
 })
 
-app.use('/img',express.static('./img'))
+
 app.use('/webscript/:filename',(req,res,next)=>{
     const splited:Array<string> = req.params.filename.split(".")
     const splitedst = splited[splited.length-1]
@@ -229,6 +235,9 @@ app.use('/webscript',express.static('C:/Users/zergk/Desktop/git_project/dproject
 app.get("/",(req,res)=>[
     res.redirect("/main")
 ])
+app.get("/videolist",(req,res)=>{
+    
+})
 app.get("/postid",(req,res)=>{
     const password = JSON.stringify(Math.random()).split(".")[1];
     const hashed = crypto.createHash("sha256").update(password).digest('base64');

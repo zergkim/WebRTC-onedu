@@ -60,9 +60,13 @@ export function postthedata(vdata:Buffer,idata:Buffer,post_data_obj:POST_DATA_OB
             await fs.promises.writeFile(`../savefiles/${file_name}`, vdata);
             await fs.promises.writeFile(`../img/${file_name2}`,idata)
             await splite(videoid.toHexString(),typename)
+            post_data_obj.views=0;
             console.log("성공")
-            DBobj.Vu.insertOne(post_data_obj)
-            DBobj.Vu.deleteOne(post_data_obj)
+            let id = await DBobj.Vu.insertOne(post_data_obj)
+            console.log(new ObjectID(videoid))
+            await DBobj.Videodata.deleteOne({_id:new ObjectID(videoid)})
+            
+            await fs.promises.unlink(`../savefiles/${file_name}`);
             res("성공")
         }
         try{

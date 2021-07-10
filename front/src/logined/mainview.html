@@ -5,114 +5,66 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    
     <style>
-        body{
-            margin: 0px;
-            background-color: linen;
-        }
-        #body{
-            padding-top: 10px;
-            display: flex;
-            flex-direction: row;
-            justify-content:space-around;
-            align-items: flex-start;
-            flex-wrap: wrap;
-            
-            width: 100%;
-            
-        }
-        #body>div{
-            
-            width: 300px;
-            height: 250px;
-            border: 1px solid black;
-           
-            display: flex;
-            flex-direction: column;
-            justify-content:center;
-            align-items: center;
-            border-radius: 5px;
-            
-            background-color: white;
-        }
-        #head{
-            display: flex;
-            flex-direction: row;
-            justify-content:space-around;
-            align-items: flex-start;
-            width: inherit;
-            height: 50px;
-            width: 100%;
-            background-color: white;
-        }
-        #header_img{
-            
-            width: 100px;
-            height: 100%;
-        }
-        #search{
-            
-            height: 97%;
-            
-            border: 1px solid black;
-            flex-grow: 1;
-        }
-        #searchbox{
-            display: flex;
-            flex-direction: row;
-            
-            align-items: flex-start;
-            
-            height: 100%;
-            flex-grow: 1.2;
-            
-        }
-        #search_button{
-            height: 100%;
-            flex-grow: 0.01;
-        }
-        #headersh{
-            flex-grow: 0.5;
-        }
-        #header_icon{
-            flex-grow: 1;
-            
-            height: 100%;
-        }
         
     </style>
 </head>
 <body>
-
-    <div id="main">
-        <div id="head">
-            <div id="headersh"><a href=""><img src="https://upload.wikimedia.org/wikipedia/commons/3/3c/IMG_logo_%282017%29.svg" id="header_img"></a></div>
-            <div id="space"></div>
-            <div id="searchbox"><input id="search"><button id="search_button">search</button>
-            </div>
-            <div id="header_icon"></div>
+    <div id="sidebar">
+        <div class="topbar"><span>추천채널</span><img width="50px" height="50px"></div>
+        <div class="list">
+            <div class="listimg"><img src=""></div><div class="listtext">텍스트</div>
         </div>
-        <div id="body">
-            <template><div><img src style="border: black 1px solid;" width="270" height="152" class="sumb">
-                <div class="sumbtitle">
-                    <img src="" width="50" height="50" class="usumb">
-                    <div>
-                        <div id="expl">qwfeqwfqwfqwfwqfwqfwqfwqfwqfewqfqwfwqfwqfeqwfeqwfwqef</div></div><div>sdfqwfqewfqewsf</div>
-                    </div>
-                </div>
-                </template>
-                <div><img src style="border: black 1px solid;" width="270" height="152" class="sumb">
-                    <div class="sumbtitle">
-                        <img src="" width="50" height="50" class="usumb">
+    </div>
+    <div id="mainbar">
+        <div id="user-bar"><a href="/admin">조선린민공화국</a><a href="/">위대한 김정은 동지</a><a href="/post">적화통일</a></div>
+        <div id="top-bar">
+            <input><button>어쩌고저저고</button>
+        </div>
+        <div id="body-main">
+            <div id="body"><video id ="may" src="" autoplay class="sumbv mainc"> dfs</video>
+            <video id="wr" src="" autoplay class="sumbv mainc">dfs</video><video id="were" src="" autoplay class="sumbv mainc">dfwe</video>
+            <div id="button" class="mainc">
+                <svg class="ScIconSVG-sc-1bgeryd-1 cMQeyU" width="100%" height="100%" version="1.1" viewBox="0 0 20 20" x="0px" y="0px">
+                    <g>
+                        <path d="M6.5 5.5L11 10l-4.5 4.5L8 16l6-6-6-6-1.5 1.5z"></path>
+                    </g>
+                </svg>
+            </div>
+            
+        
+            </div>
+            
+        </div>
+        <div id="body-col">
+            <template>
+                <div class="sumbody">
+                    <div class="sumbimg"></div>
+                    <div class="infobar">
+                        <div class="userimg"></div>
                         <div>
-                            <div id="expl">qwfeqwfqwfqwfwqfwqfwqfwqfwqfewqfqwfwqfwqfeqwfeqwfwqef</div></div><div id="explt">sdfqwfqewfqewsf</div>
+                            <div class="videojemok">제목</div>
+                            <div class="userinfo">사용자정보</div>
                         </div>
                     </div>
+                </div>
+            </template>
+            
+            
+            
+            
+
         </div>
-    
     </div>
     
     
+    
+    
+    <script>
+        /*transform-origin: 500px 500px 0px
+            transform: perspective(150px) translate3d(450px,550px,-25px) */
+        
+    </script>
 </body>
-
 </html>

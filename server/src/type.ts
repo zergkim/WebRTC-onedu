@@ -13,6 +13,7 @@ export interface POST_DATA_OBJ{
     timestparr:string;
     chat:Array<any>;
     ip:string;
+    views:number
 }
 export interface POST_IV_OBJ{
     name:string
