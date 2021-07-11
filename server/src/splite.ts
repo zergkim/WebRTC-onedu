@@ -63,9 +63,10 @@ export function postthedata(vdata:Buffer,idata:Buffer,post_data_obj:POST_DATA_OB
             post_data_obj.views=0;
             console.log("성공")
             let id = await DBobj.Vu.insertOne(post_data_obj)
-            console.log(new ObjectID(videoid))
+            console.log(id.insertedId, videoid)
             await DBobj.Videodata.deleteOne({_id:new ObjectID(videoid)})
-            
+            console.log(post_data_obj.username)
+            await DBobj.Users.updateOne({"username":post_data_obj.username},{$push:{videolist:videoid.toHexString}})
             await fs.promises.unlink(`../savefiles/${file_name}`);
             res("성공")
         }

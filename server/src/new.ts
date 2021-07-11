@@ -30,7 +30,7 @@ client.connect(async e=>{
     
 })
 import { Server, Socket } from "socket.io";
-import express from 'express';
+import express, { json } from 'express';
 const app = express();
 const filelist=[];
 const front = path.resolve(__dirname, '..', '..', 'front');
@@ -73,26 +73,30 @@ app.use('/', async (req, res, next) => {
         return; 
     }
     else{
-        if(req.url=="/logout"||req.url=="/viewlist"){
+        if(req.url=="/logout"||req.url=="/viewlist"||req.url.indexOf("getuserlist")>-1||req.url.indexOf("getvideoinfo")>-1){
             try{
                next()
+               console.log(req.url)
             }catch(e){
                 res.send("")
             }
             return;
         }
+        console.log(path.basename(req.url))
         if(path.basename(req.url).indexOf("js")>-1){
             resultPath = path.resolve(front, `./dist/${req.url}`,)
-            
+             
         }
         else if(path.basename(req.url).indexOf('.') === -1){
             resultPath = path.resolve(front, `./dist/logined${req.url}.html`)
-        } else {
+        } 
+        else {
             resultPath = path.resolve(front, `./dist/logined${req.url}`);
         }
         if(path.basename(req.url).split(".")[0]=="watchview"){
             const diew = req.query.view as string
             if(diew){
+                
                 DBObj.Videodata.updateOne({_id: new ObjectID(diew)},{$inc:{views:+1}})
 
             }
@@ -117,7 +121,7 @@ const loginedfunc =(req:any,res:any,next:Function)=>{
 }
 
 
- 
+
 app.use("/login",loginedfunc)
 app.use("/signin",loginedfunc)
 app.post("/id_unique",async(req,res)=>{
@@ -213,8 +217,20 @@ app.get('/viewlist',async(req,res)=>{
     }
     res.json(List_Arr)
 })
-app.get("/signin",(req,res)=>{
-    res.sendFile("signin.html",viewroot)
+app.get('/getvideoinfo',async(req,res)=>{
+    const text : string = JSON.stringify(req.query.id)
+    console.log(text)
+    let obj:any  = await DBObj.Videodata.findOne({"_id":new ObjectID(text)})
+    obj = {vname:"Werr",typeofi : obj.typeofi}
+    res.json(obj)
+})
+app.get("/getuserlist",async (req,res)=>{
+    const text = JSON.stringify(req.query.user) as string
+    console.log(text)
+    const obj = await DBObj.Users.findOne({"username":req.query.user})
+    console.log(obj,text)
+    res.json(obj) 
+    console.log("Er")
 })
 app.get("/login",(req,res)=>{
     res.sendFile("login.html",viewroot)
@@ -235,13 +251,12 @@ app.use('/webscript',express.static('C:/Users/zergk/Desktop/git_project/dproject
 app.get("/",(req,res)=>[
     res.redirect("/main")
 ])
-app.get("/videolist",(req,res)=>{
-    
-})
-app.get("/postid",(req,res)=>{
+
+app.post("/postid",(req,res)=>{
     const password = JSON.stringify(Math.random()).split(".")[1];
     const hashed = crypto.createHash("sha256").update(password).digest('base64');
     postobj[hashed]=true;
+    console.log(hashed)
     res.send(hashed)
 })
 
@@ -269,6 +284,7 @@ app.post("/imgpost",async(req,res)=>{
 app.post("/objpost",async(req,res)=>{
     let obj:POST_DATA_OBJ = req.body
     obj.ip = req.socket.remoteAddress
+    obj.username=req.cookies.id
     const Qobj = req.query as unknown as POST_IV_OBJ
     const nameqe:string = Qobj.name
     

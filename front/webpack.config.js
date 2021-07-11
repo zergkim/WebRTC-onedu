@@ -10,7 +10,8 @@ module.exports = {
         'logined/takepost':'./src/logined/takepost.ts',
         'logined/watchview':'./src/logined/watchview.ts',
         'logined/admin' : './src/logined/admin.ts',
-        'logined/client' : './src/logined/client.ts'
+        'logined/client' : './src/logined/client.ts',
+        'logined/user' : './src/logined/user.ts'
     },
     devtool: 'inline-source-map',
     mode:'development',
@@ -85,6 +86,11 @@ module.exports = {
             template : './src/logined/admin.html',
             filename : './logined/admin.html',
             chunks:['logined/admin']
+        }),
+        new HtmlWebpackPlugin({
+            template : './src/logined/user.html',
+            filename: './logined/user.html',
+            chunks : ['logined/user']
         })
 
     ],

@@ -3,6 +3,7 @@
     flex-direction: row;
     justify-content: space-around;
     flex-wrap: wrap;
+    background-color: #F0F0F2;
 }
 .bfcksidbar{
     width: 200px;;
@@ -62,8 +63,8 @@ body{
 }
 #sidebar{
     
-    background-color: rebeccapurple;
-    transition: 0.5s;
+    background-color: #E8E8E8;
+
 }
 #mainbar{
     width: 100%;
@@ -82,6 +83,7 @@ body{
     align-items: center;
     height: 100%;
     width: 100%;
+    background-color: #F0F0F2;
 }
 
 video{
@@ -207,7 +209,6 @@ video{
 }
 .sumbody{
     margin-bottom: 20px;
-    background-color: gold;
     height: 230px;
     width: 320px;
     
@@ -223,7 +224,7 @@ video{
     height: 150px;
     width: 280px;
     margin-bottom: 25px;
-    background-color: gray;
+
 }
 .userimg{
     height: 50px;

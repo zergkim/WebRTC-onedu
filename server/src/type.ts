@@ -1,4 +1,4 @@
-import {Db,Collection} from 'mongodb'
+import {Db,Collection, ObjectID} from 'mongodb'
 export interface DBOBJ {
     Videodata:Collection<POST_DATA_OBJ>;
     Vu:Collection;
@@ -14,6 +14,9 @@ export interface POST_DATA_OBJ{
     chat:Array<any>;
     ip:string;
     views:number
+    subj:string;
+    _id:ObjectID;
+    username:string;
 }
 export interface POST_IV_OBJ{
     name:string

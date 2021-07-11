@@ -59,7 +59,8 @@ allbutton.addEventListener("click",async e=>{
             birth : birth.value,
             passwords:passwordinp.value,
             name:realname.value,
-            email : emailar[0]
+            email : emailar[0],
+            videolist:[]
         })
     })
     const returntext:string = await reqt.text()

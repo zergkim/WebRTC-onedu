@@ -11,7 +11,7 @@ videodiv.style.display="none"
 const videomuk = document.querySelector('#videomuk')
 const button:HTMLButtonElement = document.querySelector("#textbutton>button")
 const textbutton_Div:HTMLDivElement = document.querySelector("#textbutton")
-var urlpraa = new URLSearchParams(location.search)
+const urlpraa = new URLSearchParams(location.search)
 const urlpra:string=urlpraa.get("view")
 socket.emit("startchat",urlpra)
 interface targett{

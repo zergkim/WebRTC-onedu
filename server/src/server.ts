@@ -108,6 +108,7 @@ export function webrtcfunc(socket:any){
             socket.on('desc', fun('desc',one,other,socket));
 
         })
+        
         hostobj[Rooms_ID]=socket;
         roomobj[Rooms_ID]=[]
     })
@@ -117,7 +118,9 @@ export function webrtcfunc(socket:any){
         socket.emit("Its_ID",Its_ID)
         const one = hostobj[RoomName]
         const other = socket;
-        
+        one.on("disconnect",(e:any)=>{
+            other.disconnect()
+        })
         try{
             const socknumb = roomobj[RoomName].push(socket)-1
             one.emit("OtherSocket",socknumb)

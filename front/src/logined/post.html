@@ -35,10 +35,12 @@
         #viewdiv{
             display: none;
         }
-        #tvple{
-            position: absolute;
-            top: 50%;
-            left: 80%;
+        #subject{
+            display: flex;
+            flex-direction: row;
+            
+            align-items: flex-start;
+            
         }
     </style>
     
@@ -58,7 +60,19 @@
     </div>
     <div id="viewdiv"><table id="timestampview"><tr><td>시작</td><td>끝</td><td>텍스트</td></tr></table><span>dfdf</span></div>
     
-    <div id="tvple"><button>go</button></div>
+    <div id="subject"><span>관련과목</span><div>
+        <select id="er">
+            <option value="">--옵션선택--</option>
+            <option value="good">국어</option>
+            <option value="good">영어</option>
+            <option value="good">수학</option>
+            <option value="good">과학</option>
+            <option value="good">역사</option>
+            <option value="good">사회</option>
+            <option value="good">기가</option>
+            <option value="good">도덕</option>
+        </select>
+    </div>
     
 </body>
 
