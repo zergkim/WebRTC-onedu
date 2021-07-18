@@ -4,7 +4,7 @@ const finp:HTMLButtonElement = document.querySelector("#buttonn")
 document.body.appendChild(finp)
 const finp2:HTMLInputElement = document.querySelector("#inputt")
 document.body.appendChild(finp2)
-
+let roomid:string;
 import io  from 'socket.io-client';
 import './index.css';
 const $= document.querySelector.bind(document);
@@ -53,9 +53,10 @@ const socket = io('/wrtc');
 /*socket.on("OtherSocket",(e:any)=>{
     socket.emit("OtherSocket",e)
 })*/
-function createsocket(){
+async function createsocket(){
+    const text = await (await fetch("/getuserid")).text()
     socket.emit("Start_Room","start")
-    
+    socket.emit("get_id",text)
     socket.on("OtherSocket",(e:any)=>{
     
         socket.emit("OtherSocket",e)
@@ -64,6 +65,7 @@ function createsocket(){
         document.body.innerHTML = '<h1 style="color:red">연결이 끊겼습니다.</h1>';
     });
     socket.on("Get_RoomsID",(e:any)=>{
+        roomid = e;
         alert(e)
     })
     socket.on('start', async (string:string) => {
@@ -86,19 +88,18 @@ function createsocket(){
             const pcnumb = e.numb;
             delete e.numb;
             const pc = pcarr[pcnumb]
-            alert(e)
             await pc.setRemoteDescription(e);
             // 받았음
-        
         } else {
             console.log('Unsupported SDP type.');
         }
     });
     socket.on('cand', async (e:any) => {
+        
         try{
             const clientnumbe=e.numbe;
             delete e.numbe;
-            console.log(e)
+            
             
             await pcarr[clientnumbe].addIceCandidate(e)
         } catch(err){
@@ -121,14 +122,14 @@ function main(){
         } catch (err) {
             console.error(err);
         }
-    });
+    },{once:true});
     
     pc.addEventListener('icecandidate', e => {
         if(e.candidate){
             const data = e.candidate.toJSON();
             socket.emit('cand', data);
         }
-    });
+    },{once:true});
     
     return pc;
     

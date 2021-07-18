@@ -1,6 +1,6 @@
 import { Db, MongoClient,ObjectID } from "mongodb";
 const url = "mongodb+srv://zergkim:kimsh060525@cluster0.55ags.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
-import { DBOBJ,POST_DATA_OBJ,POST_IV_OBJ, PPOBJ } from "./type";
+import { Chat_Obj, DBOBJ,POST_DATA_OBJ,POST_IV_OBJ, PPOBJ } from "./type";
 const client = new MongoClient(url, { useUnifiedTopology: true });
 import crypto from "crypto";
 import {v4 as uuidV4} from 'uuid';
@@ -17,6 +17,7 @@ let DBObj:DBOBJ = {
     Users:null,
     DB:null,
     Email:null,
+    Broadcasting:null
 }
 client.connect(async e=>{
     if(e){
@@ -73,7 +74,7 @@ app.use('/', async (req, res, next) => {
         return; 
     }
     else{
-        if(req.url=="/logout"||req.url=="/viewlist"||req.url.indexOf("getuserlist")>-1||req.url.indexOf("getvideoinfo")>-1){
+        if(req.url=="/logout"||req.url=="/viewlist"||req.url.indexOf("getuserlist")>-1||req.url.indexOf("getvideoinfo")>-1||req.url.indexOf('getuserid')>-1){
             try{
                next()
                console.log(req.url)
@@ -208,6 +209,10 @@ app.get("/logout",(req,res)=>{
         res.send("")
     }
     
+}) 
+app.get('/getuserid',async(req,res)=>{
+    console.log(req.cookies.id)
+    res.send(req.cookies.id)
 })
 app.get('/viewlist',async(req,res)=>{
     let dd =  await DBObj.Videodata.find().limit(30).sort({views:-1});
@@ -218,7 +223,7 @@ app.get('/viewlist',async(req,res)=>{
     res.json(List_Arr)
 })
 app.get('/getvideoinfo',async(req,res)=>{
-    const text : string = JSON.stringify(req.query.id)
+    const text : string = req.query.id as string
     console.log(text)
     let obj:any  = await DBObj.Videodata.findOne({"_id":new ObjectID(text)})
     obj = {vname:"Werr",typeofi : obj.typeofi}
@@ -341,6 +346,19 @@ const server= app.listen(3000,async()=>{
 const io = new Server(server)
 let infoarr=[];
 io.of("/wrtc").on("connection",webrtcfunc)
+io.of("/chat").on("connection",(socket)=>{
+    console.log("se")
+    let serverid:string;
+    socket.on("joinchat",(e:string)=>{
+        serverid = e
+        socket.join(e)
+        console.log(e) 
+    })
+    socket.on('sendchat',(e:Chat_Obj)=>{
+        console.log(e.time)
+        socket.broadcast.to(serverid).emit("se",e.text)
+    })
+})
 io.on("connection",socket =>{
     let socketid:any;
     socket.on('startchat',e=>{

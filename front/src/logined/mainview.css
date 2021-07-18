@@ -6,10 +6,50 @@
     background-color: #F0F0F2;
 }
 .bfcksidbar{
-    width: 200px;;
+    width: 200px;
 }
 .afcksidebar{
-    width: 75px;
+    width: 30px;
+}
+#searchinp{
+    border: none;
+    background-color:#E0E0E0;
+    height: 100%;
+    width: 300px;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    transition: 0.5s;
+}
+#searchinp:focus{
+    background-color: white;
+}
+#searchbtt{
+    border: none;
+    height: 38px;
+    width: 38px;
+    background-color:#F2F2F2;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: 0.5s;
+}
+#searchbtt>svg:active{
+    fill: white;
+}
+#searchbtt:hover{
+    background-color: #CFCFCF;
+}
+#searchbtt:active{
+    background-color: black;
+}
+.white{
+    fill: white;
+}
+#searchbar{
+    display: flex;
+    height: 36px;
 }
 .nono{
     display: none;
@@ -26,6 +66,9 @@
     justify-content: space-between;
     flex-wrap: wrap;
 }
+.topbar>span{
+    font-weight: 800;
+}
 #user-bar{
     display: flex;
     flex-direction: row;
@@ -34,18 +77,26 @@
 .list{
     display: flex;
     flex-direction: row;
+    align-items:center;
+    height: 42px;
+}
+.listtext>div{
+    font-family:고딕;
+}
+.listtext>.listt{
+    font-weight: 800;
 }
 .listimg>img{
-    width: 50px;
-    height: 50px;
-    border-radius: 25px;
+    width: 30px;
+    height: 30px;
+    border-radius: 15px;
+    background-color: red;
 }
 #user-bar>a{
-    color: white;
+    color: gray;
     text-decoration: none;
-    font-family: 궁서;
+    font-family: 고딕;
     font-size: 25px;
-    background-color: teal;
     border-radius: 5px;
     transition: 0.5s;
 }
@@ -83,7 +134,7 @@ body{
     align-items: center;
     height: 100%;
     width: 100%;
-    background-color: #F0F0F2;
+    background-color: #FCFCFC;
 }
 
 video{
@@ -121,6 +172,14 @@ video{
     transition: 0.5s;
     opacity: 0.5;
     border-radius: 5px;
+}
+.videojemok{
+    font-weight: 800;
+}
+.sumbody:hover{
+    background-color:#E6E6E8 ;
+    border-radius: 5px;
+    transition: 0.3s;
 }
 #button:hover{
     display:inherit;
@@ -162,7 +221,7 @@ video{
         display: none;
     }
     #sidebar{
-        width: 75px;
+        width: 30px;
     }
     .listtext{
         display: none;
@@ -202,10 +261,10 @@ video{
 #top-bar{
     width: 100%;
     display: flex;
-    display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
+    height: 50px;
 }
 .sumbody{
     margin-bottom: 20px;

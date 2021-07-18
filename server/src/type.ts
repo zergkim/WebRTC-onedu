@@ -5,6 +5,11 @@ export interface DBOBJ {
     Users:Collection;
     DB:Db;
     Email:Collection;
+    Broadcasting:Collection;
+}
+export interface broadcastobj{
+    host_id:string,
+    clientsid:Array<string>
 }
 export interface POST_DATA_OBJ{
     user:string;
@@ -17,9 +22,15 @@ export interface POST_DATA_OBJ{
     subj:string;
     _id:ObjectID;
     username:string;
+    title :string;
 }
 export interface POST_IV_OBJ{
     name:string
+}
+export interface Chat_Obj{
+    text:string;
+    user:string;
+    time:string;
 }
 export interface PPOBJ{
     chat : any

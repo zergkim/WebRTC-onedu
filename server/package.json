@@ -20,6 +20,7 @@
     "jszip": "^3.6.0",
     "mongodb": "^3.6.6",
     "nodemailer": "^6.6.0",
+    "nodemon": "^2.0.12",
     "socket.io": "^4.1.2",
     "uuid": "^8.3.2"
   },

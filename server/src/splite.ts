@@ -12,7 +12,8 @@ let DBobj:DBOBJ = {
     DB:null,
     Vu:null,
     Users:null,
-    Email:null
+    Email:null,
+    Broadcasting:null
 }
 
 client.connect(async e=>{
@@ -66,7 +67,7 @@ export function postthedata(vdata:Buffer,idata:Buffer,post_data_obj:POST_DATA_OB
             console.log(id.insertedId, videoid)
             await DBobj.Videodata.deleteOne({_id:new ObjectID(videoid)})
             console.log(post_data_obj.username)
-            await DBobj.Users.updateOne({"username":post_data_obj.username},{$push:{videolist:videoid.toHexString}})
+            await DBobj.Users.updateOne({"username":post_data_obj.username},{$push:{videolist:videoid.toHexString()}})
             await fs.promises.unlink(`../savefiles/${file_name}`);
             res("성공")
         }

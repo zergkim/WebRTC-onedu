@@ -1,7 +1,8 @@
 import io  from 'socket.io-client'
 import Hls from 'hls.js'
 
-const socket = io()
+const socket = io('/chat')
+console.log(socket)
 let animationnumb:any;
 let chatan;
 const video:HTMLVideoElement =document.querySelector("#videoplayer")
@@ -13,7 +14,7 @@ const button:HTMLButtonElement = document.querySelector("#textbutton>button")
 const textbutton_Div:HTMLDivElement = document.querySelector("#textbutton")
 const urlpraa = new URLSearchParams(location.search)
 const urlpra:string=urlpraa.get("view")
-socket.emit("startchat",urlpra)
+socket.emit("joinchat",urlpra)
 interface targett{
     remove:Function;
 }
@@ -24,9 +25,10 @@ interface chatobject{
     text:string,
     xy:Array<string>
 }
-socket.on(urlpra,(e:chatobject)=>{
-    chatanimationfunc(e.text,e.xy[0],e.xy[1])
+socket.on("se",(e:string)=>{
+    alert(e)
 })
+socket.emit("sendchat","ew")
 let chatobj=[];
 let chatdata:any;
 async function getchat(){

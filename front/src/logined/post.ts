@@ -1,17 +1,17 @@
 import { Socket } from "dgram"
 import io from "socket.io-client"
-const timpar:HTMLDivElement = document.querySelector('#timestampdiv>div')
-const sstart:HTMLButtonElement = document.querySelector("#start")
-const send:HTMLButtonElement = document.querySelector("#end")
-const timestd:HTMLDivElement = document.querySelector("#timestampdiv")
-const button:HTMLButtonElement = document.querySelector("#button")
-const videoinp:HTMLInputElement = document.querySelector("#video")
-const imginp:HTMLInputElement = document.querySelector("#img")
+const timpar:HTMLDivElement = document.querySelector('#timestampdiv>div');
+const sstart:HTMLButtonElement = document.querySelector("#start");
+const send:HTMLButtonElement = document.querySelector("#end");
+const timestd:HTMLDivElement = document.querySelector("#timestampdiv");
+const button:HTMLButtonElement = document.querySelector("#button");
+const videoinp:HTMLInputElement = document.querySelector("#video");
+const imginp:HTMLInputElement = document.querySelector("#img");
 const videosource:HTMLSourceElement = document.querySelector("source");
-const video:HTMLVideoElement = document.querySelector("video")
+const video:HTMLVideoElement = document.querySelector("video");
 const socket = io(location.origin);
-const inputer:HTMLSelectElement = document.querySelector("#er")
-
+const inputer:HTMLSelectElement = document.querySelector("#er");
+const title:HTMLInputElement = document.querySelector(".title");
 const timestparr:Array<any> = [];
 const getid = async()=>{
     let d = await(await fetch("/postid",{
@@ -20,13 +20,11 @@ const getid = async()=>{
             "Content-Type":"application/text"
         },
         body:""
-        
         })).text()
     console.log()
     return d;
     
 };
-
 videoinp.addEventListener('change',async e => {
     const file1 = videoinp.files[0]
     const flink = URL.createObjectURL(file1);
@@ -37,13 +35,9 @@ videoinp.addEventListener('change',async e => {
 })
 button.addEventListener("click",async e=>{
     if(!confirm("진짜 올리시겠습니까?")){
-        return
+        return;
     }
-    
-    
     const file1 = videoinp.files[0]
-    
-    
     const file2 = imginp.files[0]
     if(!inputer.value){
         alert("과목선택하시오")
@@ -55,6 +49,10 @@ button.addEventListener("click",async e=>{
     }
     if(file2.type.split("/")[0]!=="image"){
         alert("사진이 아닙니다")
+        return;
+    }
+    if(!title.value){
+        alert("제목을 입력사시오")
         return;
     }
     const infobj={}
@@ -69,7 +67,8 @@ button.addEventListener("click",async e=>{
         typeofi,
         timestparr,
         chat :[],
-        subj : inputer.value
+        subj : inputer.value,
+        title : title.value
     });
     (async function(){
         const arr:[File|string, string, string][] = [
@@ -85,15 +84,10 @@ button.addEventListener("click",async e=>{
                 "Content-Type":v[1]
             },
             body:v[0]
-            
             })
             if(v[1]=="application/json"){
                 alert(await message.text())
             }
         }
     })();
-    
-    
 })
-
-

@@ -26,16 +26,14 @@ function main(){
             }
             socket.emit('cand', data);
         }
-    });
+    },{once:true});
     
     pc.addEventListener('track', e => {
         if (remoteView.srcObject) return;
         console.log("true")
         remoteView.srcObject = e.streams[0];
-        document.addEventListener('click', e=>{
-            remoteView.play()
-        });
-    });
+        
+    },{once:true});
     console.log(pc)
     return pc;
     
@@ -44,7 +42,11 @@ function main(){
 
 
 // Send any ice candidates to the other peer.
-socket.emit("Start_Connection",roomnaame)
+socket.emit("Start_Connection",roomnaame);
+(async function() {
+    const textt = await (await fetch('/getuserid')).text()
+    socket.emit('sendid',textt)
+})();
 socket.on('dis', (e:any) => {
     document.body.innerHTML = '<h1 style="color:red">연결이 끊겼습니다.</h1>';
 });
@@ -56,7 +58,7 @@ socket.on('desc', async (e:any) => {
     if (e.type === 'offer') {
         bulina=true
         const pc = main()
-        alert(bulina)
+
         clientpc = pc;
         // 제안 받음
         const pcnumb = e.numb;
@@ -66,7 +68,6 @@ socket.on('desc', async (e:any) => {
         await pc.setLocalDescription(await pc.createAnswer());
         const data = pc.localDescription.toJSON();
         data.numb = pcnumb;
-        console.log("desc",data)
         socket.emit('desc', data);
         console.log('offer')
         
@@ -77,7 +78,7 @@ socket.on('desc', async (e:any) => {
 socket.on('cand', async (e:any) => {
     try{
         if(clientpc){
-            console.log(clientpc)
+          
             await clientpc.addIceCandidate(e);
         }
         
