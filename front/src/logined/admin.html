@@ -7,17 +7,26 @@
     <title>Document</title>
 </head>
 <body>
-    <div id="con">
-        <video id="self" autoplay></video>
-        <div style="text-align: center;"><div>wefwfwf</div></div>
+    <div id="broadcastart">
+        <input id="subtitle" type="text">
+        <input type="password" id="password">
+        <span>비밀번호 있음</span><input type="radio" name="radio" value="true" id="radio" pocus><span>없음</span><input type="radio" name="radio" value="">
+        <button id="getuserm">유저미디어 가져오기</button>
+        <button id="startbroad">브로드캐스트 시작하기</button>
+    </div>
+    <div id="broadcastbody">
+        <div id="con">
+            <video id="self" autoplay></video>
+            <div>
+                <div>
+                </div>
+                <div>
+                </div>
+            </div>
+            <input>
+        </div>
     </div>
     
-    <div>
-        <input type="file" id="inputt"><button id="buttonn">stop</button>
-    </div>
-    <div id="userandchat">
-        <div id="user"><div>sdff</div><div>sdff</div><div>sdff</div></div><div id="chat"><div>weff</div>weff</div>
-    </div>
 </body>
 <script src="/node_modules/socket.io/client-dist/socket.io.min.js"></script>
 

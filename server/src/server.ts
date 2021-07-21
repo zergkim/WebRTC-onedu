@@ -126,22 +126,24 @@ export function webrtcfunc(socket:any){
         socket.emit("Get_RoomsID",Rooms_ID);
         let id:string;
         socket.on("get_id",async(e:any)=>{
-            console.log(e,"rw")
             id = e
             const broadcastobj:broadcastobj = {
                 host_id:id,
-                clientsid:[]
+                clientsid:[],
+                views:0,
+                Rooms_ID
             }
+            DBObj.Users.updateOne({username:id},{$push:{broadcastlist:Rooms_ID}})
             await DBObj.Broadcasting.insertOne(broadcastobj)
             socket.on("OtherSocket",(e:any)=>{
                 const one = socket;
-                const other = roomobj[Rooms_ID][e].socket
-                console.log('de')
+                const other = roomobj[Rooms_ID][e].socket;
                 socket.on('cand', fun('cand',one,other,socket));
                 socket.on('desc', fun('desc',one,other,socket));    
             })
             socket.on("disconnect",(e:any)=>{
                 DBObj.Broadcasting.deleteOne({host_id:id})
+                DBObj.Users.updateOne({username:id},{$pull:{broadcastlist:Rooms_ID}})
                 delete hostobj[Rooms_ID];
                 delete roomobj[Rooms_ID];
             })
@@ -158,6 +160,7 @@ export function webrtcfunc(socket:any){
         try{
             one = hostobj[RoomName].socket
             hid = hostobj[RoomName].id
+        
         }catch(e){
             console.log(e)
             socket.emit("dis","e")
@@ -174,12 +177,12 @@ export function webrtcfunc(socket:any){
             try{
                 const id = e;
                 const socknumb = roomobj[RoomName].push({socket,id})-1
-                const d= await DBObj.Broadcasting.updateOne({host_id:hid},{$push:{clientsid:id}});
-                console.log(d)
+                await DBObj.Broadcasting.updateOne({Rooms_ID:RoomName},{$push:{clientsid:id}});
+                await DBObj.Broadcasting.updateOne({Rooms_ID:RoomName},{$inc:{views:1}})
                 one.emit("OtherSocket",socknumb)
                 socket.on('disconnect',async(e:any)=>{
-                    console.log("애미뒤진")
-                    await DBObj.Broadcasting.updateOne({host_id:hid},{$pull:{clientsid:id}})
+                    await DBObj.Broadcasting.updateOne({Rooms_ID:RoomName},{$pull:{clientsid:id}})
+                    await DBObj.Broadcasting.updateOne({Rooms_ID:RoomName},{$inc:{views:-1}})
                 })
             }catch(e){
                 return

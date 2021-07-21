@@ -1,13 +1,23 @@
 declare const MediaRecorder:any;
 import "./admin.css"
-const finp:HTMLButtonElement = document.querySelector("#buttonn")
-document.body.appendChild(finp)
-const finp2:HTMLInputElement = document.querySelector("#inputt")
-document.body.appendChild(finp2)
+
+
 let roomid:string;
+const broadcastart:HTMLDivElement = document.querySelector('#broadcastart')
+const broadcastbody:HTMLDivElement = document.querySelector('#broadcastbody')
+console.log(broadcastbody)
+broadcastbody.style.display="none";
+
 import io  from 'socket.io-client';
 import './index.css';
 const $= document.querySelector.bind(document);
+const subtitle:HTMLInputElement = document.querySelector("#subtitle")
+const password:HTMLInputElement = document.querySelector('#password')
+const pasbut:HTMLButtonElement = document.querySelector('#radio')
+pasbut.click()
+const startbroad:HTMLButtonElement = document.querySelector("#startbroad")
+const getuserm:HTMLButtonElement = document.querySelector('#getuserm')
+// chwal:HTMLButtonElement = document.querySelector('button')
 const constraints = {audio: true, video: true};
 const configuration = {iceServers: [{urls: 'stun:stun.l.google.com:19302'}]};
 const remoteView = $('#remote');
@@ -16,44 +26,15 @@ let fir = false;
 let stream:any=null;
 const socket2 = io()
 async function getstream(){
-    stream = await navigator.mediaDevices.getUserMedia(constraints)
+    const meobj:any =navigator.mediaDevices;
+    stream = await meobj.getDisplayMedia(constraints)
     selfView.srcObject = stream;
-    const mediaRecord = new MediaRecorder(stream, {
-        mimeType:'video/webm;codecs=vp9'
-    });
     
-    socket2.emit("takepoststart","")
-    mediaRecord.addEventListener('dataavailable', (e:any) => {
-        finp2.addEventListener("change",v=>{
-            socket2.emit("takepost",e.data)
-            console.log(e.data)
-        })
-        
-    });
-    finp.addEventListener('click',e=>{
-        mediaRecord.stop()
-    })
-    mediaRecord.addEventListener('stop', (e:any) => {
-        const hwte:string=(finp2.files[0].type.split("/"))[1]
-        socket2.emit('takehw',hwte)
-        socket2.emit("takeend", finp2.files[0])
-        const obj = {
-            typeofv : "webm" ,
-            typeofi : (finp2.files[0].type.split("/"))[1],
-            user:"none",
-            ip:"none"
-        }
-        socket2.emit('takeobj',obj)
-    });
-    mediaRecord.start(3000);
 }
-getstream()
 const pcarr:Array<webkitRTCPeerConnection>=[];
 const socket = io('/wrtc');
-/*socket.on("OtherSocket",(e:any)=>{
-    socket.emit("OtherSocket",e)
-})*/
-async function createsocket(){
+
+async function createsocket(subtitle:string, pw:string){
     const text = await (await fetch("/getuserid")).text()
     socket.emit("Start_Room","start")
     socket.emit("get_id",text)
@@ -61,12 +42,9 @@ async function createsocket(){
     
         socket.emit("OtherSocket",e)
     })
-    socket.on('dis', (e:any) => {
-        document.body.innerHTML = '<h1 style="color:red">연결이 끊겼습니다.</h1>';
-    });
     socket.on("Get_RoomsID",(e:any)=>{
         roomid = e;
-        alert(e)
+        console.log(e)
     })
     socket.on('start', async (string:string) => {
         const pc = main();
@@ -77,8 +55,8 @@ async function createsocket(){
             
                 pc.addTrack(track, stream)
             });
-            
-            
+            socket.emit('broadname',subtitle)
+            socket.emit('broadpw',pw)
         } catch (err) {
             console.error(err);
         }
@@ -134,8 +112,47 @@ function main(){
     return pc;
     
 }
+getuserm.addEventListener('click',getuserfunc,{once:true});
 
 
 
+async function getuserfunc(){
+    try{
+        await getstream()
+    }
+    catch(e){
+        alert("오류!!! 브라우저 버전이 낮을경우 업데이트후 실행");
+        return
+    }
+    startbroad.addEventListener('click',startbroadfunc,{once:true})
+}
+async function startbroadfunc(e:any){
+    console.log(subtitle)
+    const title = subtitle.value;
+    let passworde:string =""
+    let bul:boolean = false
+    try{
+        if(!title){
+            alert('잘못된제목')
+            
+            bul = true
+        }else if(pasbut&&password.value.length<8){
+            alert('패스워드 길이를 늘리거나 설정하지 마시오')
+            bul = true
+        }else if(pasbut){
+            passworde = password.value
+        }
+        if(bul){
+            startbroad.addEventListener('click',startbroadfunc,{once:true})
+            return;
+        }
+        
+        await createsocket(title,passworde)
+        alert("성공적으로 방송을 열었습니다")
+        broadcastbody.style.display="inherit"
+        broadcastart.style.display="none"
+    }catch(e){
+        alert('방송을 여는데 문제가 생겼습니다 !!! \n다시 시도하거나 다른브라우저를 이용해주세요')
+    }
+}
 // Send any ice candidates to the other peer.
-createsocket()

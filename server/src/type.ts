@@ -8,8 +8,10 @@ export interface DBOBJ {
     Broadcasting:Collection;
 }
 export interface broadcastobj{
-    host_id:string,
-    clientsid:Array<string>
+    host_id:string;
+    clientsid:Array<string>;
+    views:number;
+    Rooms_ID:string;
 }
 export interface POST_DATA_OBJ{
     user:string;
