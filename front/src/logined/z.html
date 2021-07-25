@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+        #body-col{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    background-color: #F0F0F2;
+}
+.bfcksidbar{
+    width: 200px;
+}
+.afcksidebar{
+    width: 30px;
+}
+#searchinp{
+    border: none;
+    background-color:#E0E0E0;
+    height: 100%;
+    width: 300px;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    transition: 0.5s;
+}
+#searchinp:focus{
+    background-color: white;
+}
+#searchbtt{
+    border: none;
+    height: 38px;
+    width: 38px;
+    background-color:#F2F2F2;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: 0.5s;
+}
+#searchbtt>svg:active{
+    fill: white;
+}
+#searchbtt:hover{
+    background-color: #CFCFCF;
+}
+#searchbtt:active{
+    background-color: black;
+}
+.white{
+    fill: white;
+}
+#searchbar{
+    display: flex;
+    height: 36px;
+}
+.nono{
+    display: none;
+}
+.jungsangsu{
+    left: 0px;
+}
+.notjungsangsu{
+    left: 124px;
+}
+.topbar{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+.topbar>span{
+    font-weight: 800;
+}
+#user-bar{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+.list{
+    display: flex;
+    flex-direction: row;
+    align-items:center;
+    height: 42px;
+}
+.listtext>div{
+    font-family:고딕;
+}
+.listtext>.listt{
+    font-weight: 800;
+}
+.listimg>img{
+    width: 30px;
+    height: 30px;
+    border-radius: 15px;
+    background-color: red;
+}
+#user-bar>a{
+    color: gray;
+    text-decoration: none;
+    font-family: 고딕;
+    font-size: 25px;
+    border-radius: 5px;
+    transition: 0.5s;
+}
+#user-bar>a:hover{
+    color: white;
+    background-color: black;
+    font-family: 맑은고딕;
+
+}
+body{
+    margin: 0px;
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+}
+#sidebar{
+    
+    background-color: #E8E8E8;
+
+}
+#mainbar{
+    width: 100%;
+    height: 100%;
+}
+#body{
+    
+    transform-style: preserve-3d;
+    width: 60%;
+    height: 600px;
+    
+}
+#body-main{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    background-color: #FCFCFC;
+}
+
+video{
+    width: 530px;
+    height: 300px;
+    position: absolute;
+    top: 0%;
+    left: 0%;
+    transition: 0.5s;
+    background-color: rebeccapurple;
+}
+
+.top{
+    display:inherit;
+    transform: translate3d(25px,50px,0px) perspective(150px) ;
+    box-shadow: 5px 5px 5px;
+    
+}
+.center{
+    display:inherit;
+    transform: perspective(150px) translate3d(375px,60px,-25px) ;
+    
+}
+.bottom{
+    display:inherit;
+    transform: perspective(150px) translate3d(875px,70px,-50px) ;
+    
+}
+#button{
+    display:inherit;
+    width: 50px;
+    height: 50px;
+    transform: translate3d(1175px,180px,50px);
+    background-color: white;
+    transition: 0.5s;
+    opacity: 0.5;
+    border-radius: 5px;
+}
+.videojemok{
+    font-weight: 800;
+}
+.sumbody:hover{
+    background-color:#E6E6E8 ;
+    border-radius: 5px;
+    transition: 0.3s;
+}
+#button:hover{
+    display:inherit;
+    opacity: 0.8;
+    background-color: gainsboro;
+    border-radius: 5px;
+}
+@media screen and (max-width:1420px){
+    .top{
+        
+        transform: translate3d(25px,50px,0px) perspective(150px) ;
+        
+        
+    }
+    .center{
+        display:inherit;
+        transform: perspective(150px) translate3d(400px,60px,-25px) ;
+        
+    }
+    .bottom{
+        display:inherit;
+        transform: perspective(150px) translate3d(700px,70px,-50px) ;
+        
+    }
+    #button{
+        
+       
+        transform: translate3d(1000px,180px,50px);
+        
+        
+    }
+}
+
+@media screen and (max-width:1240px){
+    .jungsangsu,.notjungsangsu{
+        left: 0px;
+    }
+    .topbar{
+        display: none;
+    }
+    #sidebar{
+        width: 30px;
+    }
+    .listtext{
+        display: none;
+    }
+    #body-main{
+        display: inherit;
+    }
+    video{
+        position: relative;
+    }
+    #body{
+        width: 100%;
+        transform-style:inherit;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+    }
+    .top{
+        transform: none;
+        left: 0px;
+    }
+    .center{
+        display: none;
+        left: 0px;
+    }
+    .bottom{
+        display: none;
+        left: 0px;
+    }
+    #button{
+        transform: none;
+        position: relative;
+    }
+
+}
+#top-bar{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+}
+.sumbody{
+    margin-bottom: 20px;
+    height: 230px;
+    width: 320px;
+    
+}
+.infobar{
+    display: flex;
+    display: flex;
+    flex-direction: row;
+    
+}
+.sumbimg{
+    margin: auto;
+    height: 150px;
+    width: 280px;
+    margin-bottom: 25px;
+
+}
+.userimg{
+    height: 50px;
+    width: 50px;
+    border-radius: 25px;
+    background-color: green;
+}
+
+    </style>
+</head>
+<body>
+    <div id="sidebar">
+        <div class="topbar"><span>추천채널(강의중)</span>
+        <svg  width="30px" height="30px" version="1.1" viewBox="0 0 20 20" x="0px" y="0px" class="ScIconSVG-sc-1bgeryd-1 cMQeyU">
+            <g id="firstin"><path d="M16 16V4h2v12h-2zM6 9l2.501-2.5-1.5-1.5-5 5 5 5 1.5-1.5-2.5-2.5h8V9H6z"></path></g>
+            <g id="secondin"><path d="M4 16V4H2v12h2zM13 15l-1.5-1.5L14 11H6V9h8l-2.5-2.5L13 5l5 5-5 5z"></path></g>
+
+        </svg>
+        
+        </div>
+        <div class="list">
+            <div class="listimg"><img src=""></div><div class="listtext"><div class="listt">짜스</div><div class="lists">야스</div></div>
+        </div>
+    </div>
+    <div id="mainbar">
+        <div id="user-bar"><a href="/admin">방송시작</a><a href="/">마이페이지</a><a href="/post">영상포스트</a></div>
+        <div id="top-bar">
+            
+            <div id="searchbar"><input id="searchinp"><div id="searchbtt"><svg width="100%" height="100%" version="1.1" viewBox="0 0 20 20" x="0px" y="0px" class="ScIconSVG-sc-1bgeryd-1 cMQeyU"><g><path  width ="80%" height="80%" fill-rule="evenodd" d="M13.192 14.606a7 7 0 111.414-1.414l3.101 3.1-1.414 1.415-3.1-3.1zM14 9A5 5 0 114 9a5 5 0 0110 0z" clip-rule="evenodd"></path></g></svg></div></div>
+        </div>
+        <div id="body-main">
+            <div id="body"><video id ="may" src="" autoplay class="sumbv mainc top"></video>
+            <video id="wr" src="" autoplay class="sumbv mainc center"></video><video id="were" src="" autoplay class="sumbv mainc bottom"></video>
+            <div id="button" class="mainc">
+                <svg class="ScIconSVG-sc-1bgeryd-1 cMQeyU" width="100%" height="100%" version="1.1" viewBox="0 0 20 20" x="0px" y="0px">
+                    <g>
+                        <path d="M6.5 5.5L11 10l-4.5 4.5L8 16l6-6-6-6-1.5 1.5z"></path>
+                    </g>
+                </svg>
+                <svg width="100%" height="100%" version="1.1" viewBox="0 0 20 20" x="0px" y="0px" class="ScIconSVG-sc-1bgeryd-1 cMQeyU"><g><path d="M4 16V4H2v12h2zM13 15l-1.5-1.5L14 11H6V9h8l-2.5-2.5L13 5l5 5-5 5z"></path></g></svg>
+            </div>
+            
+        
+            </div>
+            
+        </div>
+        <div id="body-col">
+            <template>
+                <div class="sumbody">
+                    <div class="sumbimg"></div>
+                    <div class="infobar">
+                        <div class="userimg"></div>
+                        <div>
+                            <div class="videojemok">제목</div>
+                            <div class="userinfo">사용자정보</div>
+                        </div>
+                    </div>
+                </div>
+            </template>
+            
+            
+            
+            
+
+        </div>
+    </div>
+    
+    
+    
+    
+    <script>
+        /*transform-origin: 500px 500px 0px
+            transform: perspective(150px) translate3d(450px,550px,-25px) */
+        
+    </script>
+</body>
+</html>

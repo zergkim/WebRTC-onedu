@@ -1,4 +1,4 @@
-import './mainview.css';
+import './mainview.css';/*
 const sidebar:HTMLDivElement = document.querySelector('#sidebar')
 sidebar.classList.add('bfcksidbar')
 const arr:Array<HTMLVideoElement> = Array.from(document.querySelectorAll('.sumbv'))
@@ -100,5 +100,70 @@ but.addEventListener("click",e=>{
         v.style.display=ttxt
     })
     
-},)
-
+},)*/
+const sidbtt = document.querySelector(".sbt-r>div")
+const sidebar = document.querySelector(".sidemenu-bar")
+const nonebar = document.querySelector("#nonebar")
+const mainview = document.querySelector(".mainview")
+const vdrbar = document.querySelector(".vdrbar")
+const divarr:Array<HTMLDivElement> = [document.querySelector(".top"),document.querySelector(".center"),document.querySelector(".bottom")]
+const svgbutton:HTMLDivElement = document.querySelector("#animbut")
+divarr.forEach(v=>{
+    console.log(v)
+})
+svgbutton.addEventListener("click",(e:any)=>{
+    
+    divarr[0].classList.remove('top')
+    divarr[1].classList.remove("center")
+    divarr[2].classList.remove("bottom")
+    divarr.push(divarr.shift())
+    divarr[0].classList.add("top")
+    divarr[1].classList.add("center")
+    divarr[2].classList.add("bottom")
+})
+mainview.classList.add("or")
+nonebar.classList.add("or")
+console.log(sidebar)
+sidbtt.addEventListener("click",sidbarclick)
+function sidbarclick(e:any){
+    const arrw = Array.from(document.querySelectorAll(".sbd"))
+    const arr = Array.from(document.querySelectorAll('.sbd>div'))
+    const smb:HTMLDivElement = document.querySelector(".sidemenu-bar")
+    const sbtr:HTMLDivElement = document.querySelector(".sbt-r")
+    if(arr[0].classList.contains('none')){
+        arr.forEach(v=>{
+            v.classList.remove('none')
+        })
+        console.log("Ew")
+        sidebar.classList.remove('jcent')
+        document.querySelector("#open").classList.remove("notnone")
+        document.querySelector("#close").classList.remove("none")
+        document.querySelector(".sbt-l").classList.remove("none")
+        
+        sbtr.style.width="50%"
+        nonebar.classList.add("or")
+        nonebar.classList.remove("sc")
+        mainview.classList.add("or")
+        mainview.classList.remove("sc")
+        vdrbar.classList.remove("sc")
+        smb.style.width='240px'
+        arrw.forEach(v=>{v.classList.remove("jcent")})
+    }else{
+        arr.forEach(v=>{
+            v.classList.add('none')
+           
+        })
+        vdrbar.classList.add("sc")
+        sidebar.classList.add('jcent')
+        document.querySelector("#open").classList.add("notnone")
+        document.querySelector("#close").classList.add("none")
+        smb.style.width='50px'
+        document.querySelector(".sbt-l").classList.add('none')
+        sbtr.style.width="100%"
+        arrw.forEach(v=>{v.classList.add("jcent")})
+        nonebar.classList.add("sc")
+        nonebar.classList.remove("or")
+        mainview.classList.add("sc")
+        mainview.classList.remove("or")
+    }
+}
