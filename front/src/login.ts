@@ -20,4 +20,4 @@ but.addEventListener("click",async e=>{
     }else{
         alert(text)
     }
-})
+}) 

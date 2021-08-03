@@ -133,7 +133,7 @@ export function webrtcfunc(socket:any){
                 views:0,
                 Rooms_ID
             }
-            DBObj.Users.updateOne({username:id},{$push:{broadcastlist:Rooms_ID}})
+            DBObj.Users.updateOne({ID:id},{$push:{broadcastlist:Rooms_ID}})
             await DBObj.Broadcasting.insertOne(broadcastobj)
             socket.on("OtherSocket",(e:any)=>{
                 const one = socket;
@@ -143,7 +143,7 @@ export function webrtcfunc(socket:any){
             })
             socket.on("disconnect",(e:any)=>{
                 DBObj.Broadcasting.deleteOne({host_id:id})
-                DBObj.Users.updateOne({username:id},{$pull:{broadcastlist:Rooms_ID}})
+                DBObj.Users.updateOne({ID:id},{$pull:{broadcastlist:Rooms_ID}})
                 delete hostobj[Rooms_ID];
                 delete roomobj[Rooms_ID];
             })

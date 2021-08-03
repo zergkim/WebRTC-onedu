@@ -10,6 +10,7 @@ import cookieParser from "cookie-parser";
 import {Get_jungbo,FindUser,postthedata} from "./splite";
 import path from 'path';
 const viewroot = {root:'C:/Users/zergk/Desktop/git_project/dproject/front/dist'}
+console.log("sex")
 let postobj:any={}
 let DBObj:DBOBJ = {
     Videodata:null,
@@ -53,9 +54,11 @@ app.use('/', async (req, res, next) => {
     let resultPath = '';
     
     if(!req.cookies.logined){
-        if(req.method=="POST"&&(req.url==="/login"||req.url=="/email_send"||req.url=="/id_unique"||req.url=="/certpost")){
+        if(req.method=="POST"&&(req.url==="/login"||req.url=="/email_send"||req.url.indexOf("/id_unique")>-1||req.url=="/certpost"||req.url.indexOf("/signinconfirm")>-1)){
             next()
+            console.log(req.url)
             return;
+            
         }
         if(path.basename(req.url).indexOf('.') === -1){
             resultPath = path.resolve(front, `./dist${req.url}.html`)
@@ -126,11 +129,15 @@ const loginedfunc =(req:any,res:any,next:Function)=>{
 app.use("/login",loginedfunc)
 app.use("/signin",loginedfunc)
 app.post("/id_unique",async(req,res)=>{
-    console.log(await DBObj.Users.findOne({'username':req.body}),console.log(req.body))
-    if(await DBObj.Users.findOne({username:req.body})){
+    console.log("Er")
+    if(await DBObj.Users.findOne({ID:req.body})){
         res.send("")
         console.log("weree")
-    }else res.send("좋아요");
+        
+    }else {
+        res.send("좋아요")
+        console.log("good")
+    };
 })
 app.post("/email_send",async(req,res)=>{
     console.log("werewrer")
@@ -149,7 +156,7 @@ app.post("/email_send",async(req,res)=>{
         return;
     }
     
-    
+    console.log(req.body.email,number)
     send_mail(req.body.email,number)
     res.send("성공")
     
@@ -232,7 +239,7 @@ app.get('/getvideoinfo',async(req,res)=>{
 app.get("/getuserlist",async (req,res)=>{
     const text = JSON.stringify(req.query.user) as string
     console.log(text)
-    const obj = await DBObj.Users.findOne({"username":req.query.user})
+    const obj = await DBObj.Users.findOne({ID:req.query.user})
     console.log(obj,text)
     res.json(obj) 
     console.log("Er")
@@ -289,7 +296,7 @@ app.post("/imgpost",async(req,res)=>{
 app.post("/objpost",async(req,res)=>{
     let obj:POST_DATA_OBJ = req.body
     obj.ip = req.socket.remoteAddress
-    obj.username=req.cookies.id
+    obj.ID=req.cookies.id
     const Qobj = req.query as unknown as POST_IV_OBJ
     const nameqe:string = Qobj.name
     

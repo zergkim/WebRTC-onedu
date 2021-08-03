@@ -31,7 +31,7 @@ export const Get_jungbo = async(filename:string)=>{
     const ObjID:mongodb.ObjectID= new ObjectID(filename)
     return await DBobj.Videodata.findOne({_id:ObjID})
 }
-export const FindUser = async(username:string) => await DBobj.Users.findOne({username});
+export const FindUser = async(ID:string) => await DBobj.Users.findOne({ID});
 export const splite = (name:string,d:string)=>{
     return new Promise((res,rej)=>{
         ffmpeg('../savefiles/'+name+'.'+d,{timeout:432000}).addOptions([
@@ -66,8 +66,8 @@ export function postthedata(vdata:Buffer,idata:Buffer,post_data_obj:POST_DATA_OB
             let id = await DBobj.Vu.insertOne(post_data_obj)
             console.log(id.insertedId, videoid)
             await DBobj.Videodata.deleteOne({_id:new ObjectID(videoid)})
-            console.log(post_data_obj.username)
-            await DBobj.Users.updateOne({"username":post_data_obj.username},{$push:{videolist:videoid.toHexString()}})
+            console.log(post_data_obj.ID)
+            await DBobj.Users.updateOne({ID:post_data_obj.ID},{$push:{videolist:videoid.toHexString()}})
             await fs.promises.unlink(`../savefiles/${file_name}`);
             res("성공")
         }

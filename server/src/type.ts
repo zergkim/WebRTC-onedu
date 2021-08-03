@@ -23,7 +23,7 @@ export interface POST_DATA_OBJ{
     views:number
     subj:string;
     _id:ObjectID;
-    username:string;
+    ID:string;
     title :string;
 }
 export interface POST_IV_OBJ{
@@ -33,6 +33,10 @@ export interface Chat_Obj{
     text:string;
     user:string;
     time:string;
+}
+export interface USEROBJ{
+    ID : "string"
+
 }
 export interface PPOBJ{
     chat : any

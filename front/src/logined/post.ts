@@ -9,6 +9,12 @@ const videoinp:HTMLInputElement = document.querySelector("#video");
 const imginp:HTMLInputElement = document.querySelector("#img");
 const videosource:HTMLSourceElement = document.querySelector("source");
 const video:HTMLVideoElement = document.querySelector("video");
+const option_arr:Array<string> = []
+const option:HTMLInputElement = document.querySelector(".option")
+const optionbtt = document.querySelector(".optionbtt");
+optionbtt.addEventListener("click",e=>{
+    option_arr.push(option.value)
+})
 const socket = io(location.origin);
 const inputer:HTMLSelectElement = document.querySelector("#er");
 const title:HTMLInputElement = document.querySelector(".title");
@@ -59,16 +65,18 @@ button.addEventListener("click",async e=>{
     const user_ip = await(await fetch("/userip")).text()
     const typeofv = file1.type.split("/")[1]
     const typeofi = file2.type.split("/")[1]
+    
     const name = await getid()
     alert(name)
     let objed = JSON.stringify({
-        "user":user_ip,
+        ip:user_ip,
         typeofv,
         typeofi,
         timestparr,
         chat :[],
         subj : inputer.value,
-        title : title.value
+        title : title.value,
+        option_arr
     });
     (async function(){
         const arr:[File|string, string, string][] = [

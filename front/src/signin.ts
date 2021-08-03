@@ -26,7 +26,6 @@ idconfirm.addEventListener("click",async e=>{
         },
         body:id_Text
     })
-    console.log(await fetch_id.text())
     if(await fetch_id.text()){
         flag.idbul=true;
         idinp.addEventListener("change",e=>{
@@ -54,7 +53,7 @@ allbutton.addEventListener("click",async e=>{
         },
         body:JSON.stringify({
             
-            username:idinp.value,
+            ID:idinp.value,
             sex:sex.value,
             birth : birth.value,
             passwords:passwordinp.value,
