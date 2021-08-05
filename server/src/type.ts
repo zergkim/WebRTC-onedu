@@ -6,6 +6,7 @@ export interface DBOBJ {
     DB:Db;
     Email:Collection;
     Broadcasting:Collection;
+    PLAYLIST:Collection;
 }
 export interface broadcastobj{
     host_id:string;
@@ -40,4 +41,10 @@ export interface USEROBJ{
 }
 export interface PPOBJ{
     chat : any
+}
+export interface PLAYLIST{
+    NAME:string;
+    videos:Array<string>;
+    ownerID:string;
+    USERS:Array<string>
 }

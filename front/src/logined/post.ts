@@ -11,6 +11,8 @@ const videosource:HTMLSourceElement = document.querySelector("source");
 const video:HTMLVideoElement = document.querySelector("video");
 const option_arr:Array<string> = []
 const option:HTMLInputElement = document.querySelector(".option")
+const playlistinp:HTMLInputElement = document.querySelector('.playlist>input')
+const playlistbtt : HTMLButtonElement = document.querySelector('.playlist>button')
 const optionbtt = document.querySelector(".optionbtt");
 optionbtt.addEventListener("click",e=>{
     option_arr.push(option.value)
@@ -31,6 +33,29 @@ const getid = async()=>{
     return d;
     
 };
+const getplaylistfunc = async(ID:string)=>{
+    let d = await(await fetch("/playlistget",
+    {
+        method:"POST",
+        headers:{
+            "Content-Type":"application/json"
+        },
+            body: JSON.stringify({ID:ID})
+    }
+    )).json()
+    return d
+}
+playlistbtt.addEventListener("click",async e=>{
+    const id = await getid()
+    const obj = JSON.stringify({name:playlistinp.value,id})
+    alert(await (await fetch("/playlistpost",{
+        method:"POST",
+        headers:{
+            "Content-Type":"application/json"
+        },
+        body: obj
+    })).text())
+})
 videoinp.addEventListener('change',async e => {
     const file1 = videoinp.files[0]
     const flink = URL.createObjectURL(file1);
@@ -66,8 +91,8 @@ button.addEventListener("click",async e=>{
     const typeofv = file1.type.split("/")[1]
     const typeofi = file2.type.split("/")[1]
     
-    const name = await getid()
-    alert(name)
+    const ID = await getid()
+    alert(ID)
     let objed = JSON.stringify({
         ip:user_ip,
         typeofv,
@@ -86,7 +111,7 @@ button.addEventListener("click",async e=>{
         ];
         for(let v of (arr)){
 
-            let message = await fetch(`${v[2]}?name=${name}`,{
+            let message = await fetch(`${v[2]}?name=${ID}`,{
             method:"POST",
             headers:{
                 "Content-Type":v[1]

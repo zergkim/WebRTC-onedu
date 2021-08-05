@@ -1,6 +1,6 @@
 import { Db, MongoClient,ObjectID } from "mongodb";
 const url = "mongodb+srv://zergkim:kimsh060525@cluster0.55ags.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
-import { Chat_Obj, DBOBJ,POST_DATA_OBJ,POST_IV_OBJ, PPOBJ } from "./type";
+import { Chat_Obj, DBOBJ,POST_DATA_OBJ,POST_IV_OBJ, PLAYLIST} from "./type";
 const client = new MongoClient(url, { useUnifiedTopology: true });
 import crypto from "crypto";
 import {v4 as uuidV4} from 'uuid';
@@ -18,7 +18,8 @@ let DBObj:DBOBJ = {
     Users:null,
     DB:null,
     Email:null,
-    Broadcasting:null
+    Broadcasting:null,
+    PLAYLIST:null
 }
 client.connect(async e=>{
     if(e){
@@ -29,7 +30,7 @@ client.connect(async e=>{
     DBObj.Videodata=DBObj.DB.collection("videodataup")
     DBObj.Email=DBObj.DB.collection("email")
     DBObj.Users=DBObj.DB.collection("userdata")
-    
+    DBObj.PLAYLIST = DBObj.DB.collection('playlist');
 })
 import { Server, Socket } from "socket.io";
 import express, { json } from 'express';
@@ -263,7 +264,24 @@ app.use('/webscript',express.static('C:/Users/zergk/Desktop/git_project/dproject
 app.get("/",(req,res)=>[
     res.redirect("/main")
 ])
-
+app.post('/playlistget',async(req,res)=>{
+    const obj:any = await DBObj.PLAYLIST.findOne({ownerID:req.body.ID});
+    res.json(obj)
+})
+app.post('/playlistpost',async(req,res)=>{
+    try{
+        const obj:PLAYLIST = {
+            NAME:req.body.name,
+            videos:[],
+            ownerID:req.body.id,
+            USERS:[]
+        }
+        await DBObj.PLAYLIST.insertOne(obj)
+        res.send("성공")
+    }catch(e){
+        res.send("실패")
+    }
+})
 app.post("/postid",(req,res)=>{
     const password = JSON.stringify(Math.random()).split(".")[1];
     const hashed = crypto.createHash("sha256").update(password).digest('base64');

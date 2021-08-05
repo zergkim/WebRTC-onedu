@@ -16,7 +16,8 @@ let DBObj:DBOBJ = {
     Users:null,
     DB:null,
     Email:null,
-    Broadcasting:null
+    Broadcasting:null,
+    PLAYLIST:null
 }
 client.connect(async e=>{
     if(e){
