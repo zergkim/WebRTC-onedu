@@ -126,22 +126,34 @@ export function webrtcfunc(socket:any){
         console.log(typeof Rooms_ID)
         socket.emit("Get_RoomsID",Rooms_ID);
         let id:string;
+        let name:string;
+        let password:string;
+        socket.on('broadname',async(e:any)=>{
+            console.log(e)
+            name=e;
+        })
+        socket.on('broadpw',async(e:any)=>{
+            password =e
+        })
         socket.on("get_id",async(e:any)=>{
             id = e
+            
+            DBObj.Users.updateOne({ID:id},{$push:{broadcastlist:Rooms_ID}})
             const broadcastobj:broadcastobj = {
                 host_id:id,
                 clientsid:[],
                 views:0,
-                Rooms_ID
+                Rooms_ID,
+                broadname:name,
+                password
             }
-            DBObj.Users.updateOne({ID:id},{$push:{broadcastlist:Rooms_ID}})
             await DBObj.Broadcasting.insertOne(broadcastobj)
             socket.on("OtherSocket",(e:any)=>{
                 const one = socket;
                 const other = roomobj[Rooms_ID][e].socket;
                 socket.on('cand', fun('cand',one,other,socket));
                 socket.on('desc', fun('desc',one,other,socket));    
-            })
+            }) 
             socket.on("disconnect",(e:any)=>{
                 DBObj.Broadcasting.deleteOne({host_id:id})
                 DBObj.Users.updateOne({ID:id},{$pull:{broadcastlist:Rooms_ID}})
@@ -169,6 +181,8 @@ export function webrtcfunc(socket:any){
         }
         const other = socket;
         one.on("disconnect",(e:any)=>{
+            DBObj.Broadcasting.deleteOne({host_id:hid})
+            DBObj.Users.updateOne({ID:hid},{$pull:{broadcastlist:RoomName}})
             other.emit("dis","e")
             other.disconnect()
             

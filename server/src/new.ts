@@ -31,6 +31,7 @@ client.connect(async e=>{
     DBObj.Email=DBObj.DB.collection("email")
     DBObj.Users=DBObj.DB.collection("userdata")
     DBObj.PLAYLIST = DBObj.DB.collection('playlist');
+    DBObj.Broadcasting = DBObj.DB.collection('broadcasting')
 })
 import { Server, Socket } from "socket.io";
 import express, { json } from 'express';
@@ -55,14 +56,14 @@ app.use('/', async (req, res, next) => {
     let resultPath = '';
     
     if(!req.cookies.logined){
-        if(req.method=="POST"&&(req.url==="/login"||req.url=="/email_send"||req.url.indexOf("/id_unique")>-1||req.url=="/certpost"||req.url.indexOf("/signinconfirm")>-1)){
+        if(req.method=="POST"&&(req.url==="/login"||req.url=="/email_send"||req.url.indexOf("/id_unique")>-1||req.url=="/certpost"||req.url.indexOf("/signinconfirm")>-1||req.url=='/broadcasting')){
             next()
             console.log(req.url)
             return;
             
         }
         if(path.basename(req.url).indexOf('.') === -1){
-            resultPath = path.resolve(front, `./dist${req.url}.html`)
+            resultPath = path.resolve(front, `./dist${req.url}.html`) 
         } else {
             resultPath = path.resolve(front, `./dist${req.url}`);
         }
@@ -78,7 +79,7 @@ app.use('/', async (req, res, next) => {
         return; 
     }
     else{
-        if(req.url=="/logout"||req.url=="/viewlist"||req.url.indexOf("getuserlist")>-1||req.url.indexOf("getvideoinfo")>-1||req.url.indexOf('getuserid')>-1||req.url=="/getlplaylist"){
+        if(req.url=="/logout"||req.url=="/viewlist"||req.url.indexOf("getuserlist")>-1||req.url.indexOf("getvideoinfo")>-1||req.url.indexOf('getuserid')>-1||req.url=="/getlplaylist"||req.url=="/broadcasting"){
             try{
                next()
                console.log(req.url)
@@ -129,6 +130,7 @@ const loginedfunc =(req:any,res:any,next:Function)=>{
 
 app.use("/login",loginedfunc)
 app.use("/signin",loginedfunc)
+
 app.post("/id_unique",async(req,res)=>{
     console.log("Er")
     if(await DBObj.Users.findOne({ID:req.body})){
@@ -230,7 +232,14 @@ app.get("/getlplaylist",async(req,res)=>{
     const list = (await DBObj.Users.findOne({ID:req.cookies.id})).lplaylist
     res.json(list)
 })
-
+app.get('/broadcasting',async(req,res)=>{
+    const letv = await DBObj.Broadcasting.find({})
+    const arr:Array<any> = [];
+    for await(let i of letv){
+        arr.push(i)
+    }
+    res.json(arr) 
+})
 app.get('/viewlist',async(req,res)=>{
     let dd =  await DBObj.Videodata.find().limit(30).sort({views:-1});
     let List_Arr:Array<object>=[]

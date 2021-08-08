@@ -5,6 +5,20 @@ body{
     width: 100%;
     height: 100%;
 }
+body::-webkit-scrollbar {
+    display: none;
+}
+body::-webkit-scrollbar-thumb {
+    background-color: grey;
+    border-radius: 10px;
+    background-clip: padding-box;
+    border: 2px solid transparent;
+}
+body::-webkit-scrollbar-track {
+    width: 0px;
+    border-radius: 10px;
+    
+}
 a{
     text-decoration: none;
     font:none;
@@ -47,6 +61,10 @@ a{
 }
 .mainview.sc{
     width: calc(100% - 50px);
+}
+.mainview.sc>.sumblist>.sumbcont>a>.sumb{
+    width: 350px;
+    height: 200px;
 }
 .vdrbar{
     width: 100%;
@@ -119,7 +137,6 @@ a{
     flex-direction: row;
     justify-content: flex-end;
     align-items: center;
-    padding-right: 10px;
 }
 .search-center{
     display: flex;
@@ -133,6 +150,7 @@ a{
     display: flex;
     flex-direction: row;
     justify-content: center;
+    margin-left: none;
 }
 .sumb>img{
     height: 100%;
@@ -144,11 +162,9 @@ a{
     background-color: black;
 }
 .sumblist{
-    padding-left: 10px;
-    padding-right: 10px;
     display: flex;
     flex-direction: row;
-    justify-content: space-evenly;
+    justify-content:space-evenly;
     flex-wrap: wrap;
 }
 .vinfo{
@@ -185,6 +201,8 @@ a{
 }
 .sumbcont{
     margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
 }
 .inputsearch{
     display: flex;
@@ -320,6 +338,7 @@ a{
     padding-top: 8px;
     padding-bottom: 8px;
     padding-right: 10px;
+    color: black;
 }
 .sbd>img{
     width: 30px;
@@ -328,8 +347,8 @@ a{
     background-color: gray;
 }
 .sc>.sumblist>.sumbcont>.sumb{
-    width: 350px;
-    height: 200px;
+    width: 100%;
+    height: 100%;
 }
 .sbd>div{
     padding-left: 10px;

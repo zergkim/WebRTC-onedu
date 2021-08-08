@@ -37,7 +37,10 @@ const socket = io('/wrtc');
 async function createsocket(subtitle:string, pw:string){
     const text = await (await fetch("/getuserid")).text()
     socket.emit("Start_Room","start")
+    socket.emit('broadname',subtitle)
+    socket.emit('broadpw',pw)
     socket.emit("get_id",text)
+    
     socket.on("OtherSocket",(e:any)=>{
     
         socket.emit("OtherSocket",e)
@@ -55,8 +58,7 @@ async function createsocket(subtitle:string, pw:string){
             
                 pc.addTrack(track, stream)
             });
-            socket.emit('broadname',subtitle)
-            socket.emit('broadpw',pw)
+            
         } catch (err) {
             console.error(err);
         }

@@ -13,6 +13,8 @@ export interface broadcastobj{
     clientsid:Array<string>;
     views:number;
     Rooms_ID:string;
+    broadname:string;
+    password:string;
 }
 export interface POST_DATA_OBJ{
     user:string;

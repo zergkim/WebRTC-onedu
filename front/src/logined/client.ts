@@ -1,11 +1,21 @@
 const $= document.querySelector.bind(document);
 import io from 'socket.io-client'
-import './index.css';
-const roomnaame = prompt("","")
+import './client.css';
+import './mainview.css'
+const urlpraa = new URLSearchParams(location.search)
+const roomnaame:string=urlpraa.get("view")
 const constraints = {audio: true, video: true};
 const configuration = {iceServers: [{urls: 'stun:stun.l.google.com:19302'}]};
-const remoteView = $('#remote');
-const selfView = $('#self');
+const remoteView = $('#remote') as HTMLVideoElement;
+const pl = async (e:Event)=>{
+    try{
+        await remoteView.play()
+    } catch(err){
+        console.log(err);
+        await new Promise((res, rej) => setTimeout(res)).then(pl);
+    }
+};
+remoteView.addEventListener("loadstart", pl);
 /*let stream=null;
 async function getstream(){
     stream = await navigator.mediaDevices.getUserMedia(constraints)
@@ -32,7 +42,6 @@ function main(){
         if (remoteView.srcObject) return;
         console.log("true")
         remoteView.srcObject = e.streams[0];
-        
     },{once:true});
     console.log(pc)
     return pc;

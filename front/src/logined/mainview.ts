@@ -103,7 +103,16 @@ but.addEventListener("click",e=>{
 },)*/
 async function loding() {
     const temp:HTMLTemplateElement = document.querySelector(".sumbtemp")
+    const sidebartemp:HTMLTemplateElement = document.querySelector(".sidebartemp")
     const listarr:Array<string> = await(await fetch("/getlplaylist")).json()
+    const broadarr:Array<any> = await(await fetch("/broadcasting")).json()
+    broadarr.forEach(v=>{
+        const sideclone= sidebartemp.content.cloneNode(true) as DocumentFragment;
+        sideclone.querySelector(".names").textContent = v.host_id
+        sideclone.querySelector("a").href = `/client.html?view=${v.Rooms_ID}`
+        
+        sidebar.appendChild(sideclone)
+    })
     const temp2:HTMLTemplateElement = document.querySelector(".contemp")
     console.log(listarr)
     for(let i of listarr){
