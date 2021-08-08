@@ -13,11 +13,14 @@ const option_arr:Array<string> = []
 const option:HTMLInputElement = document.querySelector(".option")
 const playlistinp:HTMLInputElement = document.querySelector('.playlist>input')
 const playlistbtt : HTMLButtonElement = document.querySelector('.playlist>button')
-const optionbtt = document.querySelector(".optionbtt");
+const listselect : HTMLSelectElement = document.querySelector(".listselect>select")
+loding()
+/*const optionbtt = document.querySelector(".optionbtt");
 optionbtt.addEventListener("click",e=>{
     option_arr.push(option.value)
-})
+})*/
 const socket = io(location.origin);
+document.cookie
 const inputer:HTMLSelectElement = document.querySelector("#er");
 const title:HTMLInputElement = document.querySelector(".title");
 const timestparr:Array<any> = [];
@@ -43,19 +46,16 @@ const getplaylistfunc = async(ID:string)=>{
             body: JSON.stringify({ID:ID})
     }
     )).json()
-    return d
+    console.log(d)
+    d.forEach((v:any)=>{
+        const option = document.createElement("option");
+        option.textContent=v.NAME
+        
+        listselect.appendChild(option)
+    })
+    return d;
 }
-playlistbtt.addEventListener("click",async e=>{
-    const id = await getid()
-    const obj = JSON.stringify({name:playlistinp.value,id})
-    alert(await (await fetch("/playlistpost",{
-        method:"POST",
-        headers:{
-            "Content-Type":"application/json"
-        },
-        body: obj
-    })).text())
-})
+
 videoinp.addEventListener('change',async e => {
     const file1 = videoinp.files[0]
     const flink = URL.createObjectURL(file1);
@@ -101,7 +101,8 @@ button.addEventListener("click",async e=>{
         chat :[],
         subj : inputer.value,
         title : title.value,
-        option_arr
+        option_arr,
+        PLAYLIST:listselect.value
     });
     (async function(){
         const arr:[File|string, string, string][] = [
@@ -124,3 +125,23 @@ button.addEventListener("click",async e=>{
         }
     })();
 })
+async function loding(){
+    const id = await (await fetch("/getuserid")).text()
+    const list = await getplaylistfunc(id)
+    playlistbtt.addEventListener("click",async e=>{
+        for(let v of list){
+            if(v.NAME == playlistinp.value){
+                alert("리스트 이름 중복")
+                return;
+            }
+        }
+        const obj = JSON.stringify({name:playlistinp.value,id})
+        alert(await (await fetch("/playlistpost",{
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body: obj
+        })).text())
+    })
+}

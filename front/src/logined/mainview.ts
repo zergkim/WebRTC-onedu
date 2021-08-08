@@ -101,6 +101,57 @@ but.addEventListener("click",e=>{
     })
     
 },)*/
+async function loding() {
+    const temp:HTMLTemplateElement = document.querySelector(".sumbtemp")
+    const listarr:Array<string> = await(await fetch("/getlplaylist")).json()
+    const temp2:HTMLTemplateElement = document.querySelector(".contemp")
+    console.log(listarr)
+    for(let i of listarr){
+        const videolist:Array<string> = await(await fetch("/lplaylistvideolist",{
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body: JSON.stringify({name:i})
+        })).json()
+        
+        const clon = temp.content.cloneNode(true) as DocumentFragment
+        const title = clon.querySelector<HTMLHeadingElement>(".subj>h1")
+        console.log(videolist)
+        console.log(clon)
+        const de = clon.querySelector(".sumblist")
+        console.log(videolist)
+        const videolistfor=async ()=>{
+            
+            for (let v of videolist){
+                const videoinfo = await (await fetch(`/getvideoinfo?id=${v}`)).json()
+                const clon2 = temp2.content.cloneNode(true) as DocumentFragment
+                const img:HTMLImageElement = clon2.querySelector(".sumb>img")
+                img.src = `/img/${v}.${videoinfo.typeofi}`
+                const vtitle = clon2.querySelector(".erti")
+                const vtitlea=vtitle.parentElement as HTMLAnchorElement;
+                console.log(vtitlea)
+                vtitlea.href=`/watchview?view=${v}`
+                console.log(v)
+                const usertitle = clon2.querySelector('.userti')
+                usertitle.textContent = videoinfo.ID;
+                const usertitlea =  usertitle.parentElement as HTMLAnchorElement
+                usertitlea.href = "/"
+                vtitle.textContent = videoinfo.vname;
+                const sumb = clon2.querySelector('.sumb')
+                console.log(sumb)
+                const sumba:any = sumb.parentElement as HTMLAnchorElement
+                sumba.href = `/watchview?view=${v}`
+                de.appendChild(clon2)
+            }
+        }
+        videolistfor()
+        console.log(title)
+        title.textContent = `${i} (수강중인 강의 영상)`
+        mainview.appendChild(clon)
+    }
+}
+
 const sidbtt = document.querySelector(".sbt-r>div")
 const sidebar = document.querySelector(".sidemenu-bar")
 const nonebar = document.querySelector("#nonebar")
@@ -167,3 +218,4 @@ function sidbarclick(e:any){
         mainview.classList.remove("or")
     }
 }
+loding()

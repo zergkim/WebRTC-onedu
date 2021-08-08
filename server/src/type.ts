@@ -26,6 +26,7 @@ export interface POST_DATA_OBJ{
     _id:ObjectID;
     ID:string;
     title :string;
+    PLAYLIST:string;
 }
 export interface POST_IV_OBJ{
     name:string

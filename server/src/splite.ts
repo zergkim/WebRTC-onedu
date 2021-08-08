@@ -26,7 +26,7 @@ client.connect(async e=>{
     DBobj.Videodata=DBobj.DB.collection("videodata") 
     DBobj.Vu=DBobj.DB.collection("videodataup")
     DBobj.Users=DBobj.DB.collection('userdata')
-    
+    DBobj.PLAYLIST = DBobj.DB.collection("playlist")
 })
 export const Get_jungbo = async(filename:string)=>{
     const ObjID:mongodb.ObjectID= new ObjectID(filename)
@@ -64,11 +64,11 @@ export function postthedata(vdata:Buffer,idata:Buffer,post_data_obj:POST_DATA_OB
             await splite(videoid.toHexString(),typename)
             post_data_obj.views=0;
             console.log("성공")
-            let id = await DBobj.Vu.insertOne(post_data_obj)
-            console.log(id.insertedId, videoid)
+            let id = (await DBobj.Vu.insertOne(post_data_obj)).insertedId
             await DBobj.Videodata.deleteOne({_id:new ObjectID(videoid)})
-            console.log(post_data_obj.ID)
-            await DBobj.Users.updateOne({ID:post_data_obj.ID},{$push:{videolist:videoid.toHexString()}})
+            console.log(id)
+            await DBobj.Users.updateOne({ID:post_data_obj.ID},{$push:{videolist:videoid.toHexString()}})            
+            await DBobj.PLAYLIST.updateOne({ownerID:post_data_obj.ID,NAME:post_data_obj.PLAYLIST},{$push:{videos:videoid}})
             await fs.promises.unlink(`../savefiles/${file_name}`);
             res("성공")
         }

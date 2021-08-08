@@ -78,7 +78,7 @@ app.use('/', async (req, res, next) => {
         return; 
     }
     else{
-        if(req.url=="/logout"||req.url=="/viewlist"||req.url.indexOf("getuserlist")>-1||req.url.indexOf("getvideoinfo")>-1||req.url.indexOf('getuserid')>-1){
+        if(req.url=="/logout"||req.url=="/viewlist"||req.url.indexOf("getuserlist")>-1||req.url.indexOf("getvideoinfo")>-1||req.url.indexOf('getuserid')>-1||req.url=="/getlplaylist"){
             try{
                next()
                console.log(req.url)
@@ -186,6 +186,10 @@ app.post("/signinconfirm",async(req,res)=>{
     }
     res.send("성공")
 })
+app.post("/lplaylistvideolist",async(req,res)=>{
+    const videolist = (await DBObj.PLAYLIST.findOne({NAME:req.body.name})).videos
+    res.json(videolist)
+})
 app.post("/login",async(req,res)=>{
     
     const userobj = await FindUser(req.body.userid)
@@ -211,7 +215,7 @@ app.get("/logout",(req,res)=>{
         res.clearCookie('id')
         res.clearCookie("passwords")
         res.clearCookie("logined")
-        res.send("true")
+        res.redirect("/login")
     }
     catch(e){
         res.send("")
@@ -222,6 +226,11 @@ app.get('/getuserid',async(req,res)=>{
     console.log(req.cookies.id)
     res.send(req.cookies.id)
 })
+app.get("/getlplaylist",async(req,res)=>{
+    const list = (await DBObj.Users.findOne({ID:req.cookies.id})).lplaylist
+    res.json(list)
+})
+
 app.get('/viewlist',async(req,res)=>{
     let dd =  await DBObj.Videodata.find().limit(30).sort({views:-1});
     let List_Arr:Array<object>=[]
@@ -234,7 +243,8 @@ app.get('/getvideoinfo',async(req,res)=>{
     const text : string = req.query.id as string
     console.log(text)
     let obj:any  = await DBObj.Videodata.findOne({"_id":new ObjectID(text)})
-    obj = {vname:"Werr",typeofi : obj.typeofi}
+    console.log(obj.title)
+    obj = {vname:obj.title,typeofi : obj.typeofi,ID: obj.ID}
     res.json(obj)
 })
 app.get("/getuserlist",async (req,res)=>{
@@ -265,8 +275,14 @@ app.get("/",(req,res)=>[
     res.redirect("/main")
 ])
 app.post('/playlistget',async(req,res)=>{
-    const obj:any = await DBObj.PLAYLIST.findOne({ownerID:req.body.ID});
-    res.json(obj)
+    console.log(req.body.ID)
+    const obj:any = await DBObj.PLAYLIST.find({ownerID:req.body.ID});
+    const arr : Array<object>=[];
+
+    for await(let i of obj){
+        arr.push(i)
+    }
+    res.json(arr)
 })
 app.post('/playlistpost',async(req,res)=>{
     try{

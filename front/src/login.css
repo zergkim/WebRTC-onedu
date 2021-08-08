@@ -1,52 +1,71 @@
-/*main-bodyloginbarpasswordid*/
-body{
-    margin: 0%;
-    height:100vh;
-}
-
-#main-body{
-    background-color: #DCE7F2;
-    width: 100%;
+@import url('https://fonts.googleapis.com/css2?family=Palette+Mosaic&display=swap');
+.body{
+    background-color: #F5F6F7;
     height: 100%;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-}
-#loginbar{
-    background-color: #A16BD6;
-    height: 60%;
-    width: 70%;
-    border-radius: 60px;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-}
-#loginbar>#inputbar{
-
+    width: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-    height: 100%;
-    width: 70%;
+    justify-content: center;
+    
 }
-button{
-    height: 30%;
-    border: none;
-    border-radius: 15px;
+.body>input{
+    width: 468px;
+    height: 47px;
+    margin: 0px;
+    border: 1px solid gainsboro;
+    margin-bottom: 7px;
+    padding: 1px 10px;
 }
-button:hover{
-    transition: 0.5s;
-    background-color: #D6F9E7;
+.body>input:focus{
+    border: 1px solid #EB94AC;
+    outline: none;
+    
 }
-button:active{
-    background-color: whitesmoke;
+.button{
+    width: 468px;
+    height: 56px;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1px 10px;
 }
-input{
-    width: 70%;
-    height: 15%;
-    border-radius: 15px;
-    text-align: center;
+.logbut{
+    background-color: #EB94AC;
+    border:1px solid #EB94AC;
+}
+.signbut{
+    background-color: white;
+    border:1px solid #DEDEDE;
+}
+a{
+    text-decoration: none;
+}
+.signbut>span{
+    color: black;
+    
+}
+.logbut>span{
+    color: white;
+    
+}
+body{
+    margin: 0px;
+    height: 100vh;
+    width: 100%;
+    
+}
+.name_bar{
+    font-size: 50px;
+    margin-bottom: 50px;
+    font-family: 'Palette Mosaic', cursive;
+    color: #EB94AC;
+}
+.bar{
+    margin-top: 30px;
+    width: 490px;
+    height: 1px;
+    background-color: #DEDEDE;
+    margin-bottom: 20px;
 }

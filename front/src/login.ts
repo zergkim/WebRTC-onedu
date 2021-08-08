@@ -1,9 +1,9 @@
 import './login.css';
 import io  from 'socket.io-client';
 console.log(io);
-const id:HTMLInputElement = document.querySelector("#id")
-const password:HTMLInputElement = document.querySelector("#password")
-const but:HTMLButtonElement  = document.querySelector("button")
+const id:HTMLInputElement = document.querySelector(".ID")
+const password:HTMLInputElement = document.querySelector(".PASSWORD")
+const but:HTMLButtonElement  = document.querySelector(".button")
 but.addEventListener("click",async e=>{
     const text = await (await fetch("/login",{
         method:"POST",
@@ -16,7 +16,7 @@ but.addEventListener("click",async e=>{
         })
     })).text()
     if(text==="good"){
-        location.href="/main"
+        location.href="/mainview"
     }else{
         alert(text)
     }
