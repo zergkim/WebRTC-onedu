@@ -273,17 +273,18 @@ a{
 .bartext:hover{
     color: #EB94AC;
 }
-.search-sec>a>button{
+.qbtn,.search-sec>a>button{
     background-color: #c99885c5;
     color: white;
     margin-right: 5px;
 }
-.search-sec>a>button:hover{
+.qbtn:hover,.search-sec>a>button:hover{
     background-color: #C99885;
     color: white;
 }
-.search-sec>a>button:active{
+.qbtn:active,.search-sec>a>button:active{
     background-color: #C29380;
+    color: white;
 }
 .sidemenu-bar-top{
     display: flex;

@@ -2,11 +2,42 @@ const $= document.querySelector.bind(document);
 import io from 'socket.io-client'
 import './client.css';
 import './mainview.css'
+const chatinput:HTMLInputElement = document.querySelector(".chatinput>input")
 const urlpraa = new URLSearchParams(location.search)
+const qbtn:HTMLButtonElement = document.querySelector(".qbtn")
 const roomnaame:string=urlpraa.get("view")
 const constraints = {audio: true, video: true};
 const configuration = {iceServers: [{urls: 'stun:stun.l.google.com:19302'}]};
 const remoteView = $('#remote') as HTMLVideoElement;
+const sidebar:HTMLDivElement = document.querySelector(".sidemenu-bar")
+const chatemp:HTMLTemplateElement = document.querySelector(".chatcont>template")
+const chatcont:HTMLDivElement = document.querySelector(".chatcont")
+const nonebar = document.querySelector("#nonebar")
+const usercolor ="#"+((1<<24)*Math.random()|0).toString(16)
+let textt=""
+let thisobj:any={};
+async function loding() {
+    const temp:HTMLTemplateElement = document.querySelector(".sumbtemp")
+    const sidebartemp:HTMLTemplateElement = document.querySelector(".sidebartemp")
+    const broadarr:Array<any> = await(await fetch("/broadcasting")).json()
+    console.log(broadarr)
+    broadarr.forEach(v=>{
+        const sideclone= sidebartemp.content.cloneNode(true) as DocumentFragment;
+        sideclone.querySelector(".names").textContent = v.host_id
+        sideclone.querySelector(".namec").textContent = v.broadname
+        sideclone.querySelector("a").href = `/client.html?view=${v.Rooms_ID}`
+        sidebar.appendChild(sideclone)
+        if(v.Rooms_ID==roomnaame){
+            thisobj = v
+        }
+        document.querySelector(".contentinf>strong").textContent = v.views+1
+    })
+    document.querySelector(".rename").textContent = thisobj.host_id
+    document.querySelector(".retitle").textContent = thisobj.broadname
+    document.querySelector(".broadinf").textContent = thisobj.info
+    document.querySelector(".resub").textContent = thisobj.subj
+}
+
 const pl = async (e:Event)=>{
     try{
         await remoteView.play()
@@ -23,6 +54,7 @@ async function getstream(){
 getstream()*/
 let clientpc:webkitRTCPeerConnection;
 const socket = io("/wrtc");
+const chat = io("/chat");
 let bulina = false;
 let clientnumb:number=null;
 function main(){
@@ -42,6 +74,7 @@ function main(){
         if (remoteView.srcObject) return;
         console.log("true")
         remoteView.srcObject = e.streams[0];
+        startchat()
     },{once:true});
     console.log(pc)
     return pc;
@@ -53,7 +86,7 @@ function main(){
 // Send any ice candidates to the other peer.
 socket.emit("Start_Connection",roomnaame);
 (async function() {
-    const textt = await (await fetch('/getuserid')).text()
+    textt = await (await fetch('/getuserid')).text()
     socket.emit('sendid',textt)
 })();
 socket.on('dis', (e:any) => {
@@ -95,3 +128,77 @@ socket.on('cand', async (e:any) => {
         console.log(err, e);
     }
 });
+socket.on("changed",async(e:any)=>{
+    if (confirm("화면이 전환됨 새로고침 하시겠습니까?")) {
+        location.href="/client.html?view="+roomnaame
+    }else{
+
+    }
+})
+loding()
+const sidbtt = document.querySelector(".sbt-r>div")
+sidbtt.addEventListener("click",sidbarclick)
+function startchat(){
+    chat.emit("joinchat", roomnaame)
+    chat.on("sendchat",(e:any)=>{
+        makechat(e)
+        
+    })
+    qbtn.addEventListener("click", e=>{
+        
+        const chatobj = {
+            text : chatinput.value,
+            user :textt,
+            time:'오조오억년',
+            color:usercolor
+        }
+        chat.emit("sendchat",chatobj)
+        makechat(chatobj)
+        chatinput.value=""
+    })
+
+}
+function makechat(e:any){
+    const chattemp = chatemp.content.cloneNode(true) as DocumentFragment 
+    const idofchat:HTMLDivElement = chattemp.querySelector(".ID")
+    idofchat.textContent = e.user;
+    idofchat.style.color = e.color
+    chattemp.querySelector(".chatcontext").textContent=e.text
+    chatcont.appendChild(chattemp)
+}
+function sidbarclick(e:any){
+    const arrw = Array.from(document.querySelectorAll(".sbd"))
+    const arr = Array.from(document.querySelectorAll('.sbd>div'))
+    const smb:HTMLDivElement = document.querySelector(".sidemenu-bar")
+    const sbtr:HTMLDivElement = document.querySelector(".sbt-r")
+    if(arr[0].classList.contains('none')){
+        arr.forEach(v=>{
+            v.classList.remove('none')
+        })
+        console.log("Ew")
+        sidebar.classList.remove('jcent')
+        document.querySelector("#open").classList.remove("notnone")
+        document.querySelector("#close").classList.remove("none")
+        document.querySelector(".sbt-l").classList.remove("none")
+        
+        sbtr.style.width="50%"
+        nonebar.classList.add("or")
+        nonebar.classList.remove("sc")
+        smb.style.width='240px'
+        arrw.forEach(v=>{v.classList.remove("jcent")})
+    }else{
+        arr.forEach(v=>{
+            v.classList.add('none')
+           
+        })
+        sidebar.classList.add('jcent')
+        document.querySelector("#open").classList.add("notnone")
+        document.querySelector("#close").classList.add("none")
+        smb.style.width='50px'
+        document.querySelector(".sbt-l").classList.add('none')
+        sbtr.style.width="100%"
+        arrw.forEach(v=>{v.classList.add("jcent")})
+        nonebar.classList.add("sc")
+        nonebar.classList.remove("or")
+    }
+}

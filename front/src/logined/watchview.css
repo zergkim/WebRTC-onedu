@@ -1,0 +1,13 @@
+.retextcon>.title{
+    font-size: 20px;
+    font-weight: 700;
+}
+.retextcon>.user{
+    font-size: 17px;
+    font-weight: 550;
+}
+.retextcon>.subject{
+    font-size: 15px;
+    font-weight: 700;
+    color: #EB94AC;
+} 

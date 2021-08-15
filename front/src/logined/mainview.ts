@@ -109,6 +109,7 @@ async function loding() {
     broadarr.forEach(v=>{
         const sideclone= sidebartemp.content.cloneNode(true) as DocumentFragment;
         sideclone.querySelector(".names").textContent = v.host_id
+        sideclone.querySelector('.namec').textContent = v.broadname
         sideclone.querySelector("a").href = `/client.html?view=${v.Rooms_ID}`
         
         sidebar.appendChild(sideclone)

@@ -1,6 +1,6 @@
 const realname:HTMLInputElement = document.querySelector("#realname")
 const birth:HTMLInputElement = document.querySelector("#jumindrungrok")
-const sex:HTMLInputElement = document.querySelector("#sexselector")
+const sex = Array.from(document.getElementsByName("sex")) as Array<HTMLInputElement>
 let flag={
     idbul :false,
     emailbul :false
@@ -45,6 +45,13 @@ allbutton.addEventListener("click",async e=>{
     interface Fetch_Promise{
         text:Function;
     }
+    let sexvalue:string = ""
+    for (let i of sex){
+        if(i.checked){
+            sexvalue=i.value;
+            break;
+        }
+    }
     let reqt:Fetch_Promise = await fetch("/signinconfirm",
     {
         method:"POST",
@@ -54,7 +61,7 @@ allbutton.addEventListener("click",async e=>{
         body:JSON.stringify({
             
             ID:idinp.value,
-            sex:sex.value,
+            sex:sexvalue,
             birth : birth.value,
             passwords:passwordinp.value,
             name:realname.value,

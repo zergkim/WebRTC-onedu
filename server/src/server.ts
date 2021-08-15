@@ -6,6 +6,7 @@
 import { Socket } from "socket.io";
 import { Db, MongoClient,ObjectID } from "mongodb";
 import { DBOBJ,broadcastobj} from "./type";
+import { on } from "events";
 //const app = express();
 const {v4:uuidV4} = require('uuid');
 const url = "mongodb+srv://zergkim:kimsh060525@cluster0.55ags.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
@@ -125,27 +126,19 @@ export function webrtcfunc(socket:any){
         socket.join(Rooms_ID);
         console.log(typeof Rooms_ID)
         socket.emit("Get_RoomsID",Rooms_ID);
-        let id:string;
-        let name:string;
-        let password:string;
-        socket.on('broadname',async(e:any)=>{
-            console.log(e)
-            name=e;
-        })
-        socket.on('broadpw',async(e:any)=>{
-            password =e
-        })
+        let id=""
         socket.on("get_id",async(e:any)=>{
-            id = e
-            
-            DBObj.Users.updateOne({ID:id},{$push:{broadcastlist:Rooms_ID}})
+            id = e.id
+            DBObj.Users.updateOne({ID:e.id},{$push:{broadcastlist:Rooms_ID}})
+            console.log('password',e.password)
             const broadcastobj:broadcastobj = {
-                host_id:id,
+                host_id:e.id,
                 clientsid:[],
                 views:0,
                 Rooms_ID,
-                broadname:name,
-                password
+                broadname:e.name,
+                info : e.info,
+                subj : e.subj
             }
             await DBObj.Broadcasting.insertOne(broadcastobj)
             socket.on("OtherSocket",(e:any)=>{
@@ -155,12 +148,20 @@ export function webrtcfunc(socket:any){
                 socket.on('desc', fun('desc',one,other,socket));    
             }) 
             socket.on("disconnect",(e:any)=>{
-                DBObj.Broadcasting.deleteOne({host_id:id})
+                console.log("endbroad")
+                DBObj.Broadcasting.deleteOne({Rooms_ID})
                 DBObj.Users.updateOne({ID:id},{$pull:{broadcastlist:Rooms_ID}})
                 delete hostobj[Rooms_ID];
                 delete roomobj[Rooms_ID];
             })
-            
+            socket.on("editinfo",async(e:any)=>{
+                const obj:any = {}
+                console.log(e.type)
+                obj[e.type]=e.content
+                console.log(obj)
+                DBObj.Broadcasting.updateOne({Rooms_ID},{$set:obj})
+                
+            })
             hostobj[Rooms_ID]={socket,id};
             roomobj[Rooms_ID]=[]
         })
@@ -186,6 +187,9 @@ export function webrtcfunc(socket:any){
             other.emit("dis","e")
             other.disconnect()
             
+        })
+        one.on("changed",e=>{
+            socket.emit("changed","")
         })
         socket.on("sendid",async(e:any)=>{
             console.log(e, "Wr")

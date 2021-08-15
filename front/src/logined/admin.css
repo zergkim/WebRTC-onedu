@@ -1,4 +1,120 @@
-#con{
+#broadcastart{
+    margin-top: 50px;
     display: flex;
     flex-direction: column;
+    align-items: center;
+}
+#broadcastart>.but{
+    width: 500px;
+}
+#broadcastart>div>label{
+    display: flex;
+    flex-direction: row;
+}
+#broadcastart>div>label>div{
+    width: 160px;
+    text-align: center;
+}
+#broadcastart>div>label>span{
+    width: 15px;
+}
+.but>button{
+    width: 100%;
+    background-color: #c99885c5;
+    color: white;
+
+    margin-bottom: 5px;
+}
+.but>button:hover{
+    background-color: #C99885;
+    color: white;
+}
+.but>button:active{
+    background-color: #C29380;
+}
+.checkmark{
+    margin-left: 10px;
+    margin-right: 10px;
+    font-size: 20px;
+    font-weight: 550;
+}
+.rcont>input,.rcont>select{
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    border-radius: 100%;
+}
+.label>input,label>select{
+    width: 170px;
+    height: 30px;
+}
+select{
+    text-align: center;
+    border: 1px solid black;
+}
+input[type='radio']{
+
+    background-color: #E8E8E8;
+}
+.rcont-div{
+    padding: 5px 5px;
+}
+.rcont:hover input  {
+    background-color: #ccc;
+}
+input[type='radio']:checked {
+    background-color: white;
+    border: 8px solid #c99885c5;
+}
+.titlee{
+    font-weight: 700;
+}
+.dotdot{
+    font-weight: 900;
+}
+.edit.reed>input,.edit.reed>select{
+    width: 215px;
+    height: 35px;
+}
+#broadcastbody>.videocont{
+    width: calc(100% - 340px);
+}
+.videocont>.re>video{
+    width: 100%;
+}
+.videocont{
+    padding-bottom: 30px;
+}
+#broadcastbody{
+    display: flex;
+    flex-direction: row-reverse;
+    width: 100%
+}
+#chte{
+    height: calc(100% - 150px);
+}
+.quit{
+    display: flex;
+    justify-content: center;
+}
+.quit>button{
+    width: 200px;
+    height: 50px;
+    text-align: center;
+    margin-bottom: 10px;
+}
+.edit{
+    height: 50px;
+    font-size: 20px;
+    margin-top: 10px;
+    margin-left: 20px;
+}
+.edit>span{
+    width: 40px;
+}
+.reed>button{
+    margin-left: 10px;
+}
+body{
+    background-color: #F7F7F7;
 }

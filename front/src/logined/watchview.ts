@@ -1,40 +1,20 @@
-import io  from 'socket.io-client'
 import Hls from 'hls.js'
+import './client.css'
+import './mainview.css'
+import './watchview.css'
+const video:HTMLVideoElement =document.querySelector(".video>video")
 
-const socket = io('/chat')
-console.log(socket)
-let animationnumb:any;
-let chatan;
-const video:HTMLVideoElement =document.querySelector("#videoplayer")
-const videodiv:HTMLDivElement = document.querySelector("#videodiv")
-const input = document.querySelector('input')
-videodiv.style.display="none"
-const videomuk = document.querySelector('#videomuk')
-const button:HTMLButtonElement = document.querySelector("#textbutton>button")
-const textbutton_Div:HTMLDivElement = document.querySelector("#textbutton")
 const urlpraa = new URLSearchParams(location.search)
 const urlpra:string=urlpraa.get("view")
-socket.emit("joinchat",urlpra)
-interface targett{
-    remove:Function;
+
+async function infoload() {
+    let obj = await (await fetch("/getvideoinfo?id="+urlpra)).json()
+    document.querySelector(".retextcon>.title").textContent=obj.vname
+    document.querySelector(".retextcon>.subject").textContent=obj.subj
+    document.querySelector(".retextcon>.user").textContent=obj.ID
+    document.querySelector("strong").textContent = obj.views
 }
-interface eventtarget{
-    target:targett;
-}
-interface chatobject{
-    text:string,
-    xy:Array<string>
-}
-socket.on("se",(e:string)=>{
-    alert(e)
-})
-socket.emit("sendchat","ew")
-let chatobj=[];
-let chatdata:any;
-async function getchat(){
-    //chatdata =  await (await fetch("/chat/"+urlpra)).json()
-}
-getchat()
+infoload()
 const videoSrc=`/videos/${urlpra}.m3u8`;
 if(Hls.isSupported()){
     console.log(Hls.isSupported())
@@ -48,81 +28,10 @@ if(Hls.isSupported()){
         video.play()
     })
 }
-const chatanimationfunc = (text:string,x:string|number,y:string|number)=>{
-    const span = document.createElement("span") 
-    span.innerHTML=text
-    span.style.position="absolute"
-    span.style.transform = `translate(calc(${x}px - 50%), calc(${y}px - 50%))`;
-    span.classList.add("videospan");
-    videomuk.appendChild(span)
-}
-videodiv.onclick=(e)=>{
-    
-    const intext = input.value;
-    if(!intext){
-        alert("글자를 쓰시오")
-        return;
-    }
-    chatanimationfunc(intext,e.offsetX,e.offsetY)
-    input.value=""
-    /*span.innerHTML=intext
-    input.value = ""
-    span.style.position="absolute"
-    span.style.transform = `translate(calc(${e.offsetX}px - 50%), calc(${e.offsetY}px - 50%))`;
-    span.classList.add("videospan");*/
-    const textobj = {
-        obj:{
-            
-            xy : [e.offsetX,e.offsetY],
-            text : intext,
-            user:"qwr"
-        },
-        time : Math.floor(video.currentTime),
-        id : urlpra
-    }
-    chatobj.push(textobj.obj)
-    /*videomuk.appendChild(span)*/
-    postchat(textobj)
-}
-videomuk.addEventListener('animationend',(e:any)=>{
-    e.target.remove()
-})
-video.addEventListener("pause",e=>{
-    textbutton_Div.style.display="none"
-    console.log("wr")
-    clearInterval(animationnumb)
-})
-video.addEventListener("ended",e=>{
-    videodiv.style.display = "none"
-    textbutton_Div.style.display="none"
-    console.log("wr")
-    clearInterval(animationnumb)
-})
-video.addEventListener("play",e=>{
-    button.innerHTML="만들기"
-    textbutton_Div.style.display="inline-block"
-    //chat()
-})
-button.addEventListener("click",e=>{
-    if(video.paused){
-        alert("비디오를 플레이 하십시오")
-        return;
-    }
-    if(videodiv.style.display=="none"){
-        button.innerText = "끄기"
-        videodiv.style.display = "inline-block"
-    }
-    else{
-        videodiv.style.display = "none";
-        button.innerHTML="만들기"
-    }
-})
-async function postchat(obj:any){
-    socket.emit("postchat",obj)
-}
-socket.on("chatsend"+urlpra,(e:any)=>{
-    console.log(e)
-})
+
+
+
+
 /*async function chat(){
     const array = [0]
     let k = setInterval(() => {

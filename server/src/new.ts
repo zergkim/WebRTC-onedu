@@ -48,6 +48,16 @@ app.use(express.raw({limit:'1gb'}))//이거 꼭설정 해야함
 app.use(express.json());
 app.use('/img',express.static('../img'))
 app.use('/videos',express.static("../videos"))
+app.get("/", async(req,res)=>{
+    let resultPath = ""
+    if(req.cookies.id){
+        resultPath = path.resolve(front, `./dist/logined/mainview.html`) 
+        
+    }else{
+        resultPath = path.resolve(front, `./dist/login.html`) 
+    }
+    res.sendFile(resultPath)
+})
 app.use('/', async (req, res, next) => {
     
     if(req.query.view){ 
@@ -253,7 +263,7 @@ app.get('/getvideoinfo',async(req,res)=>{
     console.log(text)
     let obj:any  = await DBObj.Videodata.findOne({"_id":new ObjectID(text)})
     console.log(obj.title)
-    obj = {vname:obj.title,typeofi : obj.typeofi,ID: obj.ID}
+    obj = {vname:obj.title,typeofi : obj.typeofi,ID: obj.ID,subj : obj.subj,views:obj.views}
     res.json(obj)
 })
 app.get("/getuserlist",async (req,res)=>{
@@ -280,9 +290,6 @@ app.use('/webscript/:filename',(req,res,next)=>{
     }
 })
 app.use('/webscript',express.static('C:/Users/zergk/Desktop/git_project/dproject/front/dist'))
-app.get("/",(req,res)=>[
-    res.redirect("/main")
-])
 app.post('/playlistget',async(req,res)=>{
     console.log(req.body.ID)
     const obj:any = await DBObj.PLAYLIST.find({ownerID:req.body.ID});
@@ -396,6 +403,7 @@ const server= app.listen(3000,async()=>{
 const io = new Server(server)
 let infoarr=[];
 io.of("/wrtc").on("connection",webrtcfunc)
+io.of("/wrtc").setMaxListeners(2000)
 io.of("/chat").on("connection",(socket)=>{
     console.log("se")
     let serverid:string;
@@ -405,8 +413,7 @@ io.of("/chat").on("connection",(socket)=>{
         console.log(e) 
     })
     socket.on('sendchat',(e:Chat_Obj)=>{
-        console.log(e.time)
-        socket.broadcast.to(serverid).emit("se",e.text)
+        socket.to(serverid).emit("sendchat",e)
     })
 })
 io.on("connection",socket =>{

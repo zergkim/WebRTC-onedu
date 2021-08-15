@@ -14,7 +14,8 @@ export interface broadcastobj{
     views:number;
     Rooms_ID:string;
     broadname:string;
-    password:string;
+    info:string;
+    subj : string;
 }
 export interface POST_DATA_OBJ{
     user:string;
