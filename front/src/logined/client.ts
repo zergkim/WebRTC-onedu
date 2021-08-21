@@ -6,9 +6,10 @@ const chatinput:HTMLInputElement = document.querySelector(".chatinput>input")
 const urlpraa = new URLSearchParams(location.search)
 const qbtn:HTMLButtonElement = document.querySelector(".qbtn")
 const roomnaame:string=urlpraa.get("view")
+let first:boolean = true;
 const constraints = {audio: true, video: true};
 const configuration = {iceServers: [{urls: 'stun:stun.l.google.com:19302'}]};
-const remoteView = $('#remote') as HTMLVideoElement;
+let remoteView = $('#remote') as HTMLVideoElement;
 const sidebar:HTMLDivElement = document.querySelector(".sidemenu-bar")
 const chatemp:HTMLTemplateElement = document.querySelector(".chatcont>template")
 const chatcont:HTMLDivElement = document.querySelector(".chatcont")
@@ -42,11 +43,9 @@ const pl = async (e:Event)=>{
     try{
         await remoteView.play()
     } catch(err){
-        console.log(err);
         await new Promise((res, rej) => setTimeout(res)).then(pl);
     }
 };
-remoteView.addEventListener("loadstart", pl);
 /*let stream=null;
 async function getstream(){
     stream = await navigator.mediaDevices.getUserMedia(constraints)
@@ -71,11 +70,19 @@ function main(){
     },{once:true});
     
     pc.addEventListener('track', e => {
-        if (remoteView.srcObject) return;
+        if (remoteView.srcObject){
+            console.log("false")
+            return;
+        }
         console.log("true")
         remoteView.srcObject = e.streams[0];
-        startchat()
-    },{once:true});
+        remoteView.addEventListener("loadstart", pl,{once:true});
+        if (first) {
+            startchat()
+            first = false;   
+        }
+        
+    });
     console.log(pc)
     return pc;
     
@@ -129,11 +136,15 @@ socket.on('cand', async (e:any) => {
     }
 });
 socket.on("changed",async(e:any)=>{
-    if (confirm("화면이 전환됨 새로고침 하시겠습니까?")) {
-        location.href="/client.html?view="+roomnaame
-    }else{
-
-    }
+    console.log('changed')
+    socket.emit("sendid",roomnaame)
+    remoteView.srcObject=null;
+    bulina=false;
+    (async function() {
+        textt = await (await fetch('/getuserid')).text()
+        socket.emit('sendid',textt)
+        console.log("Qrewr")
+    })();
 })
 loding()
 const sidbtt = document.querySelector(".sbt-r>div")

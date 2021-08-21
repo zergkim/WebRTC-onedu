@@ -3,19 +3,36 @@ import "./admin.css"
 import "./client.css"
 import "./mainview.css"
 let roomid:string;
+const chat = io("/chat");
 const broadcastart:HTMLDivElement = document.querySelector('#broadcastart')
 const broadcastbody:HTMLDivElement = document.querySelector('#broadcastbody')
 const quibtt:HTMLButtonElement = document.querySelector(".edit.quit>button")
 let started:boolean = false;
-const changebut = document.querySelector(".change")
-changebut.addEventListener("click",async e=>{
-    await getstream(e)
-    socket.emit("changed","")
-    changebut.addEventListener("click",async e=>{
+let idtext:string = null;
+const changebut = document.querySelector(".change>div")
+const changefunc = async (e:any)=>{
+    stream.getTracks().forEach((v:any)=>{
+        v.stop()
+    })
+    try{
         await getstream(e)
-        socket.emit("changed","")
-    },{once: true})
-},{once: true})
+    }catch(e){
+        alert("다시시도하거나 브라우저 업데이트")
+        changebut.addEventListener("click",e=>{
+            changefunc(null)
+        },{once:true})
+        return; 
+    }
+    
+    socket.emit("changed","")
+    console.log("werr")
+    changebut.addEventListener("click",e=>{
+        changefunc(null)
+    },{once:true})
+}
+changebut.addEventListener("click",async e=>{
+    await changefunc(null)
+},{once:true})
 quibtt.addEventListener("click",(e)=>{
     if(confirm("정말로 방송을 끝내시겠습니까?")){
         console.log("quit")
@@ -76,6 +93,7 @@ let stream:any=null;
 async function getstream(e:any){
     
     const meobj:any =navigator.mediaDevices;
+    
     stream = await meobj.getDisplayMedia(constraints)
     selfView.srcObject = stream;
     if (!started) {
@@ -88,21 +106,15 @@ const pcarr:Array<webkitRTCPeerConnection>=[];
 const socket = io('/wrtc'); 
 
 async function createsocket(subtitle:string){
-    socket.emit("Start_Room","")
-    const text = await (await fetch("/getuserid")).text()
-    socket.emit("get_id",{
-        name:subtitle,
-        id:text,
-        info : info.value,
-        subj : opt.value
-    })
+    
     socket.on("OtherSocket",(e:any)=>{
     
         socket.emit("OtherSocket",e)
     })
     socket.on("Get_RoomsID",(e:any)=>{
         roomid = e;
-        console.log(e)
+        console.log(e, "Wrerrewre")
+        startchat()
     })
     socket.on('start', async (string:string) => {
         const pc = main();
@@ -141,6 +153,15 @@ async function createsocket(subtitle:string){
             console.log(err, e);
         }
     });
+    socket.emit("Start_Room","")
+    const text = await (await fetch("/getuserid")).text()
+    idtext = text;
+    socket.emit("get_id",{
+        name:subtitle,
+        id:text,
+        info : info.value,
+        subj : opt.value
+    })
 }
 function main(){
     const pc = new RTCPeerConnection(configuration);
@@ -222,8 +243,46 @@ async function startbroadfunc(e:any){
         broadcastbody.style.display="flex"
         document.querySelector(".videocont>.re").appendChild(selfView)
         broadcastart.style.display="none"
+        
     }catch(e){
         alert('방송을 여는데 문제가 생겼습니다 !!! \n다시 시도하거나 다른브라우저를 이용해주세요')
     }
+}
+const chatemp:HTMLTemplateElement = document.querySelector(".chatcont>template")
+const chatcont:HTMLDivElement = document.querySelector(".chatcont")
+const qbtn:HTMLButtonElement = document.querySelector('.chatbtn')
+
+const chatinput:HTMLInputElement = document.querySelector(".chatinput>input")
+const usercolor ="#"+((1<<24)*Math.random()|0).toString(16)
+function makechat(e:any){   
+    const chattemp = chatemp.content.cloneNode(true) as DocumentFragment 
+    const idofchat:HTMLDivElement = chattemp.querySelector(".ID")
+    idofchat.textContent = e.user;
+    idofchat.style.color = e.color
+    chattemp.querySelector(".chatcontext").textContent=e.text
+    chatcont.appendChild(chattemp)
+    
+}
+function startchat(){
+    console.log("good")
+    qbtn.addEventListener('click', (e)=>{
+        const chatobj = {
+            text : chatinput.value,
+            user :idtext+" (방송자)",
+            time:'오조오억년',
+            color:usercolor
+        }
+        chat.emit("sendchat",chatobj)
+        makechat(chatobj)
+        chatinput.value=""
+    })
+    chat.emit("joinchat", roomid)
+    chat.on("sendchat",(e:any)=>{
+        makechat(e)
+        
+    })
+    console.log(qbtn)
+    
+
 }
 // Send any ice candidates to the other peer.

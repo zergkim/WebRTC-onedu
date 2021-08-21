@@ -132,7 +132,7 @@ async function loding() {
         const de = clon.querySelector(".sumblist")
         console.log(videolist)
         const videolistfor=async ()=>{
-            
+            console.log(videolist)
             for (let v of videolist){
                 const videoinfo = await (await fetch(`/getvideoinfo?id=${v}`)).json()
                 const clon2 = temp2.content.cloneNode(true) as DocumentFragment

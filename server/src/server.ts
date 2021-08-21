@@ -112,6 +112,7 @@ io.on("connection",(socket:any) =>{
 
 })*/
 export function webrtcfunc(socket:any){
+    let first:boolean = true;
     console.log("연결")
     const fun = (str:string,one:typeof socket,other:typeof socket,so:typeof socket) => (e:string) => {
             
@@ -122,9 +123,10 @@ export function webrtcfunc(socket:any){
         }
     };
     socket.on("Start_Room", async(obj:object)=>{
+        let one:Socket;
+        let other:Socket;
         const Rooms_ID:string=uuidV4();
         socket.join(Rooms_ID);
-        console.log(typeof Rooms_ID)
         socket.emit("Get_RoomsID",Rooms_ID);
         let id=""
         socket.on("get_id",async(e:any)=>{
@@ -142,11 +144,15 @@ export function webrtcfunc(socket:any){
             }
             await DBObj.Broadcasting.insertOne(broadcastobj)
             socket.on("OtherSocket",(e:any)=>{
-                const one = socket;
-                const other = roomobj[Rooms_ID][e].socket;
+                one = socket;
+                other = roomobj[Rooms_ID][e].socket;
                 socket.on('cand', fun('cand',one,other,socket));
                 socket.on('desc', fun('desc',one,other,socket));    
-            }) 
+            })
+            socket.on("OtherSocket2",(e:any)=>{
+                socket.on('cand', fun('cand',one,other,socket));
+                socket.on('desc', fun('desc',one,other,socket));   
+            })
             socket.on("disconnect",(e:any)=>{
                 console.log("endbroad")
                 DBObj.Broadcasting.deleteOne({Rooms_ID})
@@ -168,9 +174,10 @@ export function webrtcfunc(socket:any){
         
     })
     socket.on("Start_Connection",(RoomName:string)=>{
-        socket.join(RoomName);
         let one:Socket;
         let hid : string;
+        let bulina:boolean = false;
+        
         try{
             one = hostobj[RoomName].socket
             hid = hostobj[RoomName].id
@@ -189,29 +196,42 @@ export function webrtcfunc(socket:any){
             
         })
         one.on("changed",e=>{
+            console.log("changed")
             socket.emit("changed","")
+            bulina=false 
         })
         socket.on("sendid",async(e:any)=>{
+            if (bulina) {
+                return;
+            }
             console.log(e, "Wr")
             try{
+                bulina = true;
                 const id = e;
                 const socknumb = roomobj[RoomName].push({socket,id})-1
                 await DBObj.Broadcasting.updateOne({Rooms_ID:RoomName},{$push:{clientsid:id}});
                 await DBObj.Broadcasting.updateOne({Rooms_ID:RoomName},{$inc:{views:1}})
-                one.emit("OtherSocket",socknumb)
+                if (first) {
+                    one.emit("OtherSocket",socknumb)
+                    first = false
+                }else{
+                    one.emit("OtherSocket2",socknumb)
+                }
+                
                 socket.on('disconnect',async(e:any)=>{
                     await DBObj.Broadcasting.updateOne({Rooms_ID:RoomName},{$pull:{clientsid:id}})
                     await DBObj.Broadcasting.updateOne({Rooms_ID:RoomName},{$inc:{views:-1}})
-                })
+                }) 
             }catch(e){
-                return
+                console.log("qwrqre")
+                return;
             }
             one.emit("start","start")
-            
+            console.log("씨발좇같다")
             socket.on('cand', fun('cand',one,other,socket));
             socket.on('desc', fun('desc',one,other,socket));
+            
         })
-        
         
     })
 

@@ -262,8 +262,8 @@ app.get('/getvideoinfo',async(req,res)=>{
     const text : string = req.query.id as string
     console.log(text)
     let obj:any  = await DBObj.Videodata.findOne({"_id":new ObjectID(text)})
-    console.log(obj.title)
-    obj = {vname:obj.title,typeofi : obj.typeofi,ID: obj.ID,subj : obj.subj,views:obj.views}
+    console.log(obj)
+    //obj = {vname:obj.title,typeofi : obj.typeofi,ID: obj.ID,subj : obj.subj,views:obj.views}
     res.json(obj)
 })
 app.get("/getuserlist",async (req,res)=>{
@@ -410,7 +410,7 @@ io.of("/chat").on("connection",(socket)=>{
     socket.on("joinchat",(e:string)=>{
         serverid = e
         socket.join(e)
-        console.log(e) 
+        console.log(e ,"ewre") 
     })
     socket.on('sendchat',(e:Chat_Obj)=>{
         socket.to(serverid).emit("sendchat",e)

@@ -2,8 +2,14 @@ import Hls from 'hls.js'
 import './client.css'
 import './mainview.css'
 import './watchview.css'
-const video:HTMLVideoElement =document.querySelector(".video>video")
+import videojs  from 'video.js'
+import "videojs-hls-quality-selector"
 
+const video:HTMLVideoElement =document.querySelector(".video>video")
+const player = videojs('myvideo')
+player.hlsQualitySelector({
+    displayCurrentQuality: true,
+});
 const urlpraa = new URLSearchParams(location.search)
 const urlpra:string=urlpraa.get("view")
 
