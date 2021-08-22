@@ -20,7 +20,7 @@ const changefunc = async (e:any)=>{
         alert("다시시도하거나 브라우저 업데이트")
         changebut.addEventListener("click",e=>{
             changefunc(null)
-        },{once:true})
+        },{once:true});
         return; 
     }
     

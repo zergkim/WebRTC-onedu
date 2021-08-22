@@ -17,7 +17,7 @@
     width: 100%;
     margin:0px;
 }
-.video>video{
+.video>video,#myvideo{
     width: 95%;
     margin: auto;
 }

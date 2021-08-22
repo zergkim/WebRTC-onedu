@@ -151,9 +151,13 @@ a{
     flex-direction: row;
     justify-content: center;
     margin-left: none;
+    vertical-align: middle;
 }
 .sumb>img{
     height: 100%;
+    width: 100%;
+    max-width: 300px;
+    max-height: 170px;
 }
 .usumb{
     width: 40px;

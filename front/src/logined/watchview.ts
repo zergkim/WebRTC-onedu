@@ -1,17 +1,88 @@
-import Hls from 'hls.js'
-import './client.css'
-import './mainview.css'
-import './watchview.css'
-import videojs  from 'video.js'
-import "videojs-hls-quality-selector"
-
-const video:HTMLVideoElement =document.querySelector(".video>video")
-const player = videojs('myvideo')
-player.hlsQualitySelector({
+import Hls from 'hls.js';
+import './client.css';
+import './mainview.css';
+import './watchview.css';
+import videojs  from 'video.js';
+import videojsqualityselector from 'videojs-hls-quality-selector';
+import 'videojs-contrib-quality-levels';
+import { isArrayLiteralExpression } from 'typescript';
+/*player.hlsQualitySelector({
     displayCurrentQuality: true,
-});
+});*/
 const urlpraa = new URLSearchParams(location.search)
 const urlpra:string=urlpraa.get("view")
+let options = {
+    aspectRatio: '16:9',
+    fluid: true,
+    poster: "./6120719e65aa8705305a208f.jpeg",
+    controls : true, 
+    playsinline : true, 
+    muted : true, 
+    preload : "metadata", 
+    controlBar : { playToggle : true, pictureInPictureToggle : false, remainingTimeDisplay : true, progressControl : true},
+    html5: {
+        vhs: {
+          overrideNative: true 
+        },
+        nativeAudioTracks: false,
+        nativeVideoTracks: false
+    },
+    
+};
+
+
+const video:HTMLVideoElement =document.querySelector(".video>video")
+const player = videojs('myvideo', options)
+
+
+
+
+
+
+
+  
+let first=true
+
+video.addEventListener("pause",e=>{
+    if (!first) {
+        return;
+    }else{
+        first = false
+
+    }
+    const func = async (e:any)=>{
+        if (video.paused) {
+            await video.play()
+        }else{
+            await video.pause()
+        }
+        
+        setTimeout(()=>{
+            document.querySelector('.vjs-play-control.vjs-control.vjs-button').addEventListener("click",func,{once:true})
+        },600)
+    }
+    const func2 = async (e:Event)=>{
+        if (video.paused) {
+            
+            await video.play()
+            
+        }else{
+            await video.pause()
+            
+        }
+        setTimeout(()=>{
+            document.querySelector("#myvideo_html5_api").addEventListener("click",func2,{once:true})
+        },600)
+          
+    }
+    document.querySelector('.vjs-play-control.vjs-control.vjs-button').addEventListener("click",func,{once:true})
+    document.querySelector("#myvideo_html5_api").addEventListener("click",func2,{once:true})
+    //document.querySelector("#myvideo_html5_api").addEventListener("click",func2,{once:true})
+    document.addEventListener("click",e=>{
+        console.log("Werr")
+    })
+})
+
 
 async function infoload() {
     let obj = await (await fetch("/getvideoinfo?id="+urlpra)).json()
@@ -28,13 +99,13 @@ if(Hls.isSupported()){
     hls.loadSource(videoSrc);
     hls.attachMedia(video)
     hls.on(Hls.Events.MANIFEST_PARSED,video.play)
+    
 }else if(video.canPlayType('application/vnd.apple.mpegurl')){
     video.src=videoSrc;
     video.addEventListener('loadedmetadata',()=>{
         video.play()
     })
 }
-
 
 
 
