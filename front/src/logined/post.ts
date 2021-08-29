@@ -1,5 +1,6 @@
 import { Socket } from "dgram"
 import io from "socket.io-client"
+import './post.css'
 const timpar:HTMLDivElement = document.querySelector('#timestampdiv>div');
 const sstart:HTMLButtonElement = document.querySelector("#start");
 const send:HTMLButtonElement = document.querySelector("#end");
@@ -64,6 +65,7 @@ videoinp.addEventListener('change',async e => {
     video.load();
     await video.play();
 })
+
 button.addEventListener("click",async e=>{
     if(!confirm("진짜 올리시겠습니까?")){
         return;

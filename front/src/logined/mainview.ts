@@ -147,7 +147,7 @@ async function loding() {
                 usertitle.textContent = videoinfo.ID;
                 const usertitlea =  usertitle.parentElement as HTMLAnchorElement
                 usertitlea.href = "/"
-                vtitle.textContent = videoinfo.vname;
+                vtitle.textContent = videoinfo.title;
                 const sumb = clon2.querySelector('.sumb')
                 console.log(sumb)
                 const sumba:any = sumb.parentElement as HTMLAnchorElement

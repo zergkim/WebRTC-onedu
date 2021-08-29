@@ -7,7 +7,7 @@ import {v4 as uuidV4} from 'uuid';
 import { webrtcfunc } from "./server";
 import { send_mail } from "./emil";
 import cookieParser from "cookie-parser";
-import {Get_jungbo,FindUser,postthedata} from "./splite";
+import {Get_jungbo,FindUser,postthedata,search} from "./splite";
 import path from 'path';
 const viewroot = {root:'C:/Users/zergk/Desktop/git_project/dproject/front/dist'}
 console.log("sex")
@@ -30,8 +30,10 @@ client.connect(async e=>{
     DBObj.Videodata=DBObj.DB.collection("videodataup")
     DBObj.Email=DBObj.DB.collection("email")
     DBObj.Users=DBObj.DB.collection("userdata")
+     
     DBObj.PLAYLIST = DBObj.DB.collection('playlist');
     DBObj.Broadcasting = DBObj.DB.collection('broadcasting')
+    
 })
 import { Server, Socket } from "socket.io";
 import express, { json } from 'express';
@@ -48,6 +50,10 @@ app.use(express.raw({limit:'1gb'}))//이거 꼭설정 해야함
 app.use(express.json());
 app.use('/img',express.static('../img'))
 app.use('/videos',express.static("../videos"))
+app.get('/search',async(req,res)=>{
+    const searche = req.query.search as unknown as string
+    res.send(await search(searche,5))
+})
 app.get("/", async(req,res)=>{
     let resultPath = ""
     if(req.cookies.id){

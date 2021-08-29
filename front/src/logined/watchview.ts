@@ -9,6 +9,12 @@ import { isArrayLiteralExpression } from 'typescript';
 /*player.hlsQualitySelector({
     displayCurrentQuality: true,
 });*/
+interface selecq {
+    hls30:Hls,
+    hls70 :Hls,
+    hls100:Hls,
+    selected:Hls
+}
 const urlpraa = new URLSearchParams(location.search)
 const urlpra:string=urlpraa.get("view")
 let options = {
@@ -92,33 +98,56 @@ async function infoload() {
     document.querySelector("strong").textContent = obj.views
 }
 infoload()
-const videoSrc=`/videos/${urlpra}.m3u8`;
+const videoSrc30=`/videos/${urlpra}(30p).m3u8`;
+
+const videoSrc70=`/videos/${urlpra}(70p).m3u8`;
+
+const videoSrc100=`/videos/${urlpra}(100p).m3u8`;
+
+let hlsobj:any={
+    hls30:null,
+    hls100:null,
+    hls70:null,
+    selected:null
+};
 if(Hls.isSupported()){
     console.log(Hls.isSupported())
-    const hls:Hls = new Hls();
-    hls.loadSource(videoSrc);
-    hls.attachMedia(video)
-    hls.on(Hls.Events.MANIFEST_PARSED,video.play)
-    
+    hlsobj.hls30 = new Hls();
+    hlsobj.hls30.loadSource(videoSrc30);
+    hlsobj.hls30.attachMedia(video)
+    hlsobj.hls70 = new Hls();
+    hlsobj.hls70.loadSource(videoSrc70);
+    hlsobj.hls100 = new Hls();
+    hlsobj.hls100.loadSource(videoSrc100);
+    hlsobj.selected=hlsobj.hls30
 }else if(video.canPlayType('application/vnd.apple.mpegurl')){
-    video.src=videoSrc;
-    video.addEventListener('loadedmetadata',()=>{
-        video.play()
-    })
+    video.src=videoSrc30;
+    
 }
-
-
-
-/*async function chat(){
-    const array = [0]
-    let k = setInterval(() => {
-        const datac = chatdata[Math.floor(video.currentTime)]
-        //console.log(datac,Math.floor(video.currentTime))
-        if(datac){
-            datac.forEach((v:chatobject)=>{
-                chatanimationfunc(v.text,v.xy[0],v.xy[1])
-            })
-        }
-    }, 999);
-    animationnumb=k;
-}*/
+video.addEventListener("play",e=>{
+        //video.play()
+        const q_select = document.createElement("select")
+        
+        const option30 = document.createElement("option")
+        const option70 = document.createElement("option")
+        const option100 = document.createElement("option")
+        option30.innerText="30%"
+        option70.innerText="70%"
+        option100.innerText="100%"
+        q_select.appendChild(option30)
+        q_select.appendChild(option70)
+        q_select.appendChild(option100)
+        document.querySelector('.vjs-control-bar').appendChild(q_select)
+        q_select.addEventListener("change",async e=>{
+            const currnet = video.currentTime;
+            hlsobj.selected.detachMedia()
+            let arr:Array<string> = q_select.value.split("")
+            arr.pop()
+            let stra:String = arr.join("")
+            hlsobj[`hls${stra}`].attachMedia(video)
+            hlsobj.selected = hlsobj[`hls${stra}`]
+            await video.play();
+            video.currentTime=currnet
+        })
+    
+},{once:true})

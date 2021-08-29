@@ -50,9 +50,10 @@
 
         
     </script>    
-    <div><input type="file" id="video"><input type="file" id="img"><button id="button">
-        포스트
-    </button></div>
+    <div><span class="labelspan">영상</span><span>:</span><input type="file" id="video"></div>
+    <div><span class="labelspan">이미지</span><span>:</span><input type="file" id="img"></div>
+        
+    <div><button id="button">포스트</button></div>
     <video id="player"controls width="320"><source></video>
     <div></div>
     <div id="timestampdiv">
@@ -60,7 +61,7 @@
     </div>
     <div id="viewdiv"><table id="timestampview"><tr><td>시작</td><td>끝</td><td>텍스트</td></tr></table><span>dfdf</span></div>
     
-    <div id="subject"><span>관련과목</span><div>
+    <div id="subject"><span>관련과목</span>
         <select id="er">
             <option value="">--옵션선택--</option>
             <option value="국어">국어</option>
@@ -74,17 +75,15 @@
         </select>
     </div>
     <div>
-        <input class="title" type="text">
+        영상제목 <input class="title" type="text">
     </div>
     <div class="playlist">
-        play list:<input type="text"><button>만들기</button>
+        플레이리스트 만들기:<input type="text"><button>만들기</button>
     </div>
     <div class="listselect">
         playlist <select></select>
     </div>
-    <div>
-        <textarea class="infotext" maxlength="30"></textarea>
-    </div>
+    
 </body>
 
 </html>

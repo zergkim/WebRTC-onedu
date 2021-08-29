@@ -11,3 +11,14 @@
     font-weight: 700;
     color: #EB94AC;
 }
+.vjs-control-bar>select{
+    background-color : rgba(255, 255, 255, 0);
+    opacity: 1;
+    color: white;
+    margin: none;
+    border: none;
+}
+option{
+    background-color: white;
+    color:black;
+}
