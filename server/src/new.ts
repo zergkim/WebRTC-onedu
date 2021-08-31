@@ -1,4 +1,4 @@
-import { Db, MongoClient,ObjectID } from "mongodb";
+import { Cursor, Db, MongoClient,ObjectID } from "mongodb";
 const url = "mongodb+srv://zergkim:kimsh060525@cluster0.55ags.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
 import { Chat_Obj, DBOBJ,POST_DATA_OBJ,POST_IV_OBJ, PLAYLIST} from "./type";
 const client = new MongoClient(url, { useUnifiedTopology: true });
@@ -30,7 +30,7 @@ client.connect(async e=>{
     DBObj.Videodata=DBObj.DB.collection("videodataup")
     DBObj.Email=DBObj.DB.collection("email")
     DBObj.Users=DBObj.DB.collection("userdata")
-     
+    DBObj.Vu = DBObj.DB.collection("videodataup")
     DBObj.PLAYLIST = DBObj.DB.collection('playlist');
     DBObj.Broadcasting = DBObj.DB.collection('broadcasting')
     
@@ -43,6 +43,7 @@ const front = path.resolve(__dirname, '..', '..', 'front');
 // import hls from 'hls-server';
 import fs from 'fs/promises';
 import { remove } from "jszip";
+import e from "express";
 app.use(express.text())
 app.use(cookieParser())
 app.use('/node_modules',express.static('../node_modules'))
@@ -95,7 +96,7 @@ app.use('/', async (req, res, next) => {
         return; 
     }
     else{
-        if(req.url=="/logout"||req.url=="/viewlist"||req.url.indexOf("getuserlist")>-1||req.url.indexOf("getvideoinfo")>-1||req.url.indexOf('getuserid')>-1||req.url=="/getlplaylist"||req.url=="/broadcasting"){
+        if(req.url=="/logout"||req.url=="/viewlist"||req.url.indexOf("getuserlist")>-1||req.url.indexOf("getvideoinfo")>-1||req.url.indexOf('getuserid')>-1||req.url=="/getlplaylist"||req.url.indexOf("/broadcasting")>-1||req.url=="/userlistvideolist"||req.url=="/getsubuserlist"||req.url=="/topvideolist"){
             try{
                next()
                console.log(req.url)
@@ -208,6 +209,10 @@ app.post("/lplaylistvideolist",async(req,res)=>{
     const videolist = (await DBObj.PLAYLIST.findOne({NAME:req.body.name})).videos
     res.json(videolist)
 })
+app.post("/userlistvideolist",async(req,res)=>{
+    const videolist = (await DBObj.Users.findOne({ID:req.body.name})).videolist
+    res.json(videolist)
+})
 app.post("/login",async(req,res)=>{
     
     const userobj = await FindUser(req.body.userid)
@@ -245,11 +250,21 @@ app.get('/getuserid',async(req,res)=>{
     res.send(req.cookies.id)
 })
 app.get("/getlplaylist",async(req,res)=>{
-    const list = (await DBObj.Users.findOne({ID:req.cookies.id})).lplaylist
+    const list = (await DBObj.Users.findOne({ID:req.cookies.id})).subplaylist
+    res.json(list)
+})
+app.get('/getsubuserlist',async(req,res)=>{
+    const list =  (await DBObj.Users.findOne({ID:req.cookies.id})).subuserlist
     res.json(list)
 })
 app.get('/broadcasting',async(req,res)=>{
-    const letv = await DBObj.Broadcasting.find({})
+    let letv:Cursor;
+    if (!req.query.e) {
+        letv = await DBObj.Broadcasting.find({}).limit(10)
+    }else{
+        letv = await DBObj.Broadcasting.find({$or:[{host_id:req.query.e},{broadname:req.query.e}]}).limit(10)
+    }
+    
     const arr:Array<any> = [];
     for await(let i of letv){
         arr.push(i)
@@ -273,18 +288,50 @@ app.get('/getvideoinfo',async(req,res)=>{
     res.json(obj)
 })
 app.get("/getuserlist",async (req,res)=>{
-    const text = JSON.stringify(req.query.user) as string
+    const text = req.cookies.id as string
     console.log(text)
-    const obj = await DBObj.Users.findOne({ID:req.query.user})
+    const obj = await DBObj.Users.findOne({ID:text})
     console.log(obj,text)
     res.json(obj) 
     console.log("Er")
+})
+app.get("/topvideolist",async(req,res)=>{
+    const obj = await DBObj.Vu.find({}).sort({views:-1}).limit(10)
+    const array=[]
+    for await(let i of obj){
+        array.push(i._id)
+    }
+    console.log(array)
+    res.json(array)
 })
 app.get("/login",(req,res)=>{
     res.sendFile("login.html",viewroot)
 })
 
-
+app.post("/sub",async(req,res)=>{
+    console.log("were")
+    if (req.query.suj !== "user") {
+        console.log("Wer")
+        console.log(req.body.ifsub==false)
+        if(req.body.ifsub){
+            await DBObj.Users.updateOne({ID:req.cookies.id},{$push:{subplaylist:req.body.text}})
+        }else{
+            await DBObj.Users.updateOne({ID:req.cookies.id},{$pull:{subplaylist:req.body.text}})
+           
+        }
+    }
+    else if (req.query.suj == "user") {
+        console.log("Wer")
+        console.log(req.body.ifsub==false)
+        if(req.body.ifsub){
+            await DBObj.Users.updateOne({ID:req.cookies.id},{$push:{subuserlist:req.body.text}})
+        }else{
+            await DBObj.Users.updateOne({ID:req.cookies.id},{$pull:{subuserlist:req.body.text}})
+           
+        }
+    }
+    res.send("true")
+})
 app.use('/webscript/:filename',(req,res,next)=>{
     const splited:Array<string> = req.params.filename.split(".")
     const splitedst = splited[splited.length-1]

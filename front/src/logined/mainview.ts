@@ -105,6 +105,7 @@ async function loding() {
     const temp:HTMLTemplateElement = document.querySelector(".sumbtemp")
     const sidebartemp:HTMLTemplateElement = document.querySelector(".sidebartemp")
     const listarr:Array<string> = await(await fetch("/getlplaylist")).json()
+    const listarr2:Array<string> = await(await fetch("/getsubuserlist")).json()
     const broadarr:Array<any> = await(await fetch("/broadcasting")).json()
     broadarr.forEach(v=>{
         const sideclone= sidebartemp.content.cloneNode(true) as DocumentFragment;
@@ -124,7 +125,96 @@ async function loding() {
             },
             body: JSON.stringify({name:i})
         })).json()
+        const clon = temp.content.cloneNode(true) as DocumentFragment
+        const title = clon.querySelector<HTMLHeadingElement>(".subj>h1")
+        console.log(videolist)
+        console.log(clon)
+        const de = clon.querySelector(".sumblist")
+        console.log(videolist)
+        if (videolist.length<1) {
+            
+        }else{
+            const videolistfor=async ()=>{
+                console.log(videolist)
+                for (let v of videolist){
+                    const videoinfo = await (await fetch(`/getvideoinfo?id=${v}`)).json()
+                    const clon2 = temp2.content.cloneNode(true) as DocumentFragment
+                    const img:HTMLImageElement = clon2.querySelector(".sumb>img")
+                    img.src = `/img/${v}.${videoinfo.typeofi}`
+                    const vtitle = clon2.querySelector(".erti")
+                    const vtitlea=vtitle.parentElement as HTMLAnchorElement;
+                    console.log(vtitlea)
+                    vtitlea.href=`/watchview?view=${v}`
+                    console.log(v)
+                    const usertitle = clon2.querySelector('.userti')
+                    usertitle.textContent = videoinfo.ID;
+                    const usertitlea =  usertitle.parentElement as HTMLAnchorElement
+                    usertitlea.href = "/"
+                    vtitle.textContent = videoinfo.title;
+                    const sumb = clon2.querySelector('.sumb')
+                    console.log(sumb)
+                    const sumba:any = sumb.parentElement as HTMLAnchorElement
+                    sumba.href = `/watchview?view=${v}`
+                    de.appendChild(clon2)
+                }
+            }
+            videolistfor()
+            console.log(title)
+            title.textContent = `${i} (수강중인 강의 영상)`
+            mainview.appendChild(clon)
+        }
         
+    }
+    for(let i of listarr2){
+        console.log(i)
+        const videolist:Array<string> = await(await fetch("/userlistvideolist",{
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body: JSON.stringify({name:i})
+        })).json()
+        const clon = temp.content.cloneNode(true) as DocumentFragment
+        const title = clon.querySelector<HTMLHeadingElement>(".subj>h1")
+        console.log(videolist)
+        console.log(clon)
+        const de = clon.querySelector(".sumblist")
+        console.log(videolist)
+        if (videolist.length<1) {
+            return;
+        }else{
+            const videolistfor=async ()=>{
+                for (let v of videolist){
+                    const videoinfo = await (await fetch(`/getvideoinfo?id=${v}`)).json()
+                    const clon2 = temp2.content.cloneNode(true) as DocumentFragment
+                    const img:HTMLImageElement = clon2.querySelector(".sumb>img")
+                    img.src = `/img/${v}.${videoinfo.typeofi}`
+                    const vtitle = clon2.querySelector(".erti")
+                    const vtitlea=vtitle.parentElement as HTMLAnchorElement;
+                    console.log(vtitlea)
+                    vtitlea.href=`/watchview?view=${v}`
+                    console.log(v)
+                    const usertitle = clon2.querySelector('.userti')
+                    usertitle.textContent = videoinfo.ID;
+                    const usertitlea =  usertitle.parentElement as HTMLAnchorElement
+                    usertitlea.href = "/"
+                    vtitle.textContent = videoinfo.title;
+                    const sumb = clon2.querySelector('.sumb')
+                    console.log(sumb)
+                    const sumba:any = sumb.parentElement as HTMLAnchorElement
+                    sumba.href = `/watchview?view=${v}`
+                    de.appendChild(clon2)
+                }
+            }
+            videolistfor()
+            console.log(title)
+            title.textContent = `${i} (구독한 유저)`
+            mainview.appendChild(clon)
+        }
+        
+    };
+    (async ()=>{
+        const videolist = await (await fetch("/topvideolist")).json()
         const clon = temp.content.cloneNode(true) as DocumentFragment
         const title = clon.querySelector<HTMLHeadingElement>(".subj>h1")
         console.log(videolist)
@@ -157,9 +247,9 @@ async function loding() {
         }
         videolistfor()
         console.log(title)
-        title.textContent = `${i} (수강중인 강의 영상)`
+        title.textContent = `인기강의들`
         mainview.appendChild(clon)
-    }
+    })()
 }
 
 const sidbtt = document.querySelector(".sbt-r>div")

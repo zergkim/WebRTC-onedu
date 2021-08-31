@@ -1,0 +1,82 @@
+.usersumbdiv{
+    display: flex;
+    flex-direction: row;
+    padding-top: 30px;
+    padding-left: 30px;
+    padding-right: 30px;
+    
+    height: 140px;
+}
+.divimgcont{
+    height: 90px;
+    width: 200px;
+    display: flex;
+    justify-content: center;
+}
+.divimgcont>a>img{
+    height: 100%;
+    width: 90px;
+    border-radius: 60px;
+}
+.divtextcont{
+    height: 90px;
+    padding-bottom: 10px;
+    padding-right: 10px;
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    
+    justify-content: center;
+}
+.divbuttoncont{
+    display: flex;
+    flex-direction: center;
+    align-items: center;
+}
+.divbuttoncont>button{
+    background-color: #c99885c5;
+    color: white;
+    margin-right: 5px;
+}
+.divbuttoncont>button:hover{
+    background-color: #C99885;
+    color: white;
+}
+.divbuttoncont>button:active{
+    background-color: #C29380;
+    color: white;
+}
+.divbuttoncont>button.sub{
+    background-color: #C4C4C4;
+    color: white;
+    margin-right: 5px;
+}
+.divbuttoncont>button.sub:hover{
+    background-color: #BFBFBF;
+    color: white;
+}
+.divbuttoncont>button.sub:active{
+    background-color: #B3B3B3;
+    color: white;
+}
+.usernamed{
+    height: 40px;
+    font-size: 23px;
+    font-weight: 600;
+}
+
+a{
+    text-decoration: none;
+}
+a:hover{
+    color: black;
+}
+a>span:hover{
+    color:#EB94AC
+}
+.userinfo{
+    height: 25px;
+    font-size: 13px;
+    font-weight: 300;
+    color: #3D3D3D;
+}

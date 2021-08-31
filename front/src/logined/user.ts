@@ -1,4 +1,6 @@
-import './mainview.css';/*
+import './mainview.css';
+import './user.css'
+/*
 const sidebar:HTMLDivElement = document.querySelector('#sidebar')
 sidebar.classList.add('bfcksidbar')
 const arr:Array<HTMLVideoElement> = Array.from(document.querySelectorAll('.sumbv'))
@@ -102,10 +104,13 @@ but.addEventListener("click",e=>{
     
 },)*/
 async function loding() {
+    const userid = await (await fetch("/getuserlist")).json()
+    const searched = await (await fetch("/search?search=op")).json()
+    console.log(searched)
     const temp:HTMLTemplateElement = document.querySelector(".sumbtemp")
+    const videocontdiv=mainview.querySelector('div.videocontdiv')
     const sidebartemp:HTMLTemplateElement = document.querySelector(".sidebartemp")
-    const listarr:Array<string> = await(await fetch("/getlplaylist")).json()
-    const broadarr:Array<any> = await(await fetch("/broadcasting")).json()
+    const broadarr:Array<any> = await(await fetch(`/broadcasting?e=${"op"}`)).json()
     broadarr.forEach(v=>{
         const sideclone= sidebartemp.content.cloneNode(true) as DocumentFragment;
         sideclone.querySelector(".names").textContent = v.host_id
@@ -115,18 +120,172 @@ async function loding() {
         sidebar.appendChild(sideclone)
     })
     const temp2:HTMLTemplateElement = document.querySelector(".contemp")
-    console.log(listarr)
-    for(let i of listarr){
-        const videolist:Array<string> = await(await fetch("/lplaylistvideolist",{
-            method:"POST",
-            headers:{
-                "Content-Type":"application/json"
-            },
-            body: JSON.stringify({name:i})
-        })).json()
-        
-        
+    const usersumbconte = document.querySelector(".usersumbcont")
+    const playlisttemp:HTMLTemplateElement = document.querySelector(".playlisttemp")
+    const playlistcont = document.querySelector(".playlistcont")
+    const playlistfor=async (userlist:any)=>{
+        console.log(searched)
+        for(let cont of userlist){
+            const ID = cont.NAME
+            const _id = cont._id
+            const host_id = cont.ownerID;
+            const usersumbcont:HTMLTemplateElement = document.querySelector('#usersumbcont')
+            const doccont = playlisttemp.content.cloneNode(true) as DocumentFragment
+            const username:HTMLSpanElement = doccont.querySelector(".usernamed>a>span")
+            const buttoning = doccont.querySelector("button")
+            let bulina = false;
+            console.log(cont.subplaylist)
+            for(let i of userid.subplaylist){
+                
+                if (i==ID) {
+                    bulina = true;
+                    break;
+                }
+            }
+            if (bulina) {
+                buttoning.classList.add("sub")
+                buttoning.textContent="구독중"
+            }
+            buttoning.dataset.text=ID
+            console.log(username)
+            username.textContent = ID
+            const dogtext = doccont.querySelector(".userinfo>span")
+            dogtext.textContent = host_id
+            Array.from(doccont.querySelectorAll("a")).forEach(v=>v.href="/user?user="+_id)
+            playlistcont.appendChild(doccont)
+            console.log(doccont)
+        }
     }
+    playlistfor(searched.PLAYLIST)
+    const userlistfor=async (userlist:any)=>{
+        console.log(searched)
+        for(let cont of userlist){
+            const ID = cont.ID
+            const _id = cont._id
+            const videogasu = cont.videolist.length
+            const usersumbcont:HTMLTemplateElement = document.querySelector('#usersumbcont')
+            const doccont = usersumbcont.content.cloneNode(true) as DocumentFragment
+            const imgcont:HTMLImageElement =  doccont.querySelector(".divimgcont>a>img")
+            const buttoning = doccont.querySelector("button")
+            let bulina = false;
+            
+            for(let i of userid.subuserlist){
+                if (i==ID) {
+                    bulina = true;
+                    break;
+                }
+            }
+            if (bulina) {
+                buttoning.classList.add("sub")
+                buttoning.textContent="구독중"
+            }
+            buttoning.dataset.text=ID
+            console.log(imgcont)
+            imgcont.src = '/'+_id+"jpg"
+            const username:HTMLSpanElement = doccont.querySelector(".usernamed>a>span")
+            username.textContent = ID
+            const dogtext = doccont.querySelector(".dogtext")
+            dogtext.textContent = videogasu
+            Array.from(doccont.querySelectorAll("a")).forEach(v=>v.href="/user?user="+_id)
+            usersumbconte.appendChild(doccont)
+            console.log(doccont)
+        }
+    }
+    userlistfor(searched.Users)
+    const videolistfor=async (videolist:any)=>{
+        console.log(videolist)
+        for (let ve of videolist){
+            const v = ve._id
+            const videoinfo = await (await fetch(`/getvideoinfo?id=${v}`)).json()
+            const clon2 = temp2.content.cloneNode(true) as DocumentFragment
+            const img:HTMLImageElement = clon2.querySelector(".sumb>img")
+            img.src = `/img/${v}.${videoinfo.typeofi}`
+            const vtitle = clon2.querySelector(".erti")
+            const vtitlea=vtitle.parentElement as HTMLAnchorElement;
+            console.log(vtitlea)
+            vtitlea.href=`/watchview?view=${v}`
+            console.log(v)
+            const usertitle = clon2.querySelector('.userti')
+            usertitle.textContent = videoinfo.ID;
+            const usertitlea =  usertitle.parentElement as HTMLAnchorElement
+            usertitlea.href = "/"
+            vtitle.textContent = videoinfo.title;
+            const sumb = clon2.querySelector('.sumb')
+            console.log(sumb)
+            console.log(clon2)
+            const sumba:any = sumb.parentElement as HTMLAnchorElement
+            sumba.href = `/watchview?view=${v}`
+            videocontdiv.appendChild(clon2)
+            
+        }
+    }
+    videolistfor(searched.Videodata)
+   
+    playlistcont.addEventListener("click",(e:Event)=>{
+        const targ = e.target as unknown as HTMLElement
+        if(targ.nodeName=='BUTTON'){
+            if (targ.classList.contains("sub")) {
+                targ.textContent="구독"
+                targ.classList.remove('sub')
+                
+                fetch("/sub?suj=66564",{
+                    method:'POST',
+                    headers:{
+                        'Content-Type':'application/json'
+                    },
+                    body:JSON.stringify({
+                        ifsub:"",
+                        text:targ.dataset.text
+                    })
+                })
+            }else{
+                fetch("/sub?suj=66564",{
+                    method:'POST',
+                    headers:{
+                        'Content-Type':'application/json'
+                    },
+                    body:JSON.stringify({
+                        ifsub:"true",
+                        text:targ.dataset.text
+                    })
+                })
+                targ.textContent="구독중"
+                targ.classList.add('sub')
+            }
+        }
+    })
+    usersumbconte.addEventListener("click",(e:Event)=>{
+        const targ = e.target as unknown as HTMLElement
+        if(targ.nodeName=='BUTTON'){
+            if (targ.classList.contains("sub")) {
+                targ.textContent="구독"
+                targ.classList.remove('sub')
+                fetch("/sub?suj=user",{
+                    method:'POST',
+                    headers:{
+                        'Content-Type':'application/json'
+                    },
+                    body:JSON.stringify({
+                        ifsub:"",
+                        text:targ.dataset.text
+                    })
+                })
+            }else{
+                targ.textContent="구독중"
+                targ.classList.add('sub')
+                fetch("/sub?suj=user",{
+                    method:'POST',
+                    headers:{
+                        'Content-Type':'application/json'
+                    },
+                    body:JSON.stringify({
+                        ifsub:"true",
+                        text:targ.dataset.text
+                    })
+                })
+            }
+        }
+    })
 }
 
 const sidbtt = document.querySelector(".sbt-r>div")
