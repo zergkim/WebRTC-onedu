@@ -22,3 +22,10 @@ option{
     background-color: white;
     color:black;
 }
+.vjs-progress-control {
+    bottom: 28px;
+    left: 0 ;
+    font-size: 10px;
+    width: 100%;
+    height: 0px;
+}

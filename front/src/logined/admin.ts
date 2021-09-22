@@ -131,7 +131,7 @@ async function createsocket(subtitle:string){
         }
     });
     socket.on('desc', async (e:any) => {
-        if (e.type === 'answer') {
+        if (e.type === 'answer') {  
             const pcnumb = e.numb;
             delete e.numb;
             const pc = pcarr[pcnumb]
@@ -166,8 +166,12 @@ async function createsocket(subtitle:string){
 function main(){
     const pc = new RTCPeerConnection(configuration);
     pc.addEventListener('negotiationneeded', async () => {
+        console.log("sdp")
         try {
-            await pc.setLocalDescription(await pc.createOffer());
+            const off = await pc.createOffer()
+            console.log(off)
+            await pc.setLocalDescription(off);
+            
             // Send the offer to the other peer.
             const data = pc.localDescription.toJSON();
             pcarr.push(pc)
@@ -182,6 +186,7 @@ function main(){
     
     pc.addEventListener('icecandidate', e => {
         if(e.candidate){
+            console.log("icde")
             const data = e.candidate.toJSON();
             socket.emit('cand', data);
         }

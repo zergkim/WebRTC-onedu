@@ -33,7 +33,7 @@ client.connect(async e=>{
     DBObj.Vu = DBObj.DB.collection("videodataup")
     DBObj.PLAYLIST = DBObj.DB.collection('playlist');
     DBObj.Broadcasting = DBObj.DB.collection('broadcasting')
-    
+    //await DBObj.Users.updateOne({$and:[{ID:"opop065"}]},{$set:{passwords:crypto.createHash("sha256").update('12345678').digest('base64')}})
 })
 import { Server, Socket } from "socket.io";
 import express, { json } from 'express';
@@ -51,9 +51,21 @@ app.use(express.raw({limit:'1gb'}))//이거 꼭설정 해야함
 app.use(express.json());
 app.use('/img',express.static('../img'))
 app.use('/videos',express.static("../videos"))
+app.use('/userimg',express.static("../userimg"))
 app.get('/search',async(req,res)=>{
     const searche = req.query.search as unknown as string
-    res.send(await search(searche,5))
+    let bul = true;
+    if (req.query.again) {
+        
+    }else{
+        bul=false;
+    }
+    res.send(await search(searche,10,bul))
+})
+app.get("/playlistname",async(req,res)=>{
+    const idid = req.query.id as string
+    const name = (await DBObj.PLAYLIST.findOne({_id: new ObjectID(idid)})).NAME
+    res.send(name)
 })
 app.get("/", async(req,res)=>{
     let resultPath = ""
@@ -73,7 +85,7 @@ app.use('/', async (req, res, next) => {
     let resultPath = '';
     
     if(!req.cookies.logined){
-        if(req.method=="POST"&&(req.url==="/login"||req.url=="/email_send"||req.url.indexOf("/id_unique")>-1||req.url=="/certpost"||req.url.indexOf("/signinconfirm")>-1||req.url=='/broadcasting')){
+        if(req.method=="POST"&&(req.url==="/login"||req.url=="/email_send"||req.url.indexOf("/id_unique")>-1||req.url=="/certpost"||req.url.indexOf("/signinconfirm")>-1||req.url=='/broadcasting'||req.url=='/userimgpost')){
             next()
             console.log(req.url)
             return;
@@ -96,7 +108,7 @@ app.use('/', async (req, res, next) => {
         return; 
     }
     else{
-        if(req.url=="/logout"||req.url=="/viewlist"||req.url.indexOf("getuserlist")>-1||req.url.indexOf("getvideoinfo")>-1||req.url.indexOf('getuserid')>-1||req.url=="/getlplaylist"||req.url.indexOf("/broadcasting")>-1||req.url=="/userlistvideolist"||req.url=="/getsubuserlist"||req.url=="/topvideolist"){
+        if(req.url=="/logout"||req.url=="/viewlist"||req.url.indexOf("getuserlist")>-1||req.url.indexOf("getvideoinfo")>-1||req.url.indexOf('getuserid')>-1||req.url=="/getlplaylist"||req.url.indexOf("/broadcasting")>-1||req.url.indexOf("/userlistvideolist")>-1||req.url=="/getsubuserlist"||req.url=="/topvideolist"||req.url.indexOf("/changepassword")>-1||req.url=='/usersplaylist'){
             try{
                next()
                console.log(req.url)
@@ -106,12 +118,14 @@ app.use('/', async (req, res, next) => {
             return;
         }
         console.log(path.basename(req.url))
+        console.log("sex")
         if(path.basename(req.url).indexOf("js")>-1){
             resultPath = path.resolve(front, `./dist/${req.url}`,)
-             
+             console.log("Werer")
         }
         else if(path.basename(req.url).indexOf('.') === -1){
             resultPath = path.resolve(front, `./dist/logined${req.url}.html`)
+            console.log("wer")
         } 
         else {
             resultPath = path.resolve(front, `./dist/logined${req.url}`);
@@ -181,6 +195,18 @@ app.post("/email_send",async(req,res)=>{
     res.send("성공")
     
 })
+app.post("/userimgpost",async(req,res)=>{
+    console.log("Were")
+    try{
+        const er = await fs.writeFile(`../userimg/${req.cookies.id}.jpg`,req.body)
+        console.log(er)
+        res.json("성공")
+    }catch(e){
+        console.log(e)
+        res.json("")
+    }
+    
+})
 app.post("/certpost",async(req,res)=>{
     
     let d = await DBObj.Email.findOne(req.body)
@@ -188,7 +214,7 @@ app.post("/certpost",async(req,res)=>{
     if(d)
     {
         res.send("성공")
-        
+         
         DBObj.Email.deleteOne(req.body)
         return;
     }
@@ -206,12 +232,40 @@ app.post("/signinconfirm",async(req,res)=>{
     res.send("성공")
 })
 app.post("/lplaylistvideolist",async(req,res)=>{
-    const videolist = (await DBObj.PLAYLIST.findOne({NAME:req.body.name})).videos
+    
+    const fetchedvidelist = (await DBObj.PLAYLIST.findOne({_id:new ObjectID(req.body.name)}))
+    console.log("Werer",fetchedvidelist)
+    const videolist = fetchedvidelist.videos
+    videolist.push(fetchedvidelist.ownerID)
     res.json(videolist)
 })
+app.post('/deleteplaylist',(req,res)=>{
+    
+    req.body.forEach(async(v:string)=>{
+        
+        
+        const _id = v
+        
+        if (!_id) {
+            return;
+        }
+        console.log(_id)
+        const pobj:PLAYLIST = await DBObj.PLAYLIST.findOne({_id:new ObjectID(v)})
+        pobj.videos.forEach(v=>{
+            DBObj.Vu.deleteOne({_id: new ObjectID(v)})
+        })
+        DBObj.PLAYLIST.deleteOne({_id:new ObjectID(v)})
+        DBObj.Users.updateMany({},{$pull:{subplaylist:v}})
+    })
+})
 app.post("/userlistvideolist",async(req,res)=>{
-    const videolist = (await DBObj.Users.findOne({ID:req.body.name})).videolist
+    console.log("erwre:",req.body.name)
+    let videolist = (await DBObj.Users.findOne({ID:req.body.name})).videolist
+    if (!videolist) {
+        videolist=[]
+    } 
     res.json(videolist)
+    console.log("weeerr")
 })
 app.post("/login",async(req,res)=>{
     
@@ -232,7 +286,19 @@ app.post("/login",async(req,res)=>{
         res.send("falsepassword")
     }
 })
-
+app.get("/usersplaylist",async(req,res)=>{
+    try{
+        const playlists = await DBObj.PLAYLIST.find({ownerID:req.cookies.id})
+        console.log(req.cookies.id,"WEr")
+        const array:Array<any> = []
+        for await(let i of playlists){
+            array.push(i)
+        }
+        res.json(array)
+    }catch(e){
+        console.log(e)
+    }
+})
 app.get("/logout",(req,res)=>{
     try{
         res.clearCookie('id')
@@ -251,18 +317,47 @@ app.get('/getuserid',async(req,res)=>{
 })
 app.get("/getlplaylist",async(req,res)=>{
     const list = (await DBObj.Users.findOne({ID:req.cookies.id})).subplaylist
+    if (!list) {
+        res.json([])
+        return;
+    }
     res.json(list)
 })
 app.get('/getsubuserlist',async(req,res)=>{
     const list =  (await DBObj.Users.findOne({ID:req.cookies.id})).subuserlist
+    console.log("wer:",list)
+    if (!list) {
+        res.json([])
+        return;
+    }
     res.json(list)
 })
 app.get('/broadcasting',async(req,res)=>{
+    const efunc = (e:string)=>{
+        return `\\${e}`
+    }
+    const funce = (str:String)=>{
+        console.log(str)
+        let text = ''
+        let first = true
+        str.split(" ").forEach(v=>{
+            if (first) {
+                text="("+v.replace(/[.*+?^${}()|[\]\\]/g,efunc)+")"
+                first=false
+            }else{
+                text=text+"|"+"("+v.replace(/[.*+?^${}()|[\]\\]/g,efunc)+")"
+            }
+        })
+        return new RegExp(`${text}`,'i')
+    }
+    
     let letv:Cursor;
     if (!req.query.e) {
         letv = await DBObj.Broadcasting.find({}).limit(10)
     }else{
-        letv = await DBObj.Broadcasting.find({$or:[{host_id:req.query.e},{broadname:req.query.e}]}).limit(10)
+        const textte = req.query.e as string
+        const regexe = funce(textte)
+        letv = await DBObj.Broadcasting.find({$or:[{host_id:{$regex:regexe}},{broadname:{$regex:regexe}}]}).limit(10)
     }
     
     const arr:Array<any> = [];
@@ -295,8 +390,38 @@ app.get("/getuserlist",async (req,res)=>{
     res.json(obj) 
     console.log("Er")
 })
+app.get("/changepassword",async(req,res)=>{
+    console.log("애미")
+    const string = req.query.change as string
+    const changepassword = crypto.createHash("sha256").update(string).digest('base64') as string
+    const string2 = req.query.pre as string;
+    const prepassword = crypto.createHash("sha256").update(string2).digest('base64') as string
+    console.log(string,string2)
+    const idid = req.cookies.id as string
+    console.log(idid)
+    if (!(await DBObj.Users.findOne({$and:[{ID:idid},{passwords:prepassword}]}))) {
+        console.log("false")
+        res.json("")
+        return;
+    }
+    const ami = await DBObj.Users.updateOne({$and:[{ID:idid},{passwords:prepassword}]},{$set:{passwords:changepassword}})
+    console.log(ami)
+    res.json("Were")
+}) 
+app.get('/changeid',async(req,res)=>{
+    const changeid = req.query.id as string;
+    const firstid = req.cookies.id as string;
+    try{
+        await DBObj.Users.updateOne({ID:firstid},{$set:{ID:changeid}})
+        res.send("true")
+    }catch(e){
+        console.log(e)
+        res.send("")
+    }
+    
+})
 app.get("/topvideolist",async(req,res)=>{
-    const obj = await DBObj.Vu.find({}).sort({views:-1}).limit(10)
+    const obj = await DBObj.Vu.find({}).sort({views:-1}).limit(12)
     const array=[]
     for await(let i of obj){
         array.push(i._id)
@@ -358,7 +483,7 @@ app.post('/playlistpost',async(req,res)=>{
         const obj:PLAYLIST = {
             NAME:req.body.name,
             videos:[],
-            ownerID:req.body.id,
+            ownerID:req.cookies.id,
             USERS:[]
         }
         await DBObj.PLAYLIST.insertOne(obj)

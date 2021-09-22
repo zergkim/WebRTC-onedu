@@ -25,7 +25,7 @@ let options = {
     playsinline : true, 
     muted : true, 
     preload : "metadata", 
-    controlBar : { playToggle : true, pictureInPictureToggle : false, remainingTimeDisplay : true, progressControl : true},
+    controlBar : { playToggle : true, pictureInPictureToggle : false, remainingTimeDisplay : true, progressControl : {seekBar:false}},
     html5: {
         vhs: {
           overrideNative: true 
@@ -39,8 +39,7 @@ let options = {
 
 const video:HTMLVideoElement =document.querySelector(".video>video")
 const player = videojs('myvideo', options)
-
-
+let presentdu = 0;
 
 
 
@@ -124,6 +123,7 @@ if(Hls.isSupported()){
     video.src=videoSrc30;
     
 }
+let time = 0;
 video.addEventListener("play",e=>{
         //video.play()
         const q_select = document.createElement("select")
@@ -137,6 +137,9 @@ video.addEventListener("play",e=>{
         q_select.appendChild(option30)
         q_select.appendChild(option70)
         q_select.appendChild(option100)
+        const div = document.createElement("div")
+        div.style.width="80%"
+        
         document.querySelector('.vjs-control-bar').appendChild(q_select)
         q_select.addEventListener("change",async e=>{
             const currnet = video.currentTime;
@@ -151,3 +154,5 @@ video.addEventListener("play",e=>{
         })
     
 },{once:true})
+
+

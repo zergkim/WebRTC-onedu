@@ -1,6 +1,6 @@
 import { Socket } from "dgram"
 import io from "socket.io-client"
-import './post.css'
+
 const timpar:HTMLDivElement = document.querySelector('#timestampdiv>div');
 const sstart:HTMLButtonElement = document.querySelector("#start");
 const send:HTMLButtonElement = document.querySelector("#end");
@@ -15,7 +15,15 @@ const option:HTMLInputElement = document.querySelector(".option")
 const playlistinp:HTMLInputElement = document.querySelector('.playlist>input')
 const playlistbtt : HTMLButtonElement = document.querySelector('.playlist>button')
 const listselect : HTMLSelectElement = document.querySelector(".listselect>select")
-loding()
+const videosebut :HTMLButtonElement = document.querySelector("#videocont>button")
+const imgsebut :HTMLButtonElement = document.querySelector("#imgcont>button")
+const img:HTMLImageElement = document.querySelector("#imgcont>img")
+videosebut.addEventListener("click",(e)=>{
+    videoinp.click()
+})
+imgsebut.addEventListener('click',(e)=>{
+    imginp.click()
+})
 /*const optionbtt = document.querySelector(".optionbtt");
 optionbtt.addEventListener("click",e=>{
     option_arr.push(option.value)
@@ -56,7 +64,11 @@ const getplaylistfunc = async(ID:string)=>{
     })
     return d;
 }
-
+const asnyce = async()=>{
+    
+    getplaylistfunc(await(await fetch("/getuserid")).text())
+}
+asnyce()
 videoinp.addEventListener('change',async e => {
     const file1 = videoinp.files[0]
     const flink = URL.createObjectURL(file1);
@@ -65,7 +77,11 @@ videoinp.addEventListener('change',async e => {
     video.load();
     await video.play();
 })
-
+imginp.addEventListener('change',async e => {
+    const file1 = imginp.files[0]
+    const flink = URL.createObjectURL(file1);
+    img.src=flink
+})
 button.addEventListener("click",async e=>{
     if(!confirm("진짜 올리시겠습니까?")){
         return;
@@ -127,23 +143,3 @@ button.addEventListener("click",async e=>{
         }
     })();
 })
-async function loding(){
-    const id = await (await fetch("/getuserid")).text()
-    const list = await getplaylistfunc(id)
-    playlistbtt.addEventListener("click",async e=>{
-        for(let v of list){
-            if(v.NAME == playlistinp.value){
-                alert("리스트 이름 중복")
-                return;
-            }
-        }
-        const obj = JSON.stringify({name:playlistinp.value,id})
-        alert(await (await fetch("/playlistpost",{
-            method:"POST",
-            headers:{
-                "Content-Type":"application/json"
-            },
-            body: obj
-        })).text())
-    })
-}

@@ -11,8 +11,9 @@ module.exports = {
         'logined/watchview':'./src/logined/watchview.ts',
         'logined/admin' : './src/logined/admin.ts',
         'logined/client' : './src/logined/client.ts',
-        'logined/user' : './src/logined/user.ts',
-        'logined/chat':'./src/logined/chat.ts'
+        'logined/search' : './src/logined/search.ts',
+        'logined/userinfo':'./src/logined/userinfo.ts',
+        'logined/playlist':'./src/logined/playlist.ts'
     },
     devtool: 'inline-source-map',
     mode:'development',
@@ -89,14 +90,19 @@ module.exports = {
             chunks:['logined/admin']
         }),
         new HtmlWebpackPlugin({
-            template : './src/logined/user.html',
-            filename: './logined/user.html',
-            chunks : ['logined/user']
+            template : './src/logined/search.html',
+            filename: './logined/search.html',
+            chunks : ['logined/search']
         }),
         new HtmlWebpackPlugin({
-            template:'./src/logined/chat.html',
-            filename:'./logined/chat.html',
-            chunks:['logined/chat']
+            template:'./src/logined/userinfo.html',
+            filename:'./logined/userinfo.html',
+            chunks:['logined/userinfo']
+        }),
+        new HtmlWebpackPlugin({
+            template:'./src/logined/playlist.html',
+            filename:'./logined/playlist.html',
+            chunks:['logined/playlist']
         })
 
     ],

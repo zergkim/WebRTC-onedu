@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Palette+Mosaic&display=swap');
+        .mainbody{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            margin: none;
+            padding-bottom: 10px;
+            padding-top: 10px;
+            width: 100%;
+        }
+        body{
+            height: 100%;
+            margin: 0px;
+        }
+        .maincont{
+            height: calc(100% - 100px);
+            padding-top: 15px;
+            border: 1px solid #D1D1D1;
+            width: calc(100% - 200px);
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding-right: 35px;
+            padding-left: 35px;
+        }
+        .maincont>div{
+            width: calc(100% - 70px);
+            border-radius: 5px;
+            height: 80px;
+            margin-bottom: 10px;
+            
+        }
+        div.buttoned{
+            margin-bottom: 40px;
+        }
+        .maincont>div>div>input{
+            
+            height: 39px;
+            border-radius: 5px;
+            width: calc(100% - 20px);
+        }
+        .btn{
+            margin-top: 10px;
+            background-color: #EB94AC;
+            color: white;
+            
+            
+        }
+        .btn.confirme{
+            margin: 0px;
+        }
+        .alconfirm{
+            display: flex;
+            flex-direction: row-reverse;
+        }
+        .alconfirm>div{
+            margin-right: 20px;
+        }
+        .name_bar{
+            font-size: 40px;
+            margin-bottom: 10px;
+            font-family: 'Palette Mosaic', cursive;
+            color: #EB94AC;
+        }
+        input{
+            border: 1px solid #D1D1D1;
+        }
+        input:invalid{
+            border: 2px solid red;
+        }
+    </style>
+</head>
+<body>
+    <div class="mainbody">
+        <div class="name_bar">Edu Video</div>
+        <div class="maincont">
+            <div>
+                <span>현재 비밀번호</span>
+                <div><input class="prepass" type="password"></div>
+            </div>
+            <div>
+                <span>비밀번호 바꾸기</span>
+                <div><input class="passch" type="password"></div>
+            </div>
+            <div>
+                <span>비밀번호 확인</span>
+                <div><input class="passconf" type="password"></div>
+            </div>
+            <div>
+                
+                <div><button class="btn passwordconfbut">비밀번호 수정</button></div>
+            </div>
+            <div>
+                <span>유저이미지</span>
+                <div><button class="btn select">선택하기</button><button class="btn upload" style="margin-left:10px ;">올리기</button></div>
+            </div>
+            
+        </div>
+    </div>
+    <input class="file" type="file" style="display: none;">
+</body>
+</html>

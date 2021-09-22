@@ -30,7 +30,7 @@ client.connect(async e=>{
     DBobj.Broadcasting = DBobj.DB.collection('broadcasting')
     DBobj.Users=DBobj.DB.collection('userdata')
     DBobj.PLAYLIST = DBobj.DB.collection("playlist")
-    search("opop065",50)
+    
 })
 export const Get_jungbo = async(filename:string)=>{
     const ObjID:mongodb.ObjectID= new ObjectID(filename)
@@ -114,7 +114,7 @@ export function postthedata(vdata:Buffer,idata:Buffer,post_data_obj:POST_DATA_OB
         
     })
 }
-export async function search(params:string,gasu:number) {
+export async function search(params:string,gasu:number,again:boolean) {
     const efunc = (e:string)=>{
         return `\\${e}`
     }
@@ -144,16 +144,16 @@ export async function search(params:string,gasu:number) {
     for await(let er of d){
         searchobject.Users.push(er)
     }
-    d=await DBobj.Broadcasting.find({$or:[{host_id:{$regex:texte}},{broadname:{$regex:texte}},{subj:{$regex:texte}}]}).limit(gasu)
+    d=await DBobj.Broadcasting.find({$or:[{host_id:{$regex:texte}},{broadname:{$regex:texte}},{subj:{$regex:texte}}]})
     for await(let er of d){
         searchobject.Broadcasting.push(er)
         console.log(er,texte)
     }
-    d =await DBobj.PLAYLIST.find({$or:[{NAME:{$regex:texte}},{ownerID:{$regex:texte}}]}).limit(gasu)
+    d =await DBobj.PLAYLIST.find({$or:[{NAME:{$regex:texte}},{ownerID:{$regex:texte}}]})
     for await(let er of d){
         searchobject.PLAYLIST.push(er)
     }
-    d= await DBobj.Vu.find({$or:[{ID:{$regex:texte}},{title:{$regex:texte}},{subj:{$regex:texte}}]}).limit(gasu)
+    d= await DBobj.Vu.find({$or:[{ID:{$regex:texte}},{title:{$regex:texte}},{subj:{$regex:texte}}]})
     for await(let er of d){
         searchobject.Videodata.push(er)
     }

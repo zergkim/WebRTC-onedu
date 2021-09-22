@@ -2,8 +2,8 @@
     display: flex;
     flex-direction: row;
     padding-top: 30px;
-    padding-left: 30px;
-    padding-right: 30px;
+    padding-left: 60px;
+    padding-right: 60px;
     
     height: 140px;
 }
@@ -79,4 +79,14 @@ a>span:hover{
     font-size: 13px;
     font-weight: 300;
     color: #3D3D3D;
+}
+.morebar{
+    margin-left: 60px;
+    margin-right: 60px;
+    height: 50px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid #CFCFCF;
 }
