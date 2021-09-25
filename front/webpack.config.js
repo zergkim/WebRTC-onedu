@@ -13,7 +13,9 @@ module.exports = {
         'logined/client' : './src/logined/client.ts',
         'logined/search' : './src/logined/search.ts',
         'logined/userinfo':'./src/logined/userinfo.ts',
-        'logined/playlist':'./src/logined/playlist.ts'
+        'logined/playlist':'./src/logined/playlist.ts',
+        'logined/userpage':'./src/logined/userpage.ts',
+        'logined/playlistpage':'./src/logined/playlistpage.ts'
     },
     devtool: 'inline-source-map',
     mode:'development',
@@ -103,6 +105,16 @@ module.exports = {
             template:'./src/logined/playlist.html',
             filename:'./logined/playlist.html',
             chunks:['logined/playlist']
+        }),
+        new HtmlWebpackPlugin({
+            template:'./src/logined/userpage.html',
+            filename:'./logined/userpage.html',
+            chunks:['logined/userpage']
+        }),
+        new HtmlWebpackPlugin({
+            template:'./src/logined/playlistpage.html',
+            filename:'./logined/playlistpage.html',
+            chunks:['logined/playlistpage']
         })
 
     ],

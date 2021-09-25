@@ -158,7 +158,7 @@ async function loding() {
             username.textContent = ID
             const dogtext = doccont.querySelector(".userinfo>span")
             dogtext.textContent = host_id
-            Array.from(doccont.querySelectorAll("a")).forEach(v=>v.href="/user?user="+_id)
+            Array.from(doccont.querySelectorAll("a")).forEach(v=>v.href="/playlistpage?view="+_id)
             playlistcont.appendChild(doccont)
             console.log(doccont)
             count++;
@@ -204,7 +204,7 @@ async function loding() {
             username.textContent = ID
             const dogtext = doccont.querySelector(".dogtext")
             dogtext.textContent = videogasu
-            Array.from(doccont.querySelectorAll("a")).forEach(v=>v.href="/user?user="+_id)
+            Array.from(doccont.querySelectorAll("a")).forEach(v=>v.href="/userpage?view="+ID)
             usersumbconte.appendChild(doccont)
             console.log(doccont)
         }

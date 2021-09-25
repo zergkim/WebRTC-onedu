@@ -212,26 +212,33 @@ async function loding() {
                 console.log("ewrr")
                 for (let v of videolist){
                     const videoinfo = await (await fetch(`/getvideoinfo?id=${v}`)).json()
-                    const clon2 = temp2.content.cloneNode(true) as DocumentFragment
-                    const img:HTMLImageElement = clon2.querySelector(".sumb>img")
-                    img.src = `/img/${v}.${videoinfo.typeofi}`
-                    const vtitle = clon2.querySelector(".erti")
-                    const img2:HTMLImageElement = clon2.querySelector('.vinfo>img')
-                    img2.src=`/userimg/${i}.jpg`
-                    const vtitlea=vtitle.parentElement as HTMLAnchorElement;
-                    console.log(vtitlea)
-                    vtitlea.href=`/watchview?view=${v}`
-                    console.log(v)
-                    const usertitle = clon2.querySelector('.userti')
-                    usertitle.textContent = videoinfo.ID;
-                    const usertitlea =  usertitle.parentElement as HTMLAnchorElement
-                    usertitlea.href = "/"
-                    vtitle.textContent = videoinfo.title;
-                    const sumb = clon2.querySelector('.sumb')
-                    console.log(sumb)
-                    const sumba:any = sumb.parentElement as HTMLAnchorElement
-                    sumba.href = `/watchview?view=${v}`
-                    de.appendChild(clon2)
+                    if (!videoinfo) {
+                        
+                    }else{
+                        
+                        const clon2 = temp2.content.cloneNode(true) as DocumentFragment
+                        const img:HTMLImageElement = clon2.querySelector(".sumb>img")
+                        img.src = `/img/${v}.${videoinfo.typeofi}`
+                        const vtitle = clon2.querySelector(".erti")
+                        const img2:HTMLImageElement = clon2.querySelector('.vinfo>img')
+                        img2.src=`/userimg/${i}.jpg`
+                        const vtitlea=vtitle.parentElement as HTMLAnchorElement;
+                        console.log(vtitlea)
+                        vtitlea.href=`/watchview?view=${v}`
+                        console.log(v)
+                        const usertitle = clon2.querySelector('.userti')
+                        usertitle.textContent = videoinfo.ID;
+                        const usertitlea =  usertitle.parentElement as HTMLAnchorElement
+                        usertitlea.href = "/"
+                        vtitle.textContent = videoinfo.title;
+                        const sumb = clon2.querySelector('.sumb')
+                        console.log(sumb)
+                        const sumba:any = sumb.parentElement as HTMLAnchorElement
+                        sumba.href = `/watchview?view=${v}`
+                        de.appendChild(clon2)
+                        console.log(videoinfo,"werewr")
+                    }
+                    
                 }
             }
             try{
@@ -243,6 +250,7 @@ async function loding() {
             
             console.log(title)
             title.textContent = `${i} (구독한 유저)`
+            console.log(clon,"wrer")
             mainview.appendChild(clon)
         }
         

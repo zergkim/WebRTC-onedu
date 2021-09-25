@@ -232,10 +232,11 @@ app.post("/signinconfirm",async(req,res)=>{
     res.send("성공")
 })
 app.post("/lplaylistvideolist",async(req,res)=>{
-    
+    console.log(req.body.name,"werr")
     const fetchedvidelist = (await DBObj.PLAYLIST.findOne({_id:new ObjectID(req.body.name)}))
     console.log("Werer",fetchedvidelist)
     const videolist = fetchedvidelist.videos
+    console.log(videolist,"werwrer")
     videolist.push(fetchedvidelist.ownerID)
     res.json(videolist)
 })
