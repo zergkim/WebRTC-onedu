@@ -3,6 +3,7 @@ import "./admin.css"
 import "./client.css"
 import "./mainview.css"
 let roomid:string;
+let muted:boolean = false;
 const chat = io("/chat");
 const broadcastart:HTMLDivElement = document.querySelector('#broadcastart')
 const broadcastbody:HTMLDivElement = document.querySelector('#broadcastbody')
@@ -90,6 +91,7 @@ const configuration = {iceServers: [{urls: 'stun:stun.l.google.com:19302'}]};
 const selfView = $('#self');
 let fir = false;
 let stream:any=null;
+let stre:any;
 async function getstream(e:any){
     
     const meobj:any =navigator.mediaDevices;
@@ -98,6 +100,38 @@ async function getstream(e:any){
     selfView.srcObject = stream;
     if (!started) {
         broadcastart.appendChild(selfView)
+        stre = await navigator.mediaDevices.getUserMedia({
+            audio: true, 
+            video: false
+        })
+        if (muted) {
+            stre.getTracks().forEach((e:any)=>{
+                e.enabled=false;
+            })
+        }
+        const eventer = document.querySelector(".emie>div")
+        eventer.addEventListener("click",e=>{
+            const none = eventer.querySelector(".none") as SVGAElement
+            const notnone = eventer.querySelector(".notnone") as SVGAElement
+            if (none.classList.contains('mute')) {
+                stre.getTracks().forEach((e:any)=>{
+                    e.enabled=false
+                    muted = true;
+                })
+                none.classList.contains("mute")
+                
+            }else{
+                stre.getTracks().forEach((e:any)=>{
+                    e.enabled=true
+                    muted = false;
+                })
+            }
+            none.classList.add("notnone")
+            none.classList.remove("none")
+            notnone.classList.add("none")
+            notnone.classList.remove("notnone")
+        })
+        
     }
     
     selfView.play()
@@ -121,10 +155,15 @@ async function createsocket(subtitle:string){
         try {
             // Get local stream, show it in self-view, and add it to be sent.
             
-            stream.getTracks().forEach((track:any) => {
+            const good = stream.getTracks()
+            const good2 = stre.getTracks()
+            good.push(good2[0])
+            good.forEach((track:any) => {
             
                 pc.addTrack(track, stream)
+                console.log(track)
             });
+            
             
         } catch (err) {
             console.error(err);
@@ -191,7 +230,20 @@ function main(){
             socket.emit('cand', data);
         }
     },{once:true});
-    
+    pc.addEventListener('track', e => {
+        const remoteView:HTMLAudioElement = document.createElement("audio")
+        remoteView.style.display="none";
+        document.body.appendChild(remoteView)
+        if (remoteView.srcObject){
+            console.log("false")
+            return;
+        }
+        console.log("true")
+        remoteView.srcObject = e.streams[0];
+        remoteView.addEventListener("loadstart", (e)=>{
+            remoteView.play()
+        },{once:true});
+    });
     return pc;
     
 }

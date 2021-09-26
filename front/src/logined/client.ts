@@ -1,13 +1,16 @@
 const $= document.querySelector.bind(document);
 import io from 'socket.io-client'
+import { NoEmitOnErrorsPlugin } from 'webpack';
 import './client.css';
 import './mainview.css'
 const chatinput:HTMLInputElement = document.querySelector(".chatinput>input")
+let mute:boolean = false;
+let stream:MediaStream;
 const urlpraa = new URLSearchParams(location.search)
 const qbtn:HTMLButtonElement = document.querySelector(".qbtn")
 const roomnaame:string=urlpraa.get("view")
 let first:boolean = true;
-const constraints = {audio: true, video: true};
+const constraints = {audio: true, video: false};
 const configuration = {iceServers: [{urls: 'stun:stun.l.google.com:19302'}]};
 let remoteView = $('#remote') as HTMLVideoElement;
 const sidebar:HTMLDivElement = document.querySelector(".sidemenu-bar")
@@ -58,6 +61,10 @@ let bulina = false;
 let clientnumb:number=null;
 function main(){
     const pc = new RTCPeerConnection(configuration);
+    stream.getTracks().forEach((track:any) => {
+            
+        pc.addTrack(track, stream)
+    });
     pc.addEventListener('icecandidate', e => {
         if(e.candidate){
             const data = e.candidate.toJSON() as unknown as any;
@@ -105,6 +112,10 @@ socket.on('desc', async (e:any) => {
         return
     }
     if (e.type === 'offer') {
+        if (first) {
+            await getstream("")    
+        }
+        
         bulina=true
         const pc = main()
 
@@ -213,3 +224,34 @@ function sidbarclick(e:any){
         nonebar.classList.remove("or")
     }
 }
+async function getstream(e:any){
+    
+    const meobj:any = navigator.mediaDevices;
+    
+    stream = await meobj.getUserMedia(constraints)
+    clientaudio.srcObject = stream;
+    const eventer = document.querySelector(".emie>div")
+    eventer.addEventListener("click",e=>{
+        const none = eventer.querySelector(".none") as SVGAElement
+        const notnone = eventer.querySelector(".notnone") as SVGAElement
+        if (none.classList.contains('mute')) {
+            stream.getTracks().forEach(e=>{
+                e.enabled=false
+                mute=true;
+            })
+            none.classList.contains("mute")
+            
+        }else{
+            stream.getTracks().forEach(e=>{
+                e.enabled=true
+                mute=false
+            })
+        }
+        none.classList.add("notnone")
+        none.classList.remove("none")
+        notnone.classList.add("none")
+        notnone.classList.remove("notnone")
+    })
+    
+}
+const clientaudio:HTMLAudioElement = document.querySelector("#clientaudio")

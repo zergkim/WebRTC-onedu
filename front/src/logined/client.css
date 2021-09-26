@@ -173,3 +173,23 @@
 .chatcontext{
     font-size: 14px;
 }
+.emie{
+    display: flex;
+    flex-direction: row;
+    padding-left: 5px;
+    padding-top: 5px;
+}
+.emie>div{
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 17.5px;
+}
+.emie>div:hover{
+    background-color: #D9D9D9;
+}
+.emie>div>svg.none{
+    display: none;
+}
