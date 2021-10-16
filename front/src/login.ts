@@ -15,7 +15,7 @@ but.addEventListener("click",async e=>{
             passwords:password.value
         })
     })).text()
-    if(text==="good"){
+    if(text==="good"){ 
         location.href="/mainview"
     }else{
         alert(text)

@@ -10,7 +10,7 @@ import cookieParser from "cookie-parser";
 import {Get_jungbo,FindUser,postthedata,search} from "./splite";
 import path from 'path';
 const viewroot = {root:'C:/Users/zergk/Desktop/git_project/dproject/front/dist'}
-console.log("sex")
+
 let postobj:any={}
 let DBObj:DBOBJ = {
     Videodata:null,

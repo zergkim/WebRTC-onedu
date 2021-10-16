@@ -15,7 +15,7 @@ export async function send_mail(e:string,text:string){
         'to' : e,
         'subject' : '인증번호',
         'text' :text,
-        'html' : text
+        'html' : text 
     })
     console.log(info.messageId)
     return info; 
