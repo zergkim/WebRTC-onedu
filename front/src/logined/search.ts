@@ -130,6 +130,7 @@ async function loding() {
     const playlistcont = document.querySelector(".playlistcont")
     const playlistfor=async (userlist:any)=>{
         const length_numb = userlist.length
+        console.log(userlist)
         let count = 0;
         for(let cont of userlist){
             console.log(cont)
@@ -141,7 +142,7 @@ async function loding() {
             const username:HTMLSpanElement = doccont.querySelector(".usernamed>a>span")
             const buttoning = doccont.querySelector("button")
             let bulina = false;
-            console.log(cont.subplaylist)
+            console.log(userid)
             for(let i of userid.subplaylist){
                 
                 if (i==_id) {
@@ -173,6 +174,7 @@ async function loding() {
         console.log(searched)
         for(let c=0;c<9;c++){
             const cont = searched.Users[c]
+            console.log(cont)
             if (!cont) {
                 bull = true;
                 usermore.style.display='none'

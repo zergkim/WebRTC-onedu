@@ -6,7 +6,6 @@
 import { Socket } from "socket.io";
 import { Db, MongoClient,ObjectID } from "mongodb";
 import { DBOBJ,broadcastobj} from "./type";
-import { on } from "events";
 //const app = express();
 const {v4:uuidV4} = require('uuid');
 const url = "mongodb+srv://zergkim:kimsh060525@cluster0.55ags.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";

@@ -11,7 +11,11 @@ const qbtn:HTMLButtonElement = document.querySelector(".qbtn")
 const roomnaame:string=urlpraa.get("view")
 let first:boolean = true;
 const constraints = {audio: true, video: false};
-const configuration = {iceServers: [{urls: 'stun:stun.l.google.com:19302'}]};
+const configuration = {iceServers: [{urls: 'stun:stun.l.google.com:19302'},{
+    urls: 'turn:numb.viagenie.ca',
+    credential: 'muazkh',
+	username: 'webrtc@live.com'
+    }]};
 let remoteView = $('#remote') as HTMLVideoElement;
 const sidebar:HTMLDivElement = document.querySelector(".sidemenu-bar")
 const chatemp:HTMLTemplateElement = document.querySelector(".chatcont>template")
@@ -54,7 +58,7 @@ async function getstream(){
     stream = await navigator.mediaDevices.getUserMedia(constraints)
 }
 getstream()*/
-let clientpc:webkitRTCPeerConnection;
+let clientpc:RTCPeerConnection;
 const socket = io("/wrtc");
 const chat = io("/chat");
 let bulina = false;

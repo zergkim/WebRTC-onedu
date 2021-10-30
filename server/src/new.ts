@@ -10,10 +10,9 @@ import cookieParser from "cookie-parser";
 import {Get_jungbo,FindUser,postthedata,search} from "./splite";
 import path from 'path';
 const viewroot = {root:'C:/Users/zergk/Desktop/git_project/dproject/front/dist'}
-
 let postobj:any={}
-let DBObj:DBOBJ = {
-    Videodata:null,
+let DBObj:DBOBJ = { 
+    Videodata:null, 
     Vu: null,
     Users:null,
     DB:null,
@@ -118,14 +117,11 @@ app.use('/', async (req, res, next) => {
             return;
         }
         console.log(path.basename(req.url))
-        console.log("sex")
         if(path.basename(req.url).indexOf("js")>-1){
             resultPath = path.resolve(front, `./dist/${req.url}`,)
-             console.log("Werer")
         }
         else if(path.basename(req.url).indexOf('.') === -1){
             resultPath = path.resolve(front, `./dist/logined${req.url}.html`)
-            console.log("wer")
         } 
         else {
             resultPath = path.resolve(front, `./dist/logined${req.url}`);
@@ -163,18 +159,13 @@ app.use("/login",loginedfunc)
 app.use("/signin",loginedfunc)
 
 app.post("/id_unique",async(req,res)=>{
-    console.log("Er")
     if(await DBObj.Users.findOne({ID:req.body})){
         res.send("")
-        console.log("weree")
-        
     }else {
         res.send("좋아요")
-        console.log("good")
     };
 })
 app.post("/email_send",async(req,res)=>{
-    console.log("werewrer")
     const number = JSON.stringify(Math.floor(Math.random()*1000000));
     
     try{
@@ -196,13 +187,10 @@ app.post("/email_send",async(req,res)=>{
     
 })
 app.post("/userimgpost",async(req,res)=>{
-    console.log("Were")
     try{
         const er = await fs.writeFile(`../userimg/${req.cookies.id}.jpg`,req.body)
-        console.log(er)
         res.json("성공")
     }catch(e){
-        console.log(e)
         res.json("")
     }
     
@@ -232,11 +220,10 @@ app.post("/signinconfirm",async(req,res)=>{
     res.send("성공")
 })
 app.post("/lplaylistvideolist",async(req,res)=>{
-    console.log(req.body.name,"werr")
     const fetchedvidelist = (await DBObj.PLAYLIST.findOne({_id:new ObjectID(req.body.name)}))
-    console.log("Werer",fetchedvidelist)
+    console.log("VideoList",fetchedvidelist)
     const videolist = fetchedvidelist.videos
-    console.log(videolist,"werwrer")
+    console.log(videolist,"VideoList")
     videolist.push(fetchedvidelist.ownerID)
     res.json(videolist)
 })
@@ -260,13 +247,13 @@ app.post('/deleteplaylist',(req,res)=>{
     })
 })
 app.post("/userlistvideolist",async(req,res)=>{
-    console.log("erwre:",req.body.name)
+    console.log("Userlistname:",req.body.name)
     let videolist = (await DBObj.Users.findOne({ID:req.body.name})).videolist
     if (!videolist) {
         videolist=[]
     } 
     res.json(videolist)
-    console.log("weeerr")
+    console.log("굳")
 })
 app.post("/login",async(req,res)=>{
     
@@ -353,8 +340,14 @@ app.get('/broadcasting',async(req,res)=>{
     }
     
     let letv:Cursor;
+
     if (!req.query.e) {
-        letv = await DBObj.Broadcasting.find({}).limit(10)
+        let d = (await DBObj.Users.findOne({ID:req.cookies.id})).subuserlist
+        let arre = [];
+        for(let et of d){
+            arre.push({host_id:et})
+        }
+        letv = await DBObj.Broadcasting.find({$or:arre}).limit(10)
     }else{
         const textte = req.query.e as string
         const regexe = funce(textte)

@@ -87,7 +87,15 @@ const constraints =
         }
     }
 };
-const configuration = {iceServers: [{urls: 'stun:stun.l.google.com:19302'}]};
+const configuration = {iceServers: [
+    {urls: 
+    'stun:stun.l.google.com:19302'
+    },
+    {
+	urls: 'turn:numb.viagenie.ca',
+    credential: 'muazkh',
+	username: 'webrtc@live.com'
+    }]};
 const selfView = $('#self');
 let fir = false;
 let stream:any=null;
@@ -186,7 +194,7 @@ async function createsocket(subtitle:string){
             const clientnumbe=e.numbe;
             delete e.numbe;
             
-            
+            console.log(e)
             await pcarr[clientnumbe].addIceCandidate(e)
         } catch(err){
             console.log(err, e);
@@ -205,7 +213,7 @@ async function createsocket(subtitle:string){
 function main(){
     const pc = new RTCPeerConnection(configuration);
     pc.addEventListener('negotiationneeded', async () => {
-        console.log("sdp")
+        console.log("sdp",Date.now())
         try {
             const off = await pc.createOffer()
             console.log(off)
@@ -225,7 +233,7 @@ function main(){
     
     pc.addEventListener('icecandidate', e => {
         if(e.candidate){
-            console.log("icde")
+            console.log("icde",e.candidate)
             const data = e.candidate.toJSON();
             socket.emit('cand', data);
         }
