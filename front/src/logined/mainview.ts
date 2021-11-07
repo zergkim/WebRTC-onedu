@@ -107,6 +107,9 @@ const inputbutton:HTMLButtonElement = document.querySelector(".inputsearch>butto
 inputbutton.addEventListener("click",e=>{
     location.href=`/search.html?view=${inputsearch.value}`
 })
+inputsearch.addEventListener("keydown",(e)=>{
+    if(e.key=='Enter'){inputbutton.click()}
+})
 async function loding() {
     let tope:HTMLVideoElement;
     const temp:HTMLTemplateElement = document.querySelector(".sumbtemp")
@@ -311,7 +314,7 @@ async function loding() {
         }
         videolistfor()
         console.log(title)
-        title.textContent = `인기강의들`
+        title.textContent = `시청해야하는 강의들`
         mainview.appendChild(clon)
     
         

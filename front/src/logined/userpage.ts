@@ -6,6 +6,14 @@ const mainview:HTMLDivElement = document.querySelector(".mainview")
 mainview.style.height="100vh"
 const sidbtt = document.querySelector(".sbt-r>div")
 const urlpraa = new URLSearchParams(location.search)
+const inputsearch:HTMLInputElement = document.querySelector(".inputsearch>input")
+const inputbutton:HTMLButtonElement = document.querySelector(".inputsearch>button")
+inputbutton.addEventListener("click",e=>{
+    location.href=`/search.html?view=${inputsearch.value}`
+})
+inputsearch.addEventListener("keydown",(e)=>{
+    if(e.key=='Enter'){inputbutton.click()}
+})
 const h3:HTMLHeadElement = document.querySelector(".subj>h3")
 const urlpra:string=urlpraa.get("view")
 h3.innerText=urlpra+"님의 동영상"

@@ -14,7 +14,6 @@ const filee:HTMLInputElement = document.querySelector(".file")
 userimgbut.addEventListener("click",e=>{
     filee.click()
 })
-alert(cerinput)
 const emailar:Array<any> = [];
 const idconfirm:HTMLButtonElement = document.querySelector(".idconfirm")
 const idinp:HTMLInputElement =document.querySelector("#IDINPUT")
@@ -132,7 +131,6 @@ const checkfunc = async (e:any)=>{
     }
 }
 const cerefunc = async (e:any)=>{
-    alert("wrer")
     if(!mail.validity.valid){
         alert("이메일주소가 잘못됨!!!");
         cbtt.addEventListener("click",cerefunc,{once:true})
@@ -149,7 +147,7 @@ const cerefunc = async (e:any)=>{
         cerbtt.addEventListener("click",checkfunc)
         emailar.push(email)
     }else{
-        alert("이메일 중복이다 애미뒤진년아 다른거 써라")
+        alert("이메일 중복")
         cbtt.addEventListener("click",cerefunc,{once:true})
     }
     

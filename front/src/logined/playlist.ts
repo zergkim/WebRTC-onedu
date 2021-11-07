@@ -26,7 +26,7 @@ const main = async function () {
         const check = template.querySelector("input")
         check.dataset.name = v._id
         console.log(template)
-        template.querySelector("tr").dataset.link = `/playlistinfo?view=${v._id}`
+        template.querySelector("tr").dataset.link = `/playlistpage?view=${v._id}`
         tbody.appendChild(template)
         count++;
         
@@ -46,12 +46,14 @@ document.body.addEventListener("click",(e:Event)=>{
         }
     }
 })
-button.addEventListener("click",e=>{
-    console.log()
+button.addEventListener("click",async e=>{
+    console.log('ewr')
     let array = Array.from(document.querySelectorAll(".checked"))
     const array2 = array.map((v:HTMLElement)=>v.dataset.name) as any
     console.log(array2)
-    fetch("/deleteplaylist",{method:'POST',headers:{"Content-Type":"application/json"},body:JSON.stringify(array2)})
+    location.reload()
+    await fetch("/deleteplaylist",{method:'POST',headers:{"Content-Type":"application/json"},body:JSON.stringify(array2)});
+    
 })
 const button2 = document.querySelector("button.btn-primary")
 button2.addEventListener("click",async(e)=>{
@@ -60,7 +62,8 @@ button2.addEventListener("click",async(e)=>{
     if (!text) {
         alert("플레이리스트 이름입력")
     }
-    fetch('/playlistpost',{method:'POST',headers:{"Content-Type":"application/json"},body:JSON.stringify({
+    await fetch('/playlistpost',{method:'POST',headers:{"Content-Type":"application/json"},body:JSON.stringify({
         name:etext
     })})
+    location.reload()
 })

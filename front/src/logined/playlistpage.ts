@@ -3,7 +3,15 @@ import './userpage.css'
 const sidebar = document.querySelector(".sidemenu-bar")
 const nonebar = document.querySelector("#nonebar")
 const mainview:HTMLDivElement = document.querySelector(".mainview")
-mainview.style.height="100vh"
+
+const inputsearch:HTMLInputElement = document.querySelector(".inputsearch>input")
+const inputbutton:HTMLButtonElement = document.querySelector(".inputsearch>button")
+inputbutton.addEventListener("click",e=>{
+    location.href=`/search.html?view=${inputsearch.value}`
+})
+inputsearch.addEventListener("keydown",(e)=>{
+    if(e.key=='Enter'){inputbutton.click()}
+})
 const sidbtt = document.querySelector(".sbt-r>div")
 const urlpraa = new URLSearchParams(location.search)
 const h3:HTMLHeadElement = document.querySelector(".subj>h3")
@@ -19,6 +27,18 @@ async function loding() {
     })).json()
     videolist.pop()
     console.log(videolist)
+    const broadarr:Array<any> = await(await fetch("/broadcasting")).json()
+    console.log(broadarr)
+    const sidebartemp:HTMLTemplateElement = document.querySelector(".sidebartemp")
+    broadarr.forEach(v=>{
+        const sideclone= sidebartemp.content.cloneNode(true) as DocumentFragment;
+        console.log(v)
+        sideclone.querySelector(".names").textContent = v.host_id
+        sideclone.querySelector('.namec').textContent = v.broadname
+        sideclone.querySelector("a").href = `/client.html?view=${v.Rooms_ID}`
+        sideclone.querySelector("img").src=`/userimg/${v.host_id}.jpg`
+        sidebar.appendChild(sideclone)
+    })
     const temp:HTMLTemplateElement = document.querySelector(".contemp")
     const de:HTMLDivElement = document.querySelector(".sumblist")
     const playlistname = await (await fetch("playlistname?id="+urlpra)).text()
@@ -48,17 +68,8 @@ async function loding() {
                     sumba.href = `/watchview?view=${e}`
                     de.appendChild(clon2)
     })
-    const sidebartemp:HTMLTemplateElement = document.querySelector(".sidebartemp")
-    const broadarr:Array<any> = await(await fetch(`/broadcasting?e=${"op"}`)).json()
-    console.log("wer:",broadarr)
-    broadarr.forEach(v=>{
-        const sideclone= sidebartemp.content.cloneNode(true) as DocumentFragment;
-        sideclone.querySelector(".names").textContent = v.host_id
-        sideclone.querySelector('.namec').textContent = v.broadname
-        sideclone.querySelector("a").href = `/client.html?view=${v.Rooms_ID}`
-        sideclone.querySelector('img').src = `/userimg/${v.host_id}.jpg`
-        sidebar.appendChild(sideclone)
-    });
+    
+   
     
 }
 sidbtt.addEventListener("click",sidbarclick)

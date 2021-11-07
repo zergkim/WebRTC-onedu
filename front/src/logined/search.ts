@@ -105,6 +105,14 @@ but.addEventListener("click",e=>{
 },)*/
 const urlpraa = new URLSearchParams(location.search)
 const urlpra:string=urlpraa.get("view")
+const inputsearch:HTMLInputElement = document.querySelector(".inputsearch>input")
+const inputbutton:HTMLButtonElement = document.querySelector(".inputsearch>button")
+inputbutton.addEventListener("click",e=>{
+    location.href=`/search.html?view=${inputsearch.value}`
+})
+inputsearch.addEventListener("keydown",(e)=>{
+    if(e.key=='Enter'){inputbutton.click()}
+})
 let searched:any;
 async function loding() {
     const userid = await (await fetch("/getuserlist")).json()

@@ -110,7 +110,6 @@ button.addEventListener("click",async e=>{
     const typeofi = file2.type.split("/")[1]
     
     const ID = await getid()
-    alert(ID)
     let objed = JSON.stringify({
         ip:user_ip,
         typeofv,
@@ -138,7 +137,12 @@ button.addEventListener("click",async e=>{
             body:v[0]
             })
             if(v[1]=="application/json"){
-                alert(await message.text())
+                if(await message.text()){
+                    alert('영상 포스트 성공')
+                }else{
+                    alert('영상 포스트 실패')
+                }
+                
             }
         }
     })();

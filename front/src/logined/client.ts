@@ -4,6 +4,14 @@ import { NoEmitOnErrorsPlugin } from 'webpack';
 import './client.css';
 import './mainview.css'
 const chatinput:HTMLInputElement = document.querySelector(".chatinput>input")
+const inputsearch:HTMLInputElement = document.querySelector(".inputsearch>input")
+const inputbutton:HTMLButtonElement = document.querySelector(".inputsearch>button")
+inputbutton.addEventListener("click",e=>{
+    location.href=`/search.html?view=${inputsearch.value}`
+})
+inputsearch.addEventListener("keydown",(e)=>{
+    if(e.key=='Enter'){inputbutton.click()}
+})
 let mute:boolean = false;
 let stream:MediaStream;
 const urlpraa = new URLSearchParams(location.search)
@@ -24,6 +32,7 @@ const nonebar = document.querySelector("#nonebar")
 const usercolor ="#"+((1<<24)*Math.random()|0).toString(16)
 let textt=""
 let thisobj:any={};
+const goodie:HTMLImageElement = document.querySelector('.reimgcont>img')
 async function loding() {
     const temp:HTMLTemplateElement = document.querySelector(".sumbtemp")
     const sidebartemp:HTMLTemplateElement = document.querySelector(".sidebartemp")
@@ -32,8 +41,10 @@ async function loding() {
     broadarr.forEach(v=>{
         const sideclone= sidebartemp.content.cloneNode(true) as DocumentFragment;
         sideclone.querySelector(".names").textContent = v.host_id
+        
         sideclone.querySelector(".namec").textContent = v.broadname
         sideclone.querySelector("a").href = `/client.html?view=${v.Rooms_ID}`
+        sideclone.querySelector("img").src=`/userimg/${v.host_id}.jpg`
         sidebar.appendChild(sideclone)
         if(v.Rooms_ID==roomnaame){
             thisobj = v
@@ -41,6 +52,7 @@ async function loding() {
         document.querySelector(".contentinf>strong").textContent = v.views+1
     })
     document.querySelector(".rename").textContent = thisobj.host_id
+    goodie.src="/userimg/"+thisobj.host_id+".jpg"
     document.querySelector(".retitle").textContent = thisobj.broadname
     document.querySelector(".broadinf").textContent = thisobj.info
     document.querySelector(".resub").textContent = thisobj.subj
@@ -193,6 +205,7 @@ function makechat(e:any){
     chatcont.appendChild(chattemp)
 }
 function sidbarclick(e:any){
+    const mainview = document.querySelector(".mainview")
     const arrw = Array.from(document.querySelectorAll(".sbd"))
     const arr = Array.from(document.querySelectorAll('.sbd>div'))
     const smb:HTMLDivElement = document.querySelector(".sidemenu-bar")
@@ -206,7 +219,8 @@ function sidbarclick(e:any){
         document.querySelector("#open").classList.remove("notnone")
         document.querySelector("#close").classList.remove("none")
         document.querySelector(".sbt-l").classList.remove("none")
-        
+        mainview.classList.add('or')
+        mainview.classList.remove('sc')
         sbtr.style.width="50%"
         nonebar.classList.add("or")
         nonebar.classList.remove("sc")
@@ -223,6 +237,8 @@ function sidbarclick(e:any){
         smb.style.width='50px'
         document.querySelector(".sbt-l").classList.add('none')
         sbtr.style.width="100%"
+        mainview.classList.add("sc")
+        mainview.classList.remove("or")
         arrw.forEach(v=>{v.classList.add("jcent")})
         nonebar.classList.add("sc")
         nonebar.classList.remove("or")

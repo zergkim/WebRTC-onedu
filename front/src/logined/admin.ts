@@ -144,7 +144,7 @@ async function getstream(e:any){
     
     selfView.play()
 }
-const pcarr:Array<webkitRTCPeerConnection>=[];
+const pcarr:Array<RTCPeerConnection>=[];
 const socket = io('/wrtc'); 
 
 async function createsocket(subtitle:string){

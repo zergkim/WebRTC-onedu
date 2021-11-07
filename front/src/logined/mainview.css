@@ -128,9 +128,18 @@ a{
     align-items: center;
     justify-content: flex-start;
 }
-.search-first>img{
+.reimgcont>img{
+    height: 68px;
+    width: 68px;
+    border-radius: 32px;
+}
+.search-first>a{
     height: 100%;
     margin-right: 30px;
+}
+.search-first>a>img{
+    height: 100%;
+    
 }
 .search-sec{
     display: flex;
@@ -278,7 +287,7 @@ a{
     font-size: 20px;
     font-weight: 570;
 }
-.bartext:hover{
+.bartext>a:hover,.bartext:hover{
     color: #EB94AC;
 }
 .qbtn,.search-sec>a>button{
