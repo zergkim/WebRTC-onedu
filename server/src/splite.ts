@@ -44,7 +44,7 @@ export const splite = async(name:string,d:string)=>{
             '-profile:v baseline',
             '-level 3.0',
             '-start_number 0',
-            '-hls_time 100',//10초 단위임
+            '-hls_time 10',//10초 단위임
             '-hls_list_size 0',
             '-f hls'  
         ]).size('30%').output("../videos/"+name+'(30p)'+'.m3u8').on('end',()=>{
@@ -57,7 +57,7 @@ export const splite = async(name:string,d:string)=>{
             '-profile:v baseline',
             '-level 3.0',
             '-start_number 0',
-            '-hls_time 100',//10초 단위임
+            '-hls_time 10',//10초 단위임
             '-hls_list_size 0',
             '-f hls'  
         ]).size('70%').output("../videos/"+name+'(70p)'+'.m3u8').on('end',()=>{
@@ -70,7 +70,7 @@ export const splite = async(name:string,d:string)=>{
             '-profile:v baseline',
             '-level 3.0',
             '-start_number 0',
-            '-hls_time 100',//10초 단위임
+            '-hls_time 10',//10초 단위임
             '-hls_list_size 0',
             '-f hls'  
         ]).size('100%').output("../videos/"+name+'(100p)'+'.m3u8').on('end',()=>{

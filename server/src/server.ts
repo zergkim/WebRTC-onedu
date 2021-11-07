@@ -226,7 +226,7 @@ export function webrtcfunc(socket:any){
                 return;
             }
             one.emit("start","start")
-            console.log("씨발좇같다")
+            
             socket.on('cand', fun('cand',one,other,socket));
             socket.on('desc', fun('desc',one,other,socket));
             

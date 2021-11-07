@@ -78,7 +78,6 @@ video.addEventListener("pause",e=>{
     }
     const func2 = async (e:Event)=>{
         setTimeout(async()=>{
-            alert(video.paused)
             if (video.paused) {
             
                 await video.play()

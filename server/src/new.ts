@@ -1,15 +1,15 @@
-import { Cursor, Db, MongoClient,ObjectID } from "mongodb";
+import { Cursor, Db, MongoClient,ObjectID } from "mongodb";//몽고디비에서 object ID클래스와 mongodb의 dbms를 사용할 수 있게 해주는 인터페이스인 mongodblclient를 가져옴
 const url = "mongodb+srv://zergkim:kimsh060525@cluster0.55ags.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
-import { Chat_Obj, DBOBJ,POST_DATA_OBJ,POST_IV_OBJ, PLAYLIST} from "./type";
-const client = new MongoClient(url, { useUnifiedTopology: true });
-import crypto from "crypto";
-import {v4 as uuidV4} from 'uuid';
+import { Chat_Obj, DBOBJ,POST_DATA_OBJ,POST_IV_OBJ, PLAYLIST} from "./type";//오브젝트 타입
+const client = new MongoClient(url, { useUnifiedTopology: true });//몽고디비클라이언트 클래스에서 객체 생성
+import crypto from "crypto";//그립토 라이브러리 가져옴
+import {v4 as uuidV4} from 'uuid';//ID생성 api
 import { webrtcfunc } from "./server";
 import { send_mail } from "./emil";
-import cookieParser from "cookie-parser";
+import cookieParser from "cookie-parser";//express cookieparser
 import {Get_jungbo,FindUser,postthedata,search} from "./splite";
-import path from 'path';
-const viewroot = {root:'C:/Users/zergk/Desktop/git_project/dproject/front/dist'}
+import path from 'path';//path 라이브러리
+const viewroot = {root:'../../front/dist'}//html파일 들의 루트
 let postobj:any={}
 let DBObj:DBOBJ = { 
     Videodata:null, 
@@ -25,8 +25,8 @@ client.connect(async e=>{
         
     }
     console.log('connection_complete!')
-    DBObj.DB=client.db('streamingdata')
-    DBObj.Videodata=DBObj.DB.collection("videodataup")
+    DBObj.DB=client.db('streamingdata')//클라이언트에서 db함수로 db를 관리할 수 있는 객체 불러옴
+    DBObj.Videodata=DBObj.DB.collection("videodataup")//db에서 컬렉션을 관리할 수 있는 객체를 불러옴 이하 동문
     DBObj.Email=DBObj.DB.collection("email")
     DBObj.Users=DBObj.DB.collection("userdata")
     DBObj.Vu = DBObj.DB.collection("videodataup")
@@ -34,80 +34,80 @@ client.connect(async e=>{
     DBObj.Broadcasting = DBObj.DB.collection('broadcasting')
     //await DBObj.Users.updateOne({$and:[{ID:"opop065"}]},{$set:{passwords:crypto.createHash("sha256").update('12345678').digest('base64')}})
 })
-import { Server, Socket } from "socket.io";
-import express, { json } from 'express';
-const app = express();
+import { Server, Socket } from "socket.io";//socket.io를 가져옴
+import express, { json } from 'express';//express를 가져옴
+const app = express();//app객체 를 생성
 const filelist=[];
-const front = path.resolve(__dirname, '..', '..', 'front');
+const front = path.resolve(__dirname, '..', '..', 'front');//front패스
 // import hls from 'hls-server';
-import fs from 'fs/promises';
+import fs from 'fs/promises';//fs 프로미스를 받아옴
 import { remove } from "jszip";
 import e from "express";
-app.use(express.text())
-app.use(cookieParser())
-app.use('/node_modules',express.static('../node_modules'))
+app.use(express.text())//텍스트를 받아올 수 있도록 셋해놈
+app.use(cookieParser())//쿠키를 읽을 수있도록 셋 해놈 
+app.use('/node_modules',express.static('../node_modules'))//스태틱으로 파일을 읽을 수 있도록 셋해놈
 app.use(express.raw({limit:'1gb'}))//이거 꼭설정 해야함
-app.use(express.json());
-app.use('/img',express.static('../img'))
-app.use('/videos',express.static("../videos"))
-app.use('/userimg',express.static("../userimg"))
-app.get('/search',async(req,res)=>{
-    const searche = req.query.search as unknown as string
-    let bul = true;
+app.use(express.json());//json형식의 파일을 읽을 수 있도록 셋 해놈
+app.use('/img',express.static('../img'))//img 폴더를 img링크와 연결 하는 static코드
+app.use('/videos',express.static("../videos"))//videos폴더와 videos링크를 연결하는 static 코드
+app.use('/userimg',express.static("../userimg"))//userimg와 userimg폴더를 연결하는 static코드
+app.get('/search',async(req,res)=>{//search링크의 get요청
+    const searche = req.query.search as unknown as string//search를 할 텍스트를 쿼리 스트링에서 추출
+    let bul = true;//불리안
     if (req.query.again) {
         
     }else{
         bul=false;
     }
-    res.send(await search(searche,10,bul))
+    res.send(await search(searche,10,bul))//좀있다 확인하기
 })
-app.get("/playlistname",async(req,res)=>{
-    const idid = req.query.id as string
-    const name = (await DBObj.PLAYLIST.findOne({_id: new ObjectID(idid)})).NAME
+app.get("/playlistname",async(req,res)=>{//playlistname가져오기
+    const idid = req.query.id as string//쿼리에서 아이디 추출하기
+    const name = (await DBObj.PLAYLIST.findOne({_id: new ObjectID(idid)})).NAME//findOne에서 네임을 가져오기
     res.send(name)
 })
-app.get("/", async(req,res)=>{
+app.get("/", async(req,res)=>{// url에서 디렉토리가 '/'일 때
     let resultPath = ""
     if(req.cookies.id){
-        resultPath = path.resolve(front, `./dist/logined/mainview.html`) 
+        resultPath = path.resolve(front, `./dist/logined/mainview.html`) //만약 쿠키가 있다면 메인뷰페이지를 보내주기
         
     }else{
-        resultPath = path.resolve(front, `./dist/login.html`) 
+        resultPath = path.resolve(front, `./dist/login.html`) //아니라면 로그인 페이지로 이동 시키기 
     }
-    res.sendFile(resultPath)
+    res.sendFile(resultPath)//sendfile
 })
 app.use('/', async (req, res, next) => {
     
     if(req.query.view){ 
-        req.url = req.url.split("?")[0]
+        req.url = req.url.split("?")[0]//쿼리는 분리
     }
     let resultPath = '';
     
-    if(!req.cookies.logined){
+    if(!req.cookies.logined){//로그인이 아닐때
         if(req.method=="POST"&&(req.url==="/login"||req.url=="/email_send"||req.url.indexOf("/id_unique")>-1||req.url=="/certpost"||req.url.indexOf("/signinconfirm")>-1||req.url=='/broadcasting'||req.url=='/userimgpost')){
-            next()
+            next()//만약 위 조건을 만족한다면 처리
             console.log(req.url)
             return;
             
         }
-        if(path.basename(req.url).indexOf('.') === -1){
-            resultPath = path.resolve(front, `./dist${req.url}.html`) 
+        if(path.basename(req.url).indexOf('.') === -1){//링크
+            resultPath = path.resolve(front, `./dist${req.url}.html`) //파일 디렉토리를 dist안의 logined폴더가 아닌 밖으로 설정해 일부러 오류 내기
         } else {
-            resultPath = path.resolve(front, `./dist${req.url}`);
+            resultPath = path.resolve(front, `./dist${req.url}`);//일부러 오류내기
         }
         try{
-            await fs.access(resultPath)
+            await fs.access(resultPath)//엑세스하기(오류내기)
             res.sendFile(resultPath)
         }catch(e){
             res.send("error")
         }
         return;
-    }else if(req.method=="POST"){
-        next()
-        return; 
+    }else if(req.method=="POST"){//메소드가 post면 보내주기
+        next()//보내기
+        return; //함수 실행 종료
     }
     else{
-        if(req.url=="/logout"||req.url=="/viewlist"||req.url.indexOf("getuserlist")>-1||req.url.indexOf("getvideoinfo")>-1||req.url.indexOf('getuserid')>-1||req.url=="/getlplaylist"||req.url.indexOf("/broadcasting")>-1||req.url.indexOf("/userlistvideolist")>-1||req.url=="/getsubuserlist"||req.url=="/topvideolist"||req.url.indexOf("/changepassword")>-1||req.url=='/usersplaylist'){
+        if(req.url=="/logout"||req.url=="/viewlist"||req.url.indexOf("getuserlist")>-1||req.url.indexOf("getvideoinfo")>-1||req.url.indexOf('getuserid')>-1||req.url=="/getlplaylist"||req.url.indexOf("/broadcasting")>-1||req.url.indexOf("/userlistvideolist")>-1||req.url=="/getsubuserlist"||req.url=="/topvideolist"||req.url.indexOf("/changepassword")>-1||req.url=='/usersplaylist'){//파일 위치가 없는 것들
             try{
                next()
                console.log(req.url)
@@ -117,16 +117,16 @@ app.use('/', async (req, res, next) => {
             return;
         }
         console.log(path.basename(req.url))
-        if(path.basename(req.url).indexOf("js")>-1){
+        if(path.basename(req.url).indexOf("js")>-1){//자바스크립트는 그렇게 안함
             resultPath = path.resolve(front, `./dist/${req.url}`,)
         }
-        else if(path.basename(req.url).indexOf('.') === -1){
+        else if(path.basename(req.url).indexOf('.') === -1){//html, html아닐 경우 구분
             resultPath = path.resolve(front, `./dist/logined${req.url}.html`)
         } 
         else {
             resultPath = path.resolve(front, `./dist/logined${req.url}`);
         }
-        if(path.basename(req.url).split(".")[0]=="watchview"){
+        if(path.basename(req.url).split(".")[0]=="watchview"){//watchview파일을 사용할 수 있도록 해주는 파일 디렉토리
             const diew = req.query.view as string
             if(diew){
                 
@@ -145,7 +145,7 @@ app.use('/', async (req, res, next) => {
     
 });
 
-const loginedfunc =(req:any,res:any,next:Function)=>{
+const loginedfunc =(req:any,res:any,next:Function)=>{//login되었을 경우에 처리 함수
     if(req.cookies.logined){
         res.redirect("/main")
         return;
@@ -158,37 +158,37 @@ const loginedfunc =(req:any,res:any,next:Function)=>{
 app.use("/login",loginedfunc)
 app.use("/signin",loginedfunc)
 
-app.post("/id_unique",async(req,res)=>{
+app.post("/id_unique",async(req,res)=>{//idunique플래그 함수
     if(await DBObj.Users.findOne({ID:req.body})){
         res.send("")
     }else {
         res.send("좋아요")
     };
 })
-app.post("/email_send",async(req,res)=>{
+app.post("/email_send",async(req,res)=>{//인증번호
     const number = JSON.stringify(Math.floor(Math.random()*1000000));
     
     try{
         console.log(req.body.email)
-        const info = await DBObj.Users.findOne({email:req.body.email})
+        const info = await DBObj.Users.findOne({email:req.body.email})//이메일 주인찾기
         if(info){
             throw new Error("이미 이메일 주인이 있음")
         }
-        await DBObj.Email.insertOne({date:new Date(),EmailAdr:req.body.email,number})
+        await DBObj.Email.insertOne({date:new Date(),EmailAdr:req.body.email,number})//없으면 괜찮음
     }catch(e){
         
         res.send("")
         return;
     }
     
-    console.log(req.body.email,number)
-    send_mail(req.body.email,number)
+    console.log('인증번호',number)//인증번호
+    send_mail(req.body.email,number)//인증번호 보내기
     res.send("성공")
     
 })
 app.post("/userimgpost",async(req,res)=>{
     try{
-        const er = await fs.writeFile(`../userimg/${req.cookies.id}.jpg`,req.body)
+        const er = await fs.writeFile(`../userimg/${req.cookies.id}.jpg`,req.body)//쓰기
         res.json("성공")
     }catch(e){
         res.json("")
@@ -244,6 +244,7 @@ app.post('/deleteplaylist',(req,res)=>{
         })
         DBObj.PLAYLIST.deleteOne({_id:new ObjectID(v)})
         DBObj.Users.updateMany({},{$pull:{subplaylist:v}})
+        res.send("text")
     })
 })
 app.post("/userlistvideolist",async(req,res)=>{
@@ -289,7 +290,7 @@ app.get("/usersplaylist",async(req,res)=>{
 })
 app.get("/logout",(req,res)=>{
     try{
-        res.clearCookie('id')
+        res.clearCookie('id')//쿠키 클리어
         res.clearCookie("passwords")
         res.clearCookie("logined")
         res.redirect("/login")
@@ -537,14 +538,7 @@ app.post("/objpost",async(req,res)=>{
 })
 
 const server= app.listen(3000,async()=>{
-    let impsy = await fs.readdir(path.resolve(__dirname, '..', 'savefiles'))
-    impsy.forEach((e:string)=>{
-        let earr:Array<any>=[];
-        earr=e.split(".")
-        earr.pop()
-        e=earr.join('')
-        filelist.push(e)
-    })
+    
     
 })
 // new hls(server,{
