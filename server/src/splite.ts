@@ -4,7 +4,7 @@ import mongodb from "mongodb";
 import fs from 'fs';
 //import {func} from './resoultionget';
 import {DBOBJ, POST_DATA_OBJ,PLAYLIST} from './type'
-const url = "mongodb+srv://zergkim:kimsh060525@cluster0.55ags.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
+const url = "";
 const client = new mongodb.MongoClient(url, { useUnifiedTopology: true });
 ffmpeg.setFfmpegPath(ffmpegInstaller.path)
 console.log(ffmpegInstaller.path)
