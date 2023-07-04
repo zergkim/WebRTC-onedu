@@ -8,7 +8,7 @@ import { Db, MongoClient,ObjectID } from "mongodb";
 import { DBOBJ,broadcastobj} from "./type";
 //const app = express();
 const {v4:uuidV4} = require('uuid');
-const url = "mongodb+srv://zergkim:kimsh060525@cluster0.55ags.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
+const url ="";
 const client = new MongoClient(url, { useUnifiedTopology: true });
 let DBObj:DBOBJ = {
     Videodata:null,
