@@ -1,5 +1,4 @@
 import { Cursor, Db, MongoClient,ObjectID } from "mongodb";//몽고디비에서 object ID클래스와 mongodb의 dbms를 사용할 수 있게 해주는 인터페이스인 mongodblclient를 가져옴
-const url = "mongodb+srv://zergkim:kimsh060525@cluster0.55ags.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
 import { Chat_Obj, DBOBJ,POST_DATA_OBJ,POST_IV_OBJ, PLAYLIST} from "./type";//오브젝트 타입
 const client = new MongoClient(url, { useUnifiedTopology: true });//몽고디비클라이언트 클래스에서 객체 생성
 import crypto from "crypto";//그립토 라이브러리 가져옴
